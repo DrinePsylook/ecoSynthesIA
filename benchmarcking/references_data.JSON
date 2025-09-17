@@ -1,0 +1,47 @@
+{
+  "documents": [
+    {
+      "id": "doc1",
+      "title": "GLO_French_Executive_Summary.pdf",
+      "reference_summary": "La pression croissante sur les ressources terrestres, due à la hausse démographique et à la consommation, entraîne une dégradation accélérée des sols, des forêts, des prairies et des pâturages Cela provoque une perte de productivité, de biodiversité et accroît la pauvreté, les migrations et les conflits. Le système alimentaire mondialisé, orienté vers les profits à court terme, repose sur des monocultures, l’usage intensif d’intrants et génère 70 % des prélèvements d’eau douce et 80 % de la déforestation. Des scénarios montrent que des compromis sont nécessaires : abandon des productions intensives et carbonées, réduction des régimes carnés et du gaspillage alimentaire. La durabilité repose sur une transformation profonde des modes de consommation, de production et de gouvernance, afin de préserver les terres comme base de la sécurité humaine.",
+      "reference_criteria": [
+        "Causes : pressions démographiques, consommation accrue, pratiques agricoles intensives",
+        "Conséquences : dégradation des sols, perte de biodiversité, pauvreté, migrations, conflits",
+        "Responsabilité : système alimentaire mondialisé, profit à court terme",
+        "Chiffres clés : baisse de productivité, émissions GES, consommation d’eau, déforestation",
+        "Solutions : abandon des productions intensives, réduction gaspillage et régimes carnés",
+        "Lien avec sécurité humaine et Objectifs de développement durable"
+      ],
+      "reference_numbers": {
+        "degradation": {
+          "period": "1998-2013",
+          "productivity_decline": "20% de la superficie végétale",
+          "details": {
+            "cropland": "20%",
+            "forests": "16%",
+            "grassland": "19%",
+            "pastures": "27%"
+          }
+        },
+        "ghg_emissions": "25% dus à l’exploitation des terres",
+        "affected_population": "1.3 milliards sur terres dégradées",
+        "food_production": {
+          "freshwater_withdrawals": "70%",
+          "deforestation": "80%"
+        },
+        "land_acquisitions": {
+          "area": "42 millions ha",
+          "use": "cultures vivrières, bois, biocarburants",
+          "region": "Afrique"
+        }
+      }
+    },
+    {
+      "id": "doc2",
+      "title": "Your second report.pdf",
+      "reference_summary": "…",
+      "reference_criteria": ["…"],
+      "reference_numbers": {}
+    }
+  ]
+}
