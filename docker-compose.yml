@@ -1,0 +1,61 @@
+services:
+    frontend:
+        build: 
+            context: ./frontend
+            dockerfile: Dockerfile
+        container_name: front_ecoSynthesIA
+        volumes:
+            - ./frontend:/app
+            - app/node_modules
+        ports:
+            - "5173:5173"
+        networks:
+            - ecoSynthesIA-network
+
+    backend:
+        build:
+            context: ./backend
+            dockerfile: Dockerfile
+        container_name: back_ecoSynthesIA
+        volumes:
+            - ./backend:/app
+        depends_on:
+            - db
+            - IA_service
+        ports:
+            -"3000:3000"
+        networks:
+            - ecoSynthesIA-network
+
+    db:
+        image: postgres:13
+        container_name: db_ecoSynthesIA
+        volumes:
+        - postgres_data:/var/lib/postgresql/data/
+        environment:
+        - POSTGRES_DB=${POSTGRES_DB}
+        - POSTGRES_USER=${POSTGRES_USER}
+        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+        networks:
+        - ecoSynthesIA-network
+
+    IA_service:
+        build:
+            context: ./IA_service
+            dockerfile: Dockerfile
+        container_name: ia_ecoSynthesIA
+        volumes:
+            - ./IA_service:/app
+        depends_on:
+            - db
+        ports:
+            - "8000:8000"
+        networks:
+            - ecoSynthesIA-network
+
+volumes:
+    postgres_data:
+
+networks:
+    ecoSynthesIA-network:
+        driver: bridge      
