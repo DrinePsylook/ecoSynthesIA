@@ -1,6 +1,8 @@
 # Storage folder
 bucket/
 
+rapports/
+
 # Node.js/TypeScript
 node_modules/
 dist/
