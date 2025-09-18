@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "migrate": "ts-node database/migrations/migrationRunner.ts",
+    "test": "echo \"No tests specified\" && exit 0",
+    "build": "tsc"
+  },
   "devDependencies": {
     "@types/bcryptjs": "^3.0.0",
     "@types/cors": "^2.8.19",

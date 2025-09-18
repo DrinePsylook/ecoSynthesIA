@@ -1,0 +1,20 @@
+name: Main Workflow
+
+on: 
+  push: 
+    branches: [ main ]
+    pull_request:
+      branches: [ main ]
+
+jobs:
+  trigger-backend:
+    uses: ./.github/workflows/backend-ci.yml
+    secrets: inherit
+
+  trigger-frontend:
+    uses: ./.github/workflows/frontend-ci.yml
+    secrets: inherit
+
+  trigger-IA:
+    uses: ./.github/workflows/IA_service-ci.yml
+    secrets: inherit

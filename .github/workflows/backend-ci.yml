@@ -1,0 +1,61 @@
+name: Backend CI/CD
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'backend/**'  # Trigger only on changes in the backend directory
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'backend/**'
+
+jobs:
+  test-backend:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD || 'postgres' }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER || 'postgres' }}
+          POSTGRES_DB: test_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'backend/package-lock.json'
+          
+      - name: Install dependencies
+        working-directory: ./backend  # Set working directory to backend
+        run: npm ci
+        
+      - name: Run migrations
+        working-directory: ./backend
+        env:
+          APP_ENV: cicd
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/test_db' }}
+        run: npm run migrate
+        
+      - name: Run tests
+        working-directory: ./backend
+        env:
+          APP_ENV: cicd
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/test_db' }}
+        run: npm test
+        
+      - name: Build
+        working-directory: ./backend
+        run: npm run build
