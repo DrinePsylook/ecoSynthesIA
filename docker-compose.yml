@@ -3,33 +3,38 @@ services:
         build: 
             context: ./frontend
             dockerfile: Dockerfile
-        container_name: front_ecoSynthesIA
+        container_name: front_ecosynthesia
         volumes:
             - ./frontend:/app
-            - app/node_modules
+            - /var/www/html/ecoSynthesIA/frontend/node_modules
         ports:
             - "5173:5173"
         networks:
-            - ecoSynthesIA-network
+            - ecosynthesia-network
 
     backend:
         build:
             context: ./backend
             dockerfile: Dockerfile
-        container_name: back_ecoSynthesIA
+        container_name: back_ecosynthesia
         volumes:
             - ./backend:/app
         depends_on:
             - db
-            - IA_service
         ports:
-            -"3000:3000"
+            - "3000:3000"
+        environment:
+            - NODE_ENV=development
+            - POSTGRES_HOST=db_ecosynthesia
+            - POSTGRES_DB=${POSTGRES_DB}
+            - POSTGRES_USER=${POSTGRES_USER}
+            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
         networks:
-            - ecoSynthesIA-network
+            - ecosynthesia-network
 
     db:
         image: postgres:13
-        container_name: db_ecoSynthesIA
+        container_name: db_ecosynthesia
         volumes:
         - postgres_data:/var/lib/postgresql/data/
         environment:
@@ -37,25 +42,25 @@ services:
         - POSTGRES_USER=${POSTGRES_USER}
         - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
         networks:
-        - ecoSynthesIA-network
+        - ecosynthesia-network
 
-    IA_service:
+    ia_service:
         build:
-            context: ./IA_service
+            context: ./ia_service
             dockerfile: Dockerfile
-        container_name: ia_ecoSynthesIA
+        container_name: ia_ecosynthesia
         volumes:
-            - ./IA_service:/app
+            - ./ia_service:/app
         depends_on:
             - db
         ports:
             - "8000:8000"
         networks:
-            - ecoSynthesIA-network
+            - ecosynthesia-network
 
 volumes:
     postgres_data:
 
 networks:
-    ecoSynthesIA-network:
+    ecosynthesia-network:
         driver: bridge      

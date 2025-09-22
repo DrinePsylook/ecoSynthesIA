@@ -16,5 +16,5 @@ jobs:
     secrets: inherit
 
   trigger-IA:
-    uses: ./.github/workflows/IA_service-ci.yml
+    uses: ./.github/workflows/ia_services-ci.yml
     secrets: inherit

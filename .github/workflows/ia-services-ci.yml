@@ -4,11 +4,11 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'IA_services/**'
+      - 'ia_services/**'
   pull_request:
     branches: [ main ]
     paths:
-      - 'IA_services/**'
+      - 'ia_services/**'
 
 jobs:
   test-ia-services:
@@ -23,12 +23,12 @@ jobs:
         with:
           python-version: '3.11'
           cache: 'pip'
-          cache-dependency-path: 'IA_services/requirements.txt'
+          cache-dependency-path: 'ia_services/requirements.txt'
           
       - name: Install dependencies
-        working-directory: ./IA_services
+        working-directory: ./ia_services
         run: pip install -r requirements.txt
         
       - name: Run tests
-        working-directory: ./IA_services
+        working-directory: ./ia_services
         run: python -m pytest

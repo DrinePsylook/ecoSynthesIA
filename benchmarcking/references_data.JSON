@@ -1,7 +1,7 @@
 {
   "documents": [
     {
-      "id": "doc1",
+      "id": "1",
       "title": "GLO_French_Executive_Summary.pdf",
       "reference_summary": "La pression croissante sur les ressources terrestres, due à la hausse démographique et à la consommation, entraîne une dégradation accélérée des sols, des forêts, des prairies et des pâturages. Cela provoque une perte de productivité, de biodiversité et accroît la pauvreté, les migrations et les conflits. Le système alimentaire mondialisé, orienté vers les profits à court terme, repose sur des monocultures, l’usage intensif d’intrants et génère 70 % des prélèvements d’eau douce et 80 % de la déforestation. Des scénarios montrent que des compromis sont nécessaires : abandon des productions intensives et carbonées, réduction des régimes carnés et du gaspillage alimentaire. La durabilité repose sur une transformation profonde des modes de consommation, de production et de gouvernance, afin de préserver les terres comme base de la sécurité humaine.",
       "reference_criteria": [
@@ -35,17 +35,48 @@
               "unit": "%"
             }
           },
-          "page": 11
+          "page": 11,
+          "chart": [
+            "LineChart",
+            "BarChart"
+          ]
         },
         "ghg_emissions": {
           "share": "25",
           "unit": "% des émissions totales",
-          "page": 11
+          "page": 11,
+          "chart": [
+            "PieChart"
+          ]
         },
         "affected_population": {
           "count": "1,3",
           "unit": "milliards de personnes",
-          "page": 11
+          "page": 11,
+          "chart": [
+            "BarChart"
+          ]
+        },
+        "land_productivity_decline_trend": {
+          "years": {
+            "1998": "0",
+            "2003": "≈ -10",
+            "2008": "≈ -15",
+            "2013": "-20"
+          },
+          "unit": "% de productivité perdue (superficie végétale)",
+          "categories": {
+            "cropland": "20 %",
+            "forest": "16 %",
+            "grassland": "19 %",
+            "pastures": "27 %"
+          },
+          "note": "valeurs repères extraites du graphique p.11 ; certaines valeurs intermédiaires approximatives",
+          "page": 11,
+          "chart": [
+            "LineChart",
+            "BarChart"
+          ]
         },
         "food_production": {
           "water_withdrawals": {
@@ -56,19 +87,26 @@
             "share": "80",
             "unit": "%"
           },
-          "page": 12
+          "page": 12,
+          "chart": [
+            "PieChart"
+          ]
         },
         "land_acquisitions": {
           "area": "42",
           "unit": "millions ha",
           "use": "cultures vivrières, bois, biocarburants",
           "region": "Afrique",
-          "page": 12
+          "page": 12,
+          "chart": [
+            "ChoroplethMap",
+            "BarChart"
+          ]
         }
       }
     },
     {
-      "id": "doc2",
+      "id": "2",
       "title": "WWF_EU_Consumption_Pressure.pdf",
       "reference_summary": "L'Union européenne est l'un des principaux moteurs de la déforestation mondiale par sa consommation de soja, huile de palme, viande de bœuf, cacao, café et produits du bois. Entre 2005 et 2017, ses importations ont entraîné 3,5 millions d'hectares de déforestation, représentant 1 807 millions de tonnes de CO2, soit 40 % des émissions annuelles de l'UE. Bien que la déforestation liée aux importations ait diminué d'environ 40 % sur cette période, l'UE reste responsable de 16 % de la déforestation associée au commerce international en 2017. Les impacts sont concentrés en Amérique du Sud et en Asie du Sud-Est, notamment dans le Cerrado, l'Amazonie et le Chaco. Les engagements 'zéro déforestation' restent insuffisants et inégaux selon les filières. La législation européenne doit intégrer non seulement les forêts, mais aussi d'autres écosystèmes naturels (prairies, savanes, zones humides) et inclure des obligations contraignantes de traçabilité, transparence et respect des droits humains.",
       "reference_criteria": [
@@ -87,7 +125,10 @@
           "emissions": "1 807",
           "emissions_unit": "millions tonnes CO2",
           "equivalent": "40 % des émissions annuelles de l’UE",
-          "page": 5
+          "page": 5,
+          "chart": [
+            "LineChart"
+          ]
         },
         "eu_share_global": {
           "year": 2017,
@@ -97,7 +138,10 @@
           "area_unit": "ha",
           "emissions": "116",
           "emissions_unit": "millions tonnes CO2",
-          "page": 5
+          "page": 5,
+          "chart": [
+            "PieChart"
+          ]
         },
         "country_comparison": {
           "china": {
@@ -120,7 +164,12 @@
             "share": "5",
             "unit": "%"
           },
-          "page": 5
+          "page": 5,
+          "chart": [
+            "BarChart",
+            "PieChart",
+            "ChoroplethMap"
+          ]
         },
         "cerrado_imports": {
           "year": 2018,
@@ -129,7 +178,10 @@
           "conversion_share": "70",
           "conversion_area": "15 338",
           "conversion_unit": "ha",
-          "page": 9
+          "page": 9,
+          "chart": [
+            "BarChart"
+          ]
         },
         "legal_conversion_potential": {
           "paraguay": {
@@ -145,7 +197,11 @@
             "unit": "millions ha"
           },
           "note": "terres pouvant encore être légalement converties",
-          "page": 11
+          "page": 11,
+          "chart": [
+            "BarChart",
+            "ChoroplethMap"
+          ]
         },
         "zero_deforestation_commitments": {
           "soy_imports": {
@@ -156,12 +212,16 @@
             "share": "19",
             "unit": "% (2017)"
           },
-          "page": 10
+          "page": 10,
+          "chart": [
+            "BarChart",
+            "PieChart"
+          ]
         }
       }
     },
     {
-      "id": "doc3",
+      "id": "3",
       "title": "Convention_on_Plastic_Pollution_CIEL_EIA_GAIA.pdf",
       "reference_summary": "La pollution plastique est une menace mondiale transfrontalière qui nécessite un accord international juridiquement contraignant. Chaque année, environ 275 millions de tonnes de déchets plastiques sont produits, dont jusqu’à 12 millions de tonnes finissent dans les océans, avec des coûts environnementaux estimés à 13 milliards de dollars par an. L’UNEA a adopté plusieurs résolutions (2014, 2016, 2017, 2019) reconnaissant l’urgence du problème et appelant à une action coordonnée. La future convention sur la pollution plastique doit couvrir tout le cycle de vie des plastiques, de la production à la gestion des déchets, en s’appuyant sur quatre piliers : surveillance et reporting, prévention de la pollution, coordination internationale et soutien technique et financier. Les objectifs principaux incluent l’élimination des rejets de plastiques, la création d’une économie circulaire sûre, et la réduction de la production de plastique vierge. Le texte souligne aussi les enjeux liés aux microplastiques, aux additifs chimiques toxiques, aux impacts climatiques et agricoles, et à la nécessité d’un financement durable basé sur le principe pollueur-payeur.",
       "reference_criteria": [
@@ -177,47 +237,600 @@
         "annual_plastic_waste": {
           "amount": "275",
           "unit": "millions de tonnes",
-          "page": 2
+          "page": 2,
+          "chart": [
+            "LineChart"
+          ]
         },
         "ocean_pollution": {
           "amount": "12",
           "unit": "millions de tonnes/an",
-          "page": 2
+          "page": 2,
+          "chart": [
+            "LineChart"
+          ]
         },
         "marine_costs": {
           "amount": "13",
           "unit": "milliards de dollars/an",
-          "page": 2
+          "page": 2,
+          "chart": [
+            "LineChart"
+          ]
         },
         "plastic_particles_in_oceans": {
           "count": "51",
           "unit": "billions de particules",
-          "page": 4
+          "page": 4,
+          "chart": [
+            "BarChart"
+          ]
         },
         "production_projection": {
           "factor": "x4",
           "unit": "d’ici 2050",
-          "page": 4
+          "page": 4,
+          "chart": [
+            "LineChart"
+          ]
         },
         "plastic_pellets": {
           "amount": "230 000",
           "unit": "tonnes/an",
-          "page": 7
+          "page": 7,
+          "chart": [
+            "LineChart"
+          ]
         },
         "pcb_ddt_concentration": {
           "factor": "1 000 000",
           "unit": "fois plus élevées que dans l’eau",
-          "page": 9
+          "page": 9,
+          "chart": [
+            "BarChart"
+          ]
         },
         "microplastics_seafloor": {
           "count": "1,9 million",
           "unit": "pièces/m²",
-          "page": 9
+          "page": 9,
+          "chart": [
+            "BarChart"
+          ]
         },
         "species_impacted": {
           "count": "2 249",
           "unit": "espèces",
-          "page": 9
+          "page": 9,
+          "chart": [
+            "BarChart"
+          ]
+        }
+      }
+    },
+    {
+      "id": "4",
+      "title": "AGR23_ESFR.pdf",
+      "reference_summary": "Le rapport souligne l’aggravation du déficit mondial de financement de l’adaptation au climat, qui atteint 194 à 366 milliards USD par an, soit 10 à 18 fois les flux actuels d’aide internationale. Les besoins des pays en développement sont estimés entre 215 et 387 milliards USD par an au cours de cette décennie, bien au-delà des estimations précédentes. Pourtant, les flux publics internationaux d’adaptation ont diminué de 15 % depuis 2020, atteignant seulement 21,3 milliards USD en 2021, avec un taux de décaissement de 66 %. Les pays en développement, particulièrement vulnérables, dépendent fortement de financements extérieurs, et un pays sur six n’a toujours pas d’instrument national de planification. Le rapport insiste sur l’importance d’intégrer l’égalité des genres et l’inclusion sociale, encore trop marginales (2 % du budget en moyenne). Il appelle à mobiliser davantage de financements publics, privés et nationaux, à réformer l’architecture financière mondiale et à créer des sources innovantes pour combler le déficit. Même en atteignant les objectifs de l’Accord de Paris, des risques climatiques résiduels entraîneront des pertes et préjudices, nécessitant un fonds dédié et des dispositifs de gouvernance adaptés.",
+      "reference_criteria": [
+        "Déficit de financement de l’adaptation : besoins croissants et flux insuffisants",
+        "Écart de planification : un pays sur six sans instrument national d’adaptation",
+        "Flux de financement publics internationaux en baisse depuis 2020",
+        "Inégalités sociales et de genre largement négligées dans l’adaptation",
+        "Dépendance des pays en développement à un soutien extérieur",
+        "Appel à réformes structurelles de l’architecture financière mondiale",
+        "Importance de traiter les pertes et préjudices économiques et non économiques"
+      ],
+      "reference_numbers": {
+        "adaptation_financing_gap": {
+          "range": "194–366",
+          "unit": "milliards USD/an",
+          "multiplier": "10–18 fois les flux actuels",
+          "increase": "≥ 50 % par rapport aux estimations précédentes",
+          "page": 4,
+          "chart": [
+            "BarChart"
+          ]
+        },
+        "adaptation_costs": {
+          "central_range": "215–387",
+          "unit": "milliards USD/an",
+          "lower_bound": "130",
+          "upper_bound": "975",
+          "share_gdp": "0,6–1,0 % du PIB combiné des pays en développement",
+          "horizon": "cette décennie",
+          "page": 6,
+          "chart": [
+            "LineChart"
+          ]
+        },
+        "international_flows": {
+          "value": "21,3",
+          "unit": "milliards USD",
+          "year": 2021,
+          "decline": "-15 % par rapport à 2020",
+          "disbursement_rate": "66 %",
+          "page": 7,
+          "chart": [
+            "LineChart"
+          ]
+        },
+        "adaptation_needs_vs_flows": {
+          "needs": "215–387",
+          "unit": "milliards USD/an",
+          "flows": "21,3",
+          "flows_unit": "milliards USD",
+          "gap": "194–366 milliards USD",
+          "page": 7,
+          "chart": [
+            "BarChart"
+          ]
+        },
+        "international_flows_trend": {
+          "values": {
+            "2020": "≈ 25",
+            "2021": "21,3"
+          },
+          "unit": "milliards USD",
+          "note": "valeurs issues du graphique p.7",
+          "page": 7,
+          "chart": [
+            "LineChart"
+          ]
+        },
+        "food_security_investment": {
+          "investment": "16",
+          "unit": "milliards USD/an",
+          "beneficiaries": "78 millions de personnes",
+          "impact": "faim évitée",
+          "page": 8,
+          "chart": [
+            "BarChart"
+          ]
+        },
+        "coastal_flood_protection": {
+          "investment": "1",
+          "unit": "milliard USD",
+          "avoided_damages": "14 milliards USD",
+          "page": 8,
+          "chart": [
+            "BarChart"
+          ]
+        },
+        "gender_inclusion": {
+          "plans_with_budget": "20 %",
+          "budget_share": "≈ 2 %",
+          "funds_gender_focus": {
+            "main_objective": "2 %",
+            "specific_or_integrated": "24 %"
+          },
+          "page": 8,
+          "chart": [
+            "PieChart",
+            "BarChart"
+          ]
+        },
+        "adaptation_planning": {
+          "countries_with_instruments": "5/6",
+          "countries_without": "15 %",
+          "multiple_instruments": "≈ 50 % des pays",
+          "legal_instruments": "25 %",
+          "page": 5,
+          "chart": [
+            "PieChart",
+            "BarChart"
+          ]
+        },
+        "loss_damage_vulnerable_economies": {
+          "period": "20 dernières années",
+          "value": "500",
+          "unit": "milliards USD",
+          "scope": "55 économies les plus vulnérables",
+          "page": 11,
+          "chart": [
+            "BarChart",
+            "ChoroplethMap"
+          ]
+        }
+      }
+    },
+    {
+      "id": "5",
+      "title": "12_eea-eionet-strategy_RGB_FR.pdf",
+      "reference_summary": "La stratégie AEE–EIONET 2021–2030 définit la vision, la mission et les objectifs stratégiques de l’Agence européenne pour l’environnement et de son réseau. L’objectif est de fournir des connaissances fiables et exploitables pour soutenir les politiques de l’UE et les transitions vers la durabilité, conformément au Pacte vert pour l’Europe et au 8e Programme d’action pour l’environnement. Le document identifie cinq objectifs stratégiques (mise en œuvre des politiques, solutions aux défis de durabilité, renforcement des réseaux, exploitation des données et des technologies, mobilisation des ressources) et cinq domaines de travail (atténuation et adaptation climatique, économie circulaire, santé et environnement, biodiversité, tendances et durabilité). La stratégie insiste sur le rôle clé de la numérisation, de la science citoyenne, de l’intelligence artificielle et des partenariats internationaux pour relever les défis environnementaux et climatiques à venir.",
+      "reference_criteria": [
+        "Vision 2030 : favoriser une Europe durable grâce à des connaissances fiables et exploitables",
+        "Cinq objectifs stratégiques : mise en œuvre, solutions, réseaux, numérisation, ressources",
+        "Soutien au Pacte vert pour l’Europe et au 8e Programme d’action pour l’environnement",
+        "Domaines de travail : climat, économie circulaire, santé, biodiversité, durabilité",
+        "Intégration de la durabilité dans toutes les politiques de l’UE",
+        "Renforcement des partenariats européens et internationaux",
+        "Utilisation des nouvelles technologies, mégadonnées, IA et observation de la Terre"
+      ],
+      "reference_numbers": {
+        "data_growth": {
+          "increase_factor": "×250",
+          "period_start": 2002,
+          "period_end": 2018,
+          "description": "Croissance du volume de données traitées par l’AEE depuis 2002",
+          "page": 54,
+          "chart": [
+            "LineChart"
+          ]
+        },
+        "reportnet_launch": {
+          "year": 2002,
+          "description": "Lancement de Reportnet, infrastructure de données",
+          "page": 54,
+          "chart": []
+        },
+        "data_volume_trend": {
+          "values": {
+            "2002": "1",
+            "2018": "250"
+          },
+          "unit": "indice (2002=1)",
+          "note": "courbe extraite du graphique p.54, valeurs intermédiaires non précisées",
+          "page": 54,
+          "chart": [
+            "LineChart"
+          ]
+        },
+        "member_countries": {
+          "count": 38,
+          "unit": "pays",
+          "description": "Pays membres et coopérants de l’AEE et d’Eionet",
+          "page": 48,
+          "chart": [
+            "ChoroplethMap"
+          ]
+        },
+        "carbon_neutrality_target": {
+          "year": 2050,
+          "goal": "neutralité climatique et résilience",
+          "page": 76,
+          "chart": [
+            "LineChart"
+          ]
+        },
+        "biodiversity_target": {
+          "year": 2030,
+          "goal": "mettre fin à la perte de biodiversité et restaurer les écosystèmes",
+          "page": 76,
+          "chart": [
+            "LineChart"
+          ]
+        },
+        "zero_pollution_target": {
+          "goal": "ambition zéro pollution pour un environnement exempt de substances toxiques",
+          "page": 76,
+          "chart": []
+        }
+      }
+    },
+    {
+      "id": "6",
+      "title": "14_EGR2024_ESFR.pdf",
+      "reference_summary": "Le rapport met en évidence l’écart persistant entre les trajectoires actuelles d’émissions et les objectifs de l’Accord de Paris. Les politiques en place conduiraient à une hausse de la température mondiale d’environ 3 °C d’ici 2100. Les contributions déterminées au niveau national (CDN) mises à jour réduisent cet écart mais restent insuffisantes. En 2030, les émissions mondiales devraient atteindre 57 GtCO2e, alors qu’il faudrait les ramener à 33 GtCO2e pour rester sous 2 °C, et 25 GtCO2e pour l’objectif de 1,5 °C. Les dix plus grands émetteurs (Chine, États-Unis, Inde, UE27, Indonésie, Russie, Brésil, Japon, Mexique, Iran) représentent environ deux tiers des émissions mondiales. Le rapport insiste sur l’importance d’accélérer la transition énergétique, d’éliminer progressivement les combustibles fossiles, de tripler les énergies renouvelables et de doubler l’efficacité énergétique d’ici 2030. Les instruments financiers, dont la tarification du carbone, et les réformes structurelles sont essentiels pour mobiliser les investissements nécessaires et combler l’écart.",
+      "reference_criteria": [
+        "Écart entre les trajectoires actuelles et les objectifs climatiques",
+        "Insuffisance des CDN mises à jour pour l’Accord de Paris",
+        "Niveaux d’émissions mondiales en 2030 selon les scénarios",
+        "Part des 10 plus grands émetteurs dans les émissions mondiales",
+        "Solutions : sortie progressive des fossiles, énergies renouvelables, efficacité énergétique",
+        "Importance des financements et réformes structurelles"
+      ],
+      "reference_numbers": {
+        "current_policies_temperature": {
+          "projection": "≈ 3",
+          "unit": "°C d’ici 2100",
+          "page": 3,
+          "chart": [
+            "LineChart"
+          ]
+        },
+        "projected_emissions_2030": {
+          "value": "57",
+          "unit": "GtCO2e",
+          "scenario": "politiques actuelles",
+          "page": 4,
+          "chart": [
+            "BarChart"
+          ]
+        },
+        "required_emissions_2C": {
+          "value": "33",
+          "unit": "GtCO2e",
+          "target": "scénario 2 °C",
+          "page": 4,
+          "chart": [
+            "BarChart"
+          ]
+        },
+        "required_emissions_1_5C": {
+          "value": "25",
+          "unit": "GtCO2e",
+          "target": "scénario 1,5 °C",
+          "page": 4,
+          "chart": [
+            "BarChart"
+          ]
+        },
+        "emissions_gap": {
+          "value": "22–32",
+          "unit": "GtCO2e",
+          "year": 2030,
+          "description": "écart entre trajectoires et objectif 1,5 °C",
+          "page": 5,
+          "chart": [
+            "BarChart"
+          ]
+        },
+        "emissions_trajectory_trend": {
+          "values": {
+            "2030_current_policies": "57 GtCO2e",
+            "2030_target_2C": "33 GtCO2e",
+            "2030_target_1_5C": "25 GtCO2e",
+            "2100_current_policies": "≈ +3 °C"
+          },
+          "unit": "GtCO2e / °C",
+          "note": "extrait du résumé analytique, graphique complet disponible dans rapport intégral",
+          "page": [
+            3,
+            4,
+            5
+          ],
+          "chart": [
+            "LineChart"
+          ]
+        },
+        "top_emitters_share": {
+          "countries": 10,
+          "share": "≈ 66",
+          "unit": "% des émissions mondiales",
+          "page": 6,
+          "chart": [
+            "PieChart",
+            "BarChart",
+            "ChoroplethMap"
+          ]
+        },
+        "renewables_target": {
+          "factor": "x3",
+          "target_year": 2030,
+          "page": 7,
+          "chart": [
+            "LineChart"
+          ]
+        },
+        "energy_efficiency_target": {
+          "factor": "x2",
+          "target_year": 2030,
+          "page": 7,
+          "chart": [
+            "LineChart"
+          ]
+        }
+      }
+    },
+    {
+      "id": "7",
+      "title": "16_20190718_De_la_nature_aux_humains_jusquou_iront_les_plastiques-min",
+      "reference_summary": "Une personne pourrait ingérer environ 5 grammes de plastique par semaine, soit l’équivalent d’une carte de crédit. Depuis 2000, autant de plastique a été produit que dans toute l’histoire précédente, et un tiers des déchets plastiques finissent dans la nature. La production de plastique vierge a été multipliée par 200 depuis 1950 et continue de croître. En 2016, 100 millions de tonnes de plastiques sont entrés dans la nature. 75 % de tout le plastique produit est aujourd’hui un déchet, et 87 % des déchets mal gérés s’infiltrent dans la nature. La pollution plastique touche la faune et les écosystèmes, avec des conséquences sanitaires et économiques majeures, dont 8 milliards USD par an pour les océans. Le WWF appelle à un traité mondial contraignant et à des mesures systémiques.",
+      "reference_criteria": [
+        "Estimation de l’ingestion humaine de plastique en grammes par semaine",
+        "Croissance de la production de plastique vierge depuis 1950",
+        "Part des déchets plastiques dans la nature et proportion mal gérée",
+        "Conséquences environnementales (faune, écosystèmes) et économiques",
+        "Appel à un traité international contraignant sur la pollution plastique"
+      ],
+      "reference_numbers": {
+        "weekly_plastic_ingestion": {
+          "value": "5",
+          "unit": "grammes par personne",
+          "equivalent": "carte de crédit",
+          "page": 6,
+          "chart": [
+            "BarChart"
+          ]
+        },
+        "plastic_production_growth": {
+          "increase": "x200",
+          "since": "1950",
+          "annual_rate_since_2000": "4%",
+          "forecast_increase": "40% d’ici 2030",
+          "page": 6,
+          "chart": [
+            "LineChart"
+          ]
+        },
+        "plastic_waste_nature": {
+          "value": "1/3",
+          "unit": "des déchets plastiques",
+          "equivalent": "100 millions de tonnes en 2016",
+          "page": 6,
+          "chart": [
+            "PieChart"
+          ]
+        },
+        "mismanaged_waste": {
+          "share": "87%",
+          "unit": "des déchets mal gérés",
+          "outcome": "s’infiltrent dans la nature",
+          "page": 6,
+          "chart": [
+            "PieChart"
+          ]
+        },
+        "plastic_as_waste": {
+          "share": "75%",
+          "unit": "du plastique produit",
+          "outcome": "est aujourd’hui un déchet",
+          "page": 6,
+          "chart": [
+            "PieChart"
+          ]
+        },
+        "marine_plastic_forecast": {
+          "ratio": "1 tonne plastique : 3 tonnes poissons",
+          "horizon": "2025",
+          "page": 6,
+          "chart": [
+            "BarChart"
+          ]
+        },
+        "marine_species_entanglement": {
+          "count": "270",
+          "unit": "espèces",
+          "issue": "enchevêtrement avec débris plastiques",
+          "page": 6,
+          "chart": [
+            "BarChart"
+          ]
+        },
+        "plastic_production_trend": {
+          "values": {
+            "1950": "2",
+            "2000": "250",
+            "2015": "400",
+            "2030_projection": "560"
+          },
+          "unit": "millions de tonnes de plastique vierge",
+          "note": "valeurs extraites du graphique p.6, chiffres intermédiaires estimés visuellement",
+          "page": 6,
+          "chart": [
+            "LineChart"
+          ]
+        },
+        "economic_cost": {
+          "value": "8",
+          "unit": "milliards USD/an",
+          "scope": "impact de la pollution plastique sur les océans (PNUE)",
+          "page": 11,
+          "chart": [
+            "BarChart"
+          ]
+        }
+      }
+    },
+    {
+      "id": "8",
+      "title": "fonte des glaces",
+      "reference_summary": "Entre 2020 et 2024, les observations satellitaires et in situ montrent une fonte accélérée des glaces polaires. L’Arctique a perdu en moyenne 3,2 millions de km² par an et l’Antarctique 1,8 million km². L’élévation du niveau marin atteint 4,3 mm/an, soit +23 % par rapport à la décennie précédente. En 2022, année record, toutes les régions affichent des pertes significatives : Arctique 12,1 millions km², Antarctique Ouest 4,2, Antarctique Est 11,4, Groenland 1,65. L’Antarctique Ouest est le plus vulnérable (-31 % depuis 2020). La calotte du Groenland contribue à elle seule à 40 % de l’élévation du niveau marin. Les projections annoncent +15 à 22 cm d’ici 2050. La fonte modifie les écosystèmes polaires, réduit les habitats de la faune spécialisée et perturbe la circulation thermohaline. Le rapport recommande un renforcement de la surveillance, une réduction des émissions, des stratégies d’adaptation pour les zones côtières et des corridors de protection pour la biodiversité.",
+      "reference_criteria": [
+        "Perte annuelle moyenne de glace par région polaire",
+        "Élévation moyenne du niveau des mers 2020–2024",
+        "Année de fonte record (2022)",
+        "Contribution spécifique du Groenland à l’élévation",
+        "Projection 2050 de l’élévation du niveau marin",
+        "Impacts écologiques et menaces sur la biodiversité polaire",
+        "Recommandations stratégiques : surveillance, réduction des émissions, adaptation côtière, corridors de protection"
+      ],
+      "reference_numbers": {
+        "annual_loss": {
+          "arctic": {
+            "value": "3,2",
+            "unit": "millions km²/an"
+          },
+          "antarctic": {
+            "value": "1,8",
+            "unit": "millions km²/an"
+          },
+          "period": "2020–2024",
+          "page": 1,
+          "chart": [
+            "BarChart",
+            "LineChart"
+          ]
+        },
+        "sea_level_rise_rate": {
+          "value": "4,3",
+          "unit": "mm/an",
+          "increase": "23 % par rapport à la décennie précédente",
+          "page": 1,
+          "chart": [
+            "LineChart"
+          ]
+        },
+        "regional_data": {
+          "values": {
+            "2020": {
+              "arctic": "14,8",
+              "antarctic_west": "5,2",
+              "antarctic_east": "12,1",
+              "greenland": "1,71",
+              "temp": "-8,3",
+              "sea_level": "3,1"
+            },
+            "2021": {
+              "arctic": "13,9",
+              "antarctic_west": "4,8",
+              "antarctic_east": "11,9",
+              "greenland": "1,69",
+              "temp": "-7,9",
+              "sea_level": "3,8"
+            },
+            "2022": {
+              "arctic": "12,1",
+              "antarctic_west": "4,2",
+              "antarctic_east": "11,4",
+              "greenland": "1,65",
+              "temp": "-6,8",
+              "sea_level": "4,9"
+            },
+            "2023": {
+              "arctic": "11,6",
+              "antarctic_west": "3,9",
+              "antarctic_east": "11,0",
+              "greenland": "1,62",
+              "temp": "-6,2",
+              "sea_level": "5,1"
+            },
+            "2024*": {
+              "arctic": "10,8",
+              "antarctic_west": "3,6",
+              "antarctic_east": "10,7",
+              "greenland": "1,58",
+              "temp": "-5,7",
+              "sea_level": "5,4"
+            }
+          },
+          "note": "2024 = données partielles janvier–août",
+          "page": 1,
+          "chart": [
+            "LineChart",
+            "BarChart"
+          ]
+        },
+        "antarctic_west_decline": {
+          "loss": "1,6",
+          "unit": "millions km²",
+          "percent": "31 %",
+          "period": "2020–2024",
+          "page": 2,
+          "chart": [
+            "LineChart",
+            "BarChart"
+          ]
+        },
+        "greenland_contribution": {
+          "loss": "130 000",
+          "unit": "km²",
+          "sea_level_contribution": "2,1 mm/an",
+          "share": "≈ 40 %",
+          "page": 2,
+          "chart": [
+            "BarChart",
+            "PieChart"
+          ]
+        },
+        "sea_level_projection": {
+          "increase": "15–22",
+          "unit": "cm d’ici 2050",
+          "page": 2,
+          "chart": [
+            "LineChart"
+          ]
         }
       }
     }
