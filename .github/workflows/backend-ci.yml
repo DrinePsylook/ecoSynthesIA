@@ -1,10 +1,8 @@
-name: Backend CI/CD
-
 on:
   push:
     branches: [ main ]
     paths:
-      - 'backend/**'  # Trigger only on changes in the backend directory
+      - 'backend/**'
   pull_request:
     branches: [ main ]
     paths:
@@ -35,27 +33,27 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'npm'
-          cache-dependency-path: 'backend/package-lock.json'
+          cache: 'yarn'
+          cache-dependency-path: 'backend/yarn.lock'
           
       - name: Install dependencies
-        working-directory: ./backend  # Set working directory to backend
-        run: npm ci
+        working-directory: ./backend
+        run: yarn install --frozen-lockfile
         
       - name: Run migrations
         working-directory: ./backend
         env:
           APP_ENV: cicd
           DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/test_db' }}
-        run: npm run migrate
+        run: yarn migrate
         
       - name: Run tests
         working-directory: ./backend
         env:
           APP_ENV: cicd
           DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/test_db' }}
-        run: npm test
+        run: yarn test
         
       - name: Build
         working-directory: ./backend
-        run: npm run build
+        run: yarn build
