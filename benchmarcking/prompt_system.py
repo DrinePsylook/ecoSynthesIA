@@ -31,7 +31,13 @@ Your goal is to extract the following data, if available:
 - Temporal data (periods, specific years).
 Data can be un text, in tables, or in graphs.
 
-Structure your response in JSON format, without additional explanatory text. Use one JSON object per type of extracted data. Each object must contain the keys "value", "unit", "context", and "page".
+Structure your response in JSON format, without additional explanatory text. Use one JSON object per type of extracted data. Each object must contain the keys "value", "unit", "context", "page" where you find the information and "chart".
+
+The "chart" key must contain the most appropriate visualization type for the extracted data, based on these definitions:
+- **LineChart**: Best for showing a variable's evolution over time (trends, years).
+- **BarChart**: Excellent for comparing data between different categories or entities (e.g., countries, types of pollution, financial amounts).
+- **PieChart**: Used to show the proportion of each category relative to a whole (percentages, shares, parts of a total).
+- **ChoroplethMap**: Essential for geographical data (regional distribution, country comparison).
 
 Here is an example of the desired output format for a hypothetical document:
 ```json
@@ -40,7 +46,8 @@ Here is an example of the desired output format for a hypothetical document:
     "value": "25",
     "unit": "%",
     "context": "share of global emissions",
-    "page": 10
+    "page": 10,
+    "chart": "PieChart"
   }
 }
 
