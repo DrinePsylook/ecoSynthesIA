@@ -53,3 +53,44 @@ Here is an example of the desired output format for a hypothetical document:
 
 Document: {document_content}
 """
+
+CLASSIFICATION_SYSTEM_PROMPT = """You are an expert classification engine. Your task is to categorize the provided document based on its main focus. You must only respond with one of the predefined categories.
+"""
+
+# USER PROMPT (avec la taxonomie traduite)
+CLASSIFICATION_USER_PROMPT_TEMPLATE = """Analyze the document below and determine its primary category. 
+You must choose ONLY ONE category from the list below based on the following taxonomy and priority rules.
+
+Taxonomy:
+1. CLIMATE AND EMISSIONS: 
+   Keywords: climate change, GHG emissions, CO2, carbon, carbon footprint, IPCC. 
+   Focus: Climate data, projections, emissions reporting.
+2. BIODIVERSITY AND ECOSYSTEMS: 
+   Keywords: biodiversity, species, ecosystem, habitat, conservation, extinction, fauna, flora. 
+   Focus: Biological inventories, protected areas, ecosystem services.
+3. POLLUTION AND ENVIRONMENTAL QUALITY: 
+   Keywords: pollution, contamination, pollutants, air/water quality, waste, toxicity. 
+   Focus: Quality monitoring, contamination levels, waste management.
+4. NATURAL RESOURCES: 
+   Keywords: natural resources, exploitation, extraction, water, forests, fishing, mining, agriculture. 
+   Focus: Sustainable resource management, quotas, stocks.
+5. ENERGY AND TRANSITION: 
+   Keywords: energy, renewables, energy transition, solar, wind, energy efficiency. 
+   Focus: Energy production, infrastructures, energy mix.
+6. POLICIES AND REGULATION: 
+   Keywords: environmental policy, regulation, legislation, governance, compliance. 
+   Focus: Legal frameworks, policy effectiveness, international agreements.
+7. SOCIO-ECONOMIC IMPACT: 
+   Keywords: socio-economic impact, environmental costs, environmental justice, green jobs. 
+   Focus: Economic/social consequences of environmental issues.
+8. RISKS AND DISASTERS: 
+   Keywords: natural risks, disasters, adaptation, resilience, floods, droughts. 
+   Focus: Risk assessment, adaptation plans, disaster management.
+
+Priority Rule: Main Keywords > Thematic Focus > Document Objective.
+Constraint: The category must reflect more than 50% of the content.
+
+Your answer MUST be ONLY the name of the category (e.g., "CLIMATE AND EMISSIONS" or "BIODIVERSITY AND ECOSYSTEMS"), with no additional text, numbering, or explanation.
+
+Document: {document_content}
+"""

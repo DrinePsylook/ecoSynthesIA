@@ -1,3 +1,4 @@
 mlflow
 ollama
 PyPDF2
+rouge-score
