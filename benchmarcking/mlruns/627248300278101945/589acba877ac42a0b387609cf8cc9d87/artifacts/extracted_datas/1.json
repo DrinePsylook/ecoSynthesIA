@@ -1,0 +1,35 @@
+<think>
+</think><think>
+First, je suis un assistant expert en extraction de données, je dois extraire des faits numériques du document et les sortir en un objet JSON uniquement JSON sans aucun texte. Le but est d'extraire données de: figures de déforestation CO, quantités pollution finance, pollution, finances pourcentages, dégradation, projections comme niveau, production, nombres pays, périodes. Le JSON doit avoir clé chaque objet avec "key", "value"", "unit""context"" et "et"page""chart".chart"" Chart pour type basévolution, comparaison, barre, pour proportion, carte.
+
+Document donné doc est en français je dois analyser les données je cherche chiffres mentionnombres unités contextes.
+
+Lire: déforestation pas mentionné, pollution pas directement finance pascité finance pas dégradation mentionné non, projections pasé niveau pas précis comme, période pas non
+
+Doc parle texte pas de tableaux, pas de graphiques
+
+Je dois sortir JSON objet pour chaque donnée: par type
+
+Dans doc, pas trouvé rien à extraire, mais je peux sortir vide ou JSON vide ou attendu
+
+Doc dit "key valeurs n'y a pas, unit, contexte, etc. Ici est vide
+
+Pas d'information dans doc, donc probablement rien à extraire
+
+Je peux sort un objet JSON vide ou array vide mais l'example montre a un objet avec key valeur mais ici doc vide
+
+Mais dans doc rien donc je pense sort []
+
+Format JSON vide
+
+Je vérifie: dans doc: dégradation non pas de déforêt, pas, pas émissions, pas, pas finance, pas, pas, pas, pas, pas, pas, pas, pas, pas, pas
+
+Donc'est vide
+
+Donc output JSON vide
+
+Je peux output []
+</think>
+{
+  "data": []
+}

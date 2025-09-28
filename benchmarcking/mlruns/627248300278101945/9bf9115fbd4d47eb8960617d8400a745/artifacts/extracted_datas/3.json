@@ -1,0 +1,59 @@
+<think>
+First, je dois extraire les données clés les faits numériques et les plus importants de ce document sur le texte sur la pollution plastique. Le document semble être en français et structuré et remplit de références et déclarations et déclarations gouvernementales et politiques mais pas de données chifiques précises. chercher les nombres comme émissions ou pourcentages etc. Le but est d'extraiter dans JSON avec clé chaque point sa valeur unité contexte et type de graphique. Pas de texte supplémentaire que JSON un objet par objet avec "key"key", "value" "unit", "context"", "page" et "chart" Le graph type.
+
+Document a des types: Ligne pourévolution au tempore, bar pour comparaison catégories part pour proportion cartélation géographique.
+
+Analyser.
+
+Je scanne trouve pas de nombres clairets précis dans le document. Par ex: "20.75 tonnes" mais probablement des pages ou références mais pas claire. "57 déclarations. L'UEA pour une déclaration etc. pas un accord. "20" etc mais pas clair. Je dois ignorer tout ce non numérique.
+
+Je dois identifier les données comme texte pertinentes: émissions de pollution plastiques financés financières dégradation etc.
+
+Par exemple "Programme: "Nord des Nations pour l’environ (2 proposition exé dué une approche intégration intégration plast des déchés" mais pas précis.
+
+Je cherche valeurs.
+
+Lire les données sur les déclarations comme "plast et leur contextes micro etc. Mais pas de tonnes non.
+
+Dans l'exemple: "Voir les déclaration sur la Caraïbe sur accord pour combat plastiques micro19" mais pas valeur.
+
+Je dois extraire les déclarations comme "key"key": "Unite"" avec valeur""unit""context""page""chart"".
+
+Pas de valeurs numériques non. Donc pas les données. S'il n'y a pas de nombres pas je peux ignorer.
+
+Je vais ignorer.
+
+Par exemple le texte a: "6 Nordic declaration sur accord combat plast20" mais pas valeur non.
+
+Je peux pas extraire.
+
+Mais dans JSON vide? L'utilisateur veut des données spécifiques. Je dois extraire seulement ce qundesprésentes.
+
+Pas de données. Comme dans le document paragrapport sur laUNEA pour gestion plastiques etc.
+
+Je peux être pertinent mais pas. Je dois.
+
+Pas de valeurs.
+
+Je vais ignorer et sortir.rien car pas de données claires.
+
+Je peux extraire.
+
+Erreur: l'utilisateur veut des données numériques ou pas seulement. Je dois extraire.
+
+Je vais ne peux pas donc pas output aucun objet.
+
+Mais l'utilisateur a dit "extract data available"deforestation emissions etc" etc. pas je dois si pas dans text.
+
+Je dois seulement données numéri.
+
+Je vais sort JSON vide.
+</think>
+{
+  "data": "key": "",
+ "value": "",
+ "unit": "",
+"context": "",
+"page": "",
+"chart": ""
+}

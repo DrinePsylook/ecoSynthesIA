@@ -1,0 +1,80 @@
+<think>
+</think>
+First, ignore the user's message is clear: I'm an expert in data extraction assistant, need to extract key facts from document output only JSON. Must be single JSON no text outside. No explanations. Task is to identify numerical data like deforestation, emissions, pollution, finance, climate, rates, etc. Need to extract value, unit, context, page, chart type. Chart type. Structure JSON with keys "key", "key", "value", "unit", "context", "page", "chart". Chart types: Line for trends, bar, bar, pie, pie, map.
+
+User gave example format in query. Document is short text, not data. Need to extract from it.
+
+Scan document. Document: "un.orgun/frun-direct.org Le PN reconnaissance partners present partners for 5 years main environmental action. Mobilize key environmental action. Based on scientific public awareness, capacity build teams. Program EU possible thanks to funding from members. EU funds. Allows innovative climate change nature biodiversity pollution. Invest.
+
+No numbers. Need to extract numerical data. Document has no numbers mentioned. Like deforestation, emissions, quantities, pollution, finance, rates, etc. Only words. No units or text.
+
+Output must be JSON. But if no data found data, perhaps empty. In example output nothing.
+
+Response should be JSON object with data.
+
+User said "Extract available data if available. So if deforestation, emissions, etc. But here not available. Only text. So probably no data.
+
+Output empty JSON.
+
+But wait, check document says "provide unit, context, page, chart. But no data not available. So perhaps no page key.
+
+Perhaps output empty JSON array or something.
+
+But user said "output object per data point. But no data.
+
+Perhaps for this document no data.
+
+Best say nothing.
+
+Final response probably empty JSON or empty.
+
+But user might expect format. Perhaps an array of objects.
+
+User said "each object contain key, value, page.
+
+But no.
+
+No data.
+
+Perhaps output nothing.
+
+Document might be incomplete.
+
+Perhaps assume no data available.
+
+Output nothing.
+
+But let's think. Extract nothing.
+
+Document: no numerical data. Emissions not mentioned, no quantities, no numbers. Only text.
+
+So probably no data to extract.
+
+Output JSON.
+
+Perhaps output empty JSON array or null.
+
+But user said single object.
+
+User said output one object.
+
+Perhaps.
+
+No.
+
+Wait user said "output JSON object for each data point, but no data.
+
+No data.
+
+Probably.
+
+Perhaps output nothing.
+
+I think empty.
+
+Response.
+</think>
+{
+  "key": null,
+ "No data extracted
+}

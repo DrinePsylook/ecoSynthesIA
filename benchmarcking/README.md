@@ -26,18 +26,21 @@ Different output types require distinct evaluation metrics to measure both lingu
 
 ## Running the benchmark
 
-1 - Run Ollama Server (in a separate terminal):
+### Setup and Initialization
 
+The entire setup, model pulling, and initial execution are handled by the `start_services.sh` script to ensure environment consistency.
+Execution: Run the shell script to automatically start all services, pull models, and launch the Python benchmark.
 ```python
-    ollama serve
+    bash start_services.sh
 ```
-2 - Launch Benchmark Script (in the main terminal):
- 
+**Error Note:** If the server is already running, you will receive the "address already in use" error. Use : 
 ```python
-    python app.py
+    sudo netstat -tulnp | grep 11434 | awk '{print $7}' | cut -d/ -f1       # the number returned is the [PID]
+    sudo kill [PID]                 # Replace the [PID] with the returned number
 ```
+to terminate the previous process.
 
-3 - Accessing Results (**MLflow**) :
+### Accessing Results (**MLflow**) :
 - Launch the server: In the terminal (/benchmarking directory), run:
 ```python
     mlflow ui

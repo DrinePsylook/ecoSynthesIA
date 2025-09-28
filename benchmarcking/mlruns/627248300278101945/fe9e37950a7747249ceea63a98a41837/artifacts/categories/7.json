@@ -1,0 +1,12 @@
+<think>
+First, the user
+Okay, let's take a look at the user's query. They want me to categorize this document based on a specific taxonomy. There are seven categories like CLIMATE, BIODS, BIODS, POLLUTION, etc.etc. based on keywords and the content. Priority: main theme must be more than 50% content. So I need to pick one category only one.
+
+The document is in French, I see. Let's translate it. It talks about plastic waste, pollution, like tons of plastic waste in nature, contamination, plastic in ocean. Words like 57870% of plastic waste,5 garbage weekly. Pollution, 70 tons nature. So pollution. Key terms pollution. Probably POLLUTION category.
+
+Check others CLIMATE has climate, but no. BIODS has biodiversity, no. POLLUTION yes. POLLUTION has pollution. Yes. Pollution is third option. So matches. Energy, resources etc no. Policy no. Socio no. RISK yes risk no. No. 
+
+User said no explanation only answer category name like POLLUTION. So I'll go with that.
+</think>
+</think>
+POLLUTION

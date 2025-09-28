@@ -1,0 +1,42 @@
+<think>
+</think><think>
+First, je suis un assistant expert en extraction de données. Ma tâche de identifier des faits clés et extraire des documents. Doit un seul JSON. Sortie un objet ne pas de texte. inclure aucun texte. Le JSON. Ext extrait des points, pour chaque donnée valeur, sa unité, et le contexte et. Sortie JSON. Objectif disponible: Donn déforestation émissions quantités plastiques, pollution financières finance taux pourcentages dégradation projetions niveau, etc. par exemple niveau production nombre personnes périodes temps. Texte ou graphes ou graphes. Sort JSON format sans texte supplémentaire. Un objet par type JSON contient "valeur"unit" "context" "page" et " et "chart". "chart" Chart pour type le type basé approprié sur Définitions: Ligne pour évolution temps Lignes Bar catégories Pie partoutils Carte Carte géographie.
+
+Exemple sortie désiré.
+
+Document donné.
+
+Je dois analyser le texte fourni. Texte est en français. Il parle parle de perspectives monde, conservation, développement durable, ressources, environnement, problèmes, etc. Pas de chiffres. Aucles. Je dois trouver des données numériques. Chercher comme émissions, quantités, pourcentages, etc.
+
+Recherche dans le texte: Mention de dégradation, dégradation, émissions, objectif, etc. Mais pas précis. Pas de nombres clairs. Pas de. Je n'ai pas de données exactement.
+
+Peux extraire des données. Sinon n'y a pas de nombres. Je peux pas créer JSON.
+
+Sortie. Je dois sortir JSON vide ou seulement si aucun.
+
+Réponse: si pas de données.
+
+Donc, sort un objet vide. JSON avec des clé ou non.
+
+Dans l'exemple monsortie réponse, doit être JSON avec des objets comme {"key" valeur"unit" etc. Aucun". Iciun.
+
+Pas de ici.
+
+Donc je peux sort un objet vide. Ou peut-être un JSON vide.
+
+Peut sortir un tableau de objets mais l'instruction dit "single objet" un objet". Donc un seul JSON.
+
+Donc si aucun pas, je peux sort un objet vide.
+
+Sort JSON.
+
+Response format: {} mais si aucun.
+
+Mais l'exemple a un objet. L'utilisateur dit "json {"key": "" etc.
+
+Peut vide. ou non.
+
+Je vais sort un objet vide JSON vide.
+</think>
+{
+}
