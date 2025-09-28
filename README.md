@@ -25,3 +25,5 @@ Le projet suit une architecture modulaire pour une maintenance et un déploiemen
 **Moteur d'IA :** La logique d'IA est centralisée dans un service indépendant, utilisant LangChain et LangGraph pour orchestrer les chaînes de traitement (résumé, extraction, etc.).
 
 **Stockage :** Un système de stockage (simulé par un dossier local pour la démonstration) gère les documents source.
+
+**Benchmarking d'IA :** Evaluation du meilleur SLM (deepseek-r1, llama3.1 ou mistral) pour le résumé, l'extraction de données et la classification qui permettra de crée un dataset de test pour le modèle Machine Learning de classification

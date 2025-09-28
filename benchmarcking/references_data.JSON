@@ -12,6 +12,7 @@
         "Solutions: abandon des productions intensives, réduction gaspillage et régimes carnés",
         "Lien avec sécurité humaine et Objectifs de développement durable"
       ],
+      "reference_category":"NATURAL RESOURCES",
       "reference_numbers": {
         "degradation": {
           "period": "1998-2013",
@@ -117,6 +118,7 @@
         "Solutions: législation européenne, certification, engagements zéro déforestation, prise en compte des écosystèmes non forestiers",
         "Lien avec: droits humains, commerce international, climat et biodiversité"
       ],
+      "reference_category":"POLICIES AND REGULATION",
       "reference_numbers": {
         "deforestation_imports": {
           "period": "2005-2017",
@@ -233,6 +235,7 @@
         "Régulation des microplastiques et additifs chimiques",
         "Financement durable fondé sur le principe du pollueur-payeur"
       ],
+      "reference_category":"POLLUTION AND ENVIRONMENTAL",
       "reference_numbers": {
         "annual_plastic_waste": {
           "amount": "275",
@@ -321,6 +324,7 @@
         "Appel à réformes structurelles de l’architecture financière mondiale",
         "Importance de traiter les pertes et préjudices économiques et non économiques"
       ],
+      "reference_category":"CLIMATE AND EMISSIONS",
       "reference_numbers": {
         "adaptation_financing_gap": {
           "range": "194–366",
@@ -447,6 +451,7 @@
         "Renforcement des partenariats européens et internationaux",
         "Utilisation des nouvelles technologies, mégadonnées, IA et observation de la Terre"
       ],
+      "reference_category":"POLICIES AND REGULATION",
       "reference_numbers": {
         "data_growth": {
           "increase_factor": "×250",
@@ -520,6 +525,7 @@
         "Solutions : sortie progressive des fossiles, énergies renouvelables, efficacité énergétique",
         "Importance des financements et réformes structurelles"
       ],
+      "reference_category":"CLIMATE AND EMISSIONS",
       "reference_numbers": {
         "current_policies_temperature": {
           "projection": "≈ 3",
@@ -624,6 +630,7 @@
         "Conséquences environnementales (faune, écosystèmes) et économiques",
         "Appel à un traité international contraignant sur la pollution plastique"
       ],
+      "reference_category":"POLLUTION AND ENVIRONMENTAL QUALITY",
       "reference_numbers": {
         "weekly_plastic_ingestion": {
           "value": "5",
@@ -726,6 +733,7 @@
         "Impacts écologiques et menaces sur la biodiversité polaire",
         "Recommandations stratégiques : surveillance, réduction des émissions, adaptation côtière, corridors de protection"
       ],
+      "reference_category":"CLIMATE AND EMISSIONS",
       "reference_numbers": {
         "annual_loss": {
           "arctic": {
