@@ -1,0 +1,14 @@
+artifact_uri: file:///var/www/html/ecoSynthesIA/benchmarcking/mlruns/627248300278101945/9bf9115fbd4d47eb8960617d8400a745/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '627248300278101945'
+lifecycle_stage: active
+run_id: 9bf9115fbd4d47eb8960617d8400a745
+run_name: deepseek-r1
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1759084468898
+status: 1
+tags: []
+user_id: psyia

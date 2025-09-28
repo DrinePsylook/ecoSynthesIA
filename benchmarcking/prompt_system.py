@@ -41,15 +41,15 @@ The "chart" key must contain the most appropriate visualization type for the ext
 
 Here is an example of the desired output format for a hypothetical document:
 ```json
-{
-  "key_data_name": {
-    "value": "25",
-    "unit": "%",
-    "context": "share of global emissions",
-    "page": 10,
-    "chart": "PieChart"
-  }
-}
+{{
+  "key_data_name": {{
+    "value": "25",
+    "unit": "%",
+    "context": "share of global emissions",
+    "page": 10,
+    "chart": "PieChart"
+  }}
+}}
 
 Document: {document_content}
 """

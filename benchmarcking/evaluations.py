@@ -56,8 +56,12 @@ def normalize_data_keys(data_dict):
     """
     normalized_set = set()
 
+    if not isinstance(data_dict, dict):
+        print(f"Warning: Expected dict but got {type(data_dict)}: {data_dict}")
+        return normalized_set
+
     # Browse the extracted data (primary key: "key_data_name")
-    for key, item in  data_dict.items():
+    for key, item in data_dict.items():
         if isinstance(item, dict):
             # Normalizes the value and unit to lowercase, without spaces (context is too variable)
             value = str(item.get('value', '')).strip().lower()

@@ -1,0 +1,14 @@
+artifact_uri: file:///var/www/html/ecoSynthesIA/benchmarcking/mlruns/627248300278101945/04018778840743aa8acddc33eb1dc216/artifacts
+end_time: 1759083628676
+entry_point_name: ''
+experiment_id: '627248300278101945'
+lifecycle_stage: active
+run_id: 04018778840743aa8acddc33eb1dc216
+run_name: llama3.1
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1759083510350
+status: 4
+tags: []
+user_id: psyia
