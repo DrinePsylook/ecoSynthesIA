@@ -1,6 +1,6 @@
 # Storage folder
 bucket/
-
+mlruns/
 reports/
 
 # Node.js/TypeScript
