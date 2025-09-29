@@ -50,18 +50,28 @@ def safe_json_parse(json_string):
     except json.JSONDecodeError:
         return None
     
-def normalize_data_keys(data_dict):
+def normalize_data_keys(data_dict_or_list):
     """
     Creates a normalized set of key-value pairs for comparison.
     """
     normalized_set = set()
 
-    if not isinstance(data_dict, dict):
-        print(f"Warning: Expected dict but got {type(data_dict)}: {data_dict}")
+    # 1. Normalize the input : if list -> flat dict 
+    if isinstance(data_dict_or_list, list):
+        data_to_iterate = {}
+        for item in data_dict_or_list:
+            # If each element is a dict, take its only key:value (e.g. :"key_data_name": {...})
+            if isinstance(item, dict) and len(item) == 1:
+                data_to_iterate.update(item)
+            # Else flat object list -> adaptation 
+    elif isinstance(data_dict_or_list, dict):
+        data_to_iterate = data_dict_or_list
+    else:
+        # unmanaged case (neither list nor dict)
         return normalized_set
 
     # Browse the extracted data (primary key: "key_data_name")
-    for key, item in data_dict.items():
+    for key, item in data_to_iterate.items():
         if isinstance(item, dict):
             # Normalizes the value and unit to lowercase, without spaces (context is too variable)
             value = str(item.get('value', '')).strip().lower()
