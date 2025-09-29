@@ -5,7 +5,7 @@ SUMMARY_SYSTEM_PROMPT = """You are a highly skilled environmental analyst. Your 
 """
 
 # `user_prompt` for instructions and document content
-SUMMARY_USER_PROMPT_TEMPLATE = """Please provide a summary of the following document in French. The summary must be a single paragraph, no longer than 200 words, and cover the following key aspects:
+SUMMARY_USER_PROMPT_TEMPLATE = """Please provide a summary of the following document in French. The summary must be a single paragraph, no longer than 400 words, and cover the following key aspects:
 - Main causes or factors of the described problems.
 - Consequences or impacts (environmental, social, economic).
 - Solutions, strategies, or recommendations.
@@ -50,6 +50,8 @@ Here is an example of the desired output format for a hypothetical document:
     "chart": "PieChart"
   }}
 }}
+
+Your response MUST be a single, flat JSON object (a dictionary) where each key is the unique name of a data point. Do NOT return a list of objects.
 
 Document: {document_content}
 """

@@ -88,7 +88,7 @@ def run_full_benchmark():
 
                 # 3 - Document classification
                 print("   -> APPEL 3/3: Classification...")
-                classification_user_prompt = CLASSIFICATION_USER_PROMPT_TEMPLATE.format(document_content=document_content)
+                classification_user_prompt = CLASSIFICATION_USER_PROMPT_TEMPLATE.format(document_content=generated_summary)
                 classification_response = ollama.chat(
                     model=model_name,
                     messages=[
