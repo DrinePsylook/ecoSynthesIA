@@ -7,9 +7,54 @@ from prompt_system import (
     CLASSIFICATION_SYSTEM_PROMPT, CLASSIFICATION_USER_PROMPT_TEMPLATE
 )
 from data_extraction import load_references_titles, extract_text_from_report
-from evaluations import evaluate_summary, evaluate_data_extraction, evaluate_category
+from evaluations import evaluate_summary, evaluate_data_extraction, evaluate_category, safe_json_parse, normalize_data_keys
 
 MODELS_TO_TEST = ["deepseek-r1", "llama3.1", "mistral"]
+
+def record_json_output(extracted_data, model_name, doc_id):
+    diagnostic_data = []
+
+    # 1. Utiliser le parseur pour obtenir l'objet Python (dict ou list)
+    generated_object = safe_json_parse(extracted_data)
+
+    if generated_object:
+        # 2. Utiliser le normalisateur pour obtenir l'ensemble des "faits"
+        normalized_facts = normalize_data_keys(generated_object)
+        
+        # 3. Transformer les faits en lignes de DataFrame
+        for key, value, unit in normalized_facts:
+            diagnostic_data.append({
+                'Model': model_name,
+                'Doc_ID': doc_id,
+                'Key': key,
+                'Value': value,
+                'Unit': unit,
+                'Parsed_Successfully': True
+            })
+    else:
+        # Cas où le parsing a échoué (F1 = 0.0)
+        diagnostic_data.append({
+            'Model': model_name,
+            'Doc_ID': doc_id,
+            # Ajout du résultat brut pour inspection
+            'Raw_Output_Snippet': extracted_data[:500].replace('\n', ' ').replace('\r', ''),
+            'Parsed_Successfully': False
+        })
+
+
+    # 4. Ajouter les données à un fichier JSON de diagnostic global
+    df_temp = pd.DataFrame(diagnostic_data)
+
+    json_file = "diagnostic_extraction.jsonl" # Utilisation du format JSON Lines
+    if not os.path.exists(json_file):
+        # Mode 'w' crée le fichier et l'en-tête (une ligne JSON par enregistrement)
+        df_temp.to_json(json_file, orient='records', lines=True, force_ascii=False)
+    else:
+        # Mode 'a' ajoute les enregistrements à la suite
+        df_temp.to_json(json_file, mode='a', orient='records', lines=True, force_ascii=False, header=False)
+
+
+    print(f"   -> Diagnostic des données extrait ajouté au fichier : {json_file}")
 
 def run_full_benchmark():
     """
@@ -78,6 +123,7 @@ def run_full_benchmark():
                 )
                 extracted_data = extraction_response['message']['content']
                 print("   -> FIN APPEL 2/3: Données extraites.")
+                record_json_output(extracted_data, model_name, document_id)
                 reference_numbers= document_metadata.get('reference_numbers', {})
 
                 # Data extraction evaluation

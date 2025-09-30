@@ -17,8 +17,9 @@ Document: {document_content}
 
 # Prompt for data extraction
 # Utilisation: `system_prompt` pour le rôle de l'IA,
-DATA_EXTRACTION_SYSTEM_PROMPT = """You are an expert data extraction assistant. Your task is to identify and extract key numerical data and facts from a document. The output must be a single JSON object. Do not include any text outside the JSON.
+DATA_EXTRACTION_SYSTEM_PROMPT = """You are an expert data extraction agent. Your task is to extract factual data into a precise JSON format.
 """
+
 # `user_prompt` for instructions and document content
 DATA_EXTRACTION_USER_PROMPT_TEMPLATE = """Extract key data from the following document. For each data point, provide its value, unit, and context. The output must be a valid JSON object.
 Your goal is to extract the following data, if available:
@@ -30,6 +31,12 @@ Your goal is to extract the following data, if available:
 - Number of people, species, or countries affected.
 - Temporal data (periods, specific years).
 Data can be un text, in tables, or in graphs.
+
+--- OUTPUT INSTRUCTIONS ---
+1. Your response MUST contain ONLY the valid JSON object.
+2. DO NOT include any text, commentary, or explanation before or after the JSON object.
+3. DO NOT wrap the output in markdown fences (```json...```). Output the JSON directly.
+4. The output must be a single Python dictionary (object), NOT a list.
 
 Structure your response in JSON format, without additional explanatory text. Use one JSON object per type of extracted data. Each object must contain the keys "value", "unit", "context", "page" where you find the information and "chart".
 
