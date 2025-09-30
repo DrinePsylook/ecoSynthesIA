@@ -33,13 +33,14 @@ Data can be found in text, tables, or graphs.
 
 --- STRUCTURAL & CONTENT RULES ---
 1. **Schema Adherence:** You MUST strictly adhere to the provided JSON schema (Pydantic class).
-2. **"chart" Field Logic:** For the "chart" field, use the most appropriate visualization type based on these definitions:
+2. **Page Number:** You MUST extract the **page number** where the data was found and place it in the 'page' field. If the page number is not explicitly available in the chunk, use 'unknown'.
+3. **"chart" Field Logic:** For the "chart" field, use the most appropriate visualization type based on these definitions:
     - LineChart: Best for showing a variable's evolution over time (trends, years).
     - BarChart: Excellent for comparing data between different categories or entities.
     - PieChart: Used to show the proportion of each category relative to a whole (percentages, shares).
     - ChoroplethMap: Essential for geographical data.
-3. **If Data Is Missing:** If a fact requested in the schema cannot be found, set the 'value' field to "data not provided". DO NOT leave any field blank unless the context is genuinely missing.
-4. **No Explanation:** Output ONLY the structured data.
+4. **If Data Is Missing:** If a fact requested in the schema cannot be found, set the 'value' field to "data not provided". DO NOT leave any field blank unless the context is genuinely missing.
+5. **No Explanation:** Output ONLY the structured data.
 """
 
 # `user_prompt` for instructions and document content

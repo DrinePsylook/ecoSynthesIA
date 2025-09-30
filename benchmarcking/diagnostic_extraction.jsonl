@@ -138,3 +138,42 @@
 {"Model":"Mistral:latest","Doc_ID":"5","Key":"projections","Value":"temperature increase of 2°c by 2050","Unit":"°c","Parsed_Successfully":true}
 {"Model":"Mistral:latest","Doc_ID":"5","Key":"temporal_data","Value":"2021","Unit":"year","Parsed_Successfully":true}
 {"Model":"Mistral:latest","Doc_ID":"5","Key":"land_degradation","Value":"10%","Unit":"%","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"1","Raw_Output_Snippet":"{}","Parsed_Successfully":false}
+{"Model":"mistral:latest","Doc_ID":"1","Key":"temporal_data","Value":"next decades","Unit":"years","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"1","Key":"projections","Value":"temperature, sea level, plastic production","Unit":"","Parsed_Successfully":true}
+
+{"Model":"mistral:latest","Doc_ID":"3","Key":"projections","Value":"data provided","Unit":"","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"3","Key":"agreements","Value":"data provided","Unit":"","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"3","Key":"plastic_pollution","Value":"data provided","Unit":"","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"3","Key":"climate_finance","Value":"data provided","Unit":"$","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"4","Key":"climate_finance","Value":"$10.5 billion","Unit":"$","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"4","Key":"projections","Value":"1.5°c temperature increase by 2030 and a sea level rise of 1 meter by 2100","Unit":"","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"4","Key":"affected_entities","Value":"1.5 billion people, 75% of all species, and 60 countries","Unit":"","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"4","Key":"temporal_data","Value":"2030 for temperature increase projection and 2100 for sea level rise projection","Unit":"","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"4","Key":"land_degradation","Value":"3.2 million hectares","Unit":"hectares","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"5","Key":"climate_finance","Value":"€3.5 billion","Unit":"euros","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"5","Key":"plastic_pollution","Value":"150,000 tonnes","Unit":"tonnes","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"5","Key":"affected_entities","Value":"1.5 million people","Unit":"","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"5","Key":"land_degradation","Value":"10%","Unit":"%","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"5","Key":"temporal_data","Value":"2021","Unit":"year","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"5","Key":"projections","Value":"temperature increase of 2°c by 2050","Unit":"°c","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"6","Key":"climate_finance","Value":"contributions souples versées par les états membres et d’autres partenaires au fonds pour l’environnement et aux fonds planétaires du pnue","Unit":"currency not specified","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"6","Key":"projections","Value":"changes climatiques, la perte de la nature et de la biodiversité, la pollution et les déchets","Unit":"not specified","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"6","Key":"temporal_data","Value":"plus de 50 ans","Unit":"years","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"7","Key":"plastic_pollution_quantity","Value":"100 millions (tonnes)","Unit":"tonnes","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"7","Key":"plastic_pollution_percentage","Value":"87%","Unit":"%","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"7","Key":"temporal_data","Value":"2016","Unit":"year","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"7","Key":"projections","Value":"where will the plastics go?","Unit":"","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"8","Key":"projections","Value":"15 to 22 cm sea level rise by 2050","Unit":"cm","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"8","Key":"temporal_data","Value":"2020-2021 to 2023-2024","Unit":"","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"8","Key":"land_degradation","Value":"31%","Unit":"%","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"8","Key":"chart_type","Value":"linechart","Unit":"","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"8","Key":"affected_populations","Value":"worldwide coastal populations","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1:latestdeepseek-r1:latest","Doc_ID":"1","Raw_Output_Snippet":"{}","Parsed_Successfully":false}
+{"Model":"llama3.1:latestdeepseek-r1:latest","Doc_ID":"2","Raw_Output_Snippet":"{}","Parsed_Successfully":false}
+{"Model":"llama3.1:latestdeepseek-r1:latest","Doc_ID":"3","Raw_Output_Snippet":"{}","Parsed_Successfully":false}
+{"Model":"llama3.1:latestdeepseek-r1:latest","Doc_ID":"4","Raw_Output_Snippet":"{}","Parsed_Successfully":false}
+{"Model":"llama3.1:latestdeepseek-r1:latest","Doc_ID":"5","Raw_Output_Snippet":"{}","Parsed_Successfully":false}
+{"Model":"llama3.1:latestdeepseek-r1:latest","Doc_ID":"6","Raw_Output_Snippet":"{}","Parsed_Successfully":false}
+{"Model":"llama3.1:latestdeepseek-r1:latest","Doc_ID":"7","Raw_Output_Snippet":"{}","Parsed_Successfully":false}
+{"Model":"llama3.1:latestdeepseek-r1:latest","Doc_ID":"8","Raw_Output_Snippet":"{}","Parsed_Successfully":false}

@@ -13,8 +13,8 @@ from pipeline.chaining import get_data_extraction_chain, get_classification_chai
 from pipeline.schemas import DataExtraction, ClassificationResult
 
 MODELS_TO_TEST = [
-    'Mistral:latest', 
-    'llama3.1:latest' 
+    'mistral:latest', 
+    'llama3.1:latest', 
     'deepseek-r1:latest' # is excluded as planned
 ]
 
