@@ -59,17 +59,29 @@ def run_full_benchmark():
                 # 1 - Launch summary
                 print("   -> APPEL 1/3: Génération du Résumé...")
                 summary_user_prompt = SUMMARY_USER_PROMPT_TEMPLATE.format(document_content=document_content)
-                summary_response = ollama.chat(
-                    model=model_name,
-                    messages=[
-                        {"role": "system", "content": SUMMARY_SYSTEM_PROMPT},
-                        {"role": "user", "content": summary_user_prompt}
-                    ]
-                )
-                generated_summary = summary_response['message']['content'] 
-                print("   -> FIN APPEL 1/3: Résumé généré.")
-                reference_summary = document_metadata['reference_summary'] # Retrieving the reference 
+                summary_latency = -1.0
+                
+                try:
+                    start_time = time.time()
+                    summary_response = ollama.chat(
+                        model=model_name,
+                        messages=[
+                            {"role": "system", "content": SUMMARY_SYSTEM_PROMPT},
+                            {"role": "user", "content": summary_user_prompt}
+                        ]
+                    )
+                    end_time = time.time()
+                    summary_latency = end_time - start_time
+                
+                    generated_summary = summary_response['message']['content'] 
+                except Exception as e:
+                    print(f"ERROR: Résumé échoué: {e}")
+                    generated_summary = "ERROR: Résumé non généré"
+                
+                mlflow.log_metric(f"latency_summary_doc_{document_id}", summary_latency)
+                print("   -> FIN APPEL 1/3: Résumé généré.")
 
+                reference_summary = document_metadata['reference_summary'] # Retrieving the reference 
                 # Summary Evaluation
                 summary_scores = evaluate_summary(generated_summary, reference_summary)
 
@@ -78,14 +90,18 @@ def run_full_benchmark():
 
                 # 2 - Launch data extraction
                 print("   -> APPEL 2/3: Extraction des Données...")
+                extraction_latency = -1.0
+                
                 try: 
+                    start_time = time.time()
                     extracted_data_output = extraction_chain.invoke({"text_chunk": document_content})
+                    extraction_latency = time.time() - start_time
+
+                    data_to_serialize = extracted_data_output
+
                     if isinstance(extracted_data_output, DataExtraction):
-                        data_to_serialize = extracted_data_output.model_dump()
-                        
-                    # --- ÉTAPE 2 : Vérification Finale et Sérialisation ---
+                        data_to_serialize = extracted_data_output.model_dump()                        
                     if not isinstance(data_to_serialize, dict):
-                        # Si après conversion (ou sans conversion) ce n'est toujours pas un dict, c'est une erreur.
                         raise ValueError(f"Type inattendu même après conversion : {type(extracted_data_output)}")
 
                     # Sérialisation finale
@@ -97,6 +113,7 @@ def run_full_benchmark():
                     print(f"ERROR: LangChain Extraction Failed: {e}")
                     extracted_data = "{}" # Return empty json for evaluation
 
+                mlflow.log_metric(f"latency_extraction_doc_{document_id}", extraction_latency)
                 record_json_output(extracted_data, model_name, document_id)
                 reference_numbers = document_metadata.get('reference_numbers', {})
 
@@ -109,9 +126,12 @@ def run_full_benchmark():
                 # 3 - Document classification
                 print("   -> APPEL 3/3: Classification...")
                 summary_to_classify = generated_summary if 'generated_summary' in locals() else document_content[:1000]  # Fallback to document content if summary not generated
+                classification_latency = -1.0
                 try:
+                    start_time = time.time()
                     # 1. Invoke the Langchain chain for classification
                     classification_output = classification_chain.invoke({"summary_text": summary_to_classify})
+                    classification_latency = time.time() - start_time
 
                     # 2. Handle the output, which should be an instance of ClassificationResult
                     from pipeline.schemas import ClassificationResult
@@ -128,9 +148,10 @@ def run_full_benchmark():
                     print(f"ERROR: LangChain Classification Failed: {e}")
                     generated_category = "ERROR_CLASSIFICATION" # Default value in case of error
 
+                mlflow.log_metric(f"latency_classification_doc_{document_id}", classification_latency)
                 print("   -> FIN APPEL 3/3: Classification terminée.")
-                reference_category = document_metadata.get('reference_category', 'UNDEFINED')
 
+                reference_category = document_metadata.get('reference_category', 'UNDEFINED')
                 # Category evaluation
                 category_score = evaluate_category(generated_category, reference_category)
 
