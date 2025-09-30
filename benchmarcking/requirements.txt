@@ -1,4 +1,7 @@
+langchain
+langchain-ollama
 mlflow
 ollama
+pydantic
 PyPDF2
 rouge-score
