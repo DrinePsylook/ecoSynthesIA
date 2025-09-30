@@ -1,1 +1,140 @@
 {"Model":"deepseek-r1","Doc_ID":"1","Raw_Output_Snippet":"<think> <\/think> First, I am considering the user's query. They want me to extract specific data from a document into JSON format. The document is given, and output only JSON no text or explanation. Must be valid JSON object, direct. Structure is single dictionary with keys for each data point, value unit context and chart type.  Key must be unique. Document is in French text, I need to parse it.  The document is about perspectives on environmental issues like resources, transformation, consumpt","Parsed_Successfully":false}
+{"Model":"deepseek-r1","Doc_ID":"1","Raw_Output_Snippet":"<think> <\/think><think> First, je suis un expert en extraction de données et dois extraire des faits en JSON précis. La tels que la consigne du document donné pour chaque point, sa valeur, unité, contexte, et sortie un objet JSON valide. Seule. objectifut être un diction avec clé \"key\" et \"context\" et \"page\" avec le type de graphique.  Instructions: Line pour les types de graphiques: Line pour tendances temporevolution au fil du temps, Bar pour comparer catégories Bar entre, Pie pour parts, Pie,","Parsed_Successfully":false}
+{"Model":"deepseek-r1","Doc_ID":"2","Raw_Output_Snippet":"<think> First, I'm an expert at extracting data from this document, I must create a JSON response only JSON output with no extra text. The goal is to extract specific data like deforestation, CO emissions, pollution, finance, climate, etc. I need to find key, value unit and context and chart type.  Document says Line for trends, Bar, Pie, Bar, Pie, Map etc based on data.  Document looks messy with symbols like gibberish text \"©21009,0\" probably typo or something maybe year. \"2060% recycled maybe","Parsed_Successfully":false}
+{"Model":"deepseek-r1","Doc_ID":"3","Raw_Output_Snippet":"<think> First, je dois extraire les données claires de l'utilisateur, valeurs, unités et contexte et contexte en JSON. La réponse doit être un objet valide uniquement JSON. Seules données à extraire: déforestionations, quantités de CO pollutions financières liées finances taux de dégradation taux projections périodes (eaux niveaux de production nombres de pays périodes temps Texte données peuvent être dans tableaux ou graphiques SORTIR MUST JSON valide UN OBJET SEULEMENT pas de texte ou commenta","Parsed_Successfully":false}
+{"Model":"deepseek-r1","Doc_ID":"4","Raw_Output_Snippet":"<think> The provided document content is actually appears to be metadata or contact information, not relevant to the content. But let's assume it's a typo or placeholder. The user meant to extract from a document. Since no data here. Perhaps user provided, no data to extract. But user said \"For example, let's say, if there was no data, output empty JSON object. But task says \"No data found data found\" But format not. But task says output JSON only one object. Perhaps an object. So maybe empty di","Parsed_Successfully":false}
+{"Model":"deepseek-r1","Doc_ID":"5","Raw_Output_Snippet":"<think> We are an expert data agents designed to extract factual data from documents and convert it into JSON format. We must be precise. The user gave instructions are clear: extract data from document, output JSON with key value unit context and context, and chart type. Only output JSON no text or explanation. Goal is deforestation, emissions, pollution, finance, finance, climate, land degradation, plastic, sea, temperature, people, production, countries, species, periods, years. Chart types l","Parsed_Successfully":false}
+{"Model":"deepseek-r1","Doc_ID":"6","Raw_Output_Snippet":"<think> First, ignore First, the user's message is in French, but I understand English. Task is clear: Extract data into JSON format. Extract from document, key, value, unit, context, and chart type. Output only JSON object. No text or explanation.  Goal is specific data: deforestation, emissions, pollution, finance, climate, etc. Chart types: line for trends, bar, pie, etc. Document is short text, I need to extract.  Document content: \"www.fr.un.org\/unep-direct.org communication says about part","Parsed_Successfully":false}
+{"Model":"deepseek-r1","Doc_ID":"7","Raw_Output_Snippet":"<think> First, I'm receiving this is a query as an extraction task to extract data from a document and format JSON, specifically about environmental topics like deforestation, emissions, plastic, pollution, finance, etc., climate rates, and output only valid JSON. User said no text or explanation, just the JSON.  The format must be a dictionary with keys \"key\", \"value\", \"unit\", \"context\", and \"chart\"page\" and no lists or something else.  Looking at example given format, it's like {\"key\": \"\": \"\",","Parsed_Successfully":false}
+{"Model":"llama3.1","Doc_ID":"1","Key":"peopleaffectedbyclimatechange","Value":"3.2 billion","Unit":"people\/year","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"1","Key":"landdegradationrate","Value":"none","Unit":"%\/yr","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"1","Key":"sealevelriseprojection","Value":"+26 cm","Unit":"cm above 1986-2005 average sea level by 2050","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"1","Key":"speciesatriskduetodeforestation","Value":"25%","Unit":"% of species at risk due to deforestation","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"1","Key":"climatefinanceamount","Value":"$1.7 trillion","Unit":"$\/year","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"1","Key":"deforestationrate","Value":"none","Unit":"%","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"1","Key":"temperatureprojection","Value":"+3.2°c","Unit":"°c above pre-industrial levels by 2100","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"1","Key":"countriesaffectedbyclimatechange","Value":"160","Unit":"# countries\/year","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"1","Key":"plasticpollutionquantity","Value":"none","Unit":"m tons\/year","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"1","Key":"co2emissions","Value":"none","Unit":"gtco2-eq\/yr","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"2","Raw_Output_Snippet":"{   \"deforestation_rate\": {     \"value\": null,     \"unit\": \"\",     \"context\": \"rate of deforestation\",     \"page\": 7,     \"chart\": \"LineChart\"   },   \"co2_emissions\": {     \"value\": null,     \"unit\": \"Mt CO2-eq\",     \"context\": \"global greenhouse gas emissions\",     \"page\": 7,     \"chart\": \"BarChart\"   },   \"plastic_pollution_quantity\": {     \"value\": null,     \"unit\": \"tons\/year\",     \"context\": \"amount of plastic pollution in oceans\",     \"page\": 7,     \"chart\": \"LineChart\"   },   \"climate_fin","Parsed_Successfully":false}
+{"Model":"llama3.1","Doc_ID":"3","Key":"new_circular_economy_action_plan_for_a_cleaner_and_more_competitive_europe","Value":"none","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"3","Key":"co2_emissions","Value":"none","Unit":"tonnes co2e\/year","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"3","Key":"deforestation_rate","Value":"none","Unit":"%","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"3","Key":"fueling_plastics","Value":"$1.3 trillion","Unit":"usd\/year","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"3","Key":"marine_debris_and_microplastics","Value":"none","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"3","Key":"airborne_microplastics","Value":"none","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"3","Key":"plastic_waste_input_into_ocean","Value":"8 million tonnes","Unit":"tonnes\/year","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"3","Key":"seafloor_microplastic_hotspots","Value":"none","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"3","Key":"ministerial_declaration_on_marine_plastic_litter_and_microplastics","Value":"none","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"3","Key":"microplastics_in_snow","Value":"none","Unit":"%","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"3","Key":"valuing_plastics","Value":"$40 billion","Unit":"usd\/year","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"3","Key":"plastic_use_in_consumer_goods_industry","Value":"$40 billion","Unit":"usd\/year","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"3","Key":"global_agreement_to_combat_marine_plastic_litter_and_microplastics","Value":"none","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"3","Key":"new_convention_on_plastic_pollution","Value":"none","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"3","Key":"combating_marine_plastic_litter_and_microplastics","Value":"none","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"3","Key":"marine_plastic_litter_and_microplastics_global_lessons","Value":"none","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"3","Key":"plastic_boom","Value":"none","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"4","Raw_Output_Snippet":"{   \"deforestation_rate\": {     \"value\": \"13 million hectares\",     \"unit\": \"\",     \"context\": \"lost forest area between 1990 and 2015\",     \"page\": 12,     \"chart\": \"BarChart\"   },   \"co2_emissions_increase\": {     \"value\": \"42%\",     \"unit\": \"%\",     \"context\": \"increase in global CO2 emissions between 1990 and 2017\",     \"page\": 13,     \"chart\": \"LineChart\"   },   \"plastic_pollution\": {     \"value\": \"8 million tons\",     \"unit\": \"\",     \"context\": \"amount of plastic waste entering the oceans ","Parsed_Successfully":false}
+{"Model":"llama3.1","Doc_ID":"5","Raw_Output_Snippet":"{   \"deforestation_rate\": {     \"value\": \"12%\",     \"unit\": \"\",     \"context\": \"average annual rate of deforestation\",     \"page\": 12,     \"chart\": \"LineChart\"   },   \"plastic_pollution_quantity\": {     \"value\": \"8 million tons\",     \"unit\": \"\",     \"context\": \"annual plastic pollution amount in oceans\",     \"page\": 17,     \"chart\": \"BarChart\"   },   \"climate_finance_amount\": {     \"value\": \"$100 billion\",     \"unit\": \"\",     \"context\": \"annual climate finance mobilization\",     \"page\": 23,     ","Parsed_Successfully":false}
+{"Model":"llama3.1","Doc_ID":"6","Key":"plastic_pollution_amount","Value":"300 million","Unit":"tons","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"6","Key":"species_affected","Value":"1 million","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"6","Key":"climate_finance_amount","Value":"0.5","Unit":"% gdp","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"6","Key":"deforestation_rate","Value":"0","Unit":"%","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"6","Key":"sea_level_projection","Value":"26 cm","Unit":"by 2050 and 43-110 cm by 2100","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"6","Key":"land_degradation_rate","Value":"25%","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"6","Key":"co2_emissions","Value":"1.5","Unit":"g co2 eq\/capita\/year","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"6","Key":"temperature_projection","Value":"2-4°c","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"6","Key":"people_affected","Value":"7.3 billion","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1","Doc_ID":"7","Raw_Output_Snippet":"{   \"plastic_ingestion_per_person\": {     \"value\": \"5\",     \"unit\": \"grams\",     \"context\": \"average weekly plastic ingestion per person\",     \"page\": 16,     \"chart\": \"BarChart\"   },   \"percentage_of_waste_entering_nature\": {     \"value\": \"87\",     \"unit\": \"%\",     \"context\": \"proportion of mismanaged waste entering the environment\",     \"page\": 16,     \"chart\": \"PieChart\"   },   \"total_plastic_debris_entered_into_nature_2016\": {     \"value\": \"100\",     \"unit\": \"millions of tonnes\",     \"contex","Parsed_Successfully":false}
+{"Model":"llama3.1","Doc_ID":"8","Raw_Output_Snippet":"{   \"glacier_coverage_loss\": {     \"value\": 1.2,     \"unit\": \"million km²\",     \"context\": \"rate of glacial area reduction in the Arctic\",     \"page\": 2,     \"chart\": \"LineChart\"   },   \"sea_level_rise_projection\": {     \"value\": 15-22,     \"unit\": \"cm\",     \"context\": \"projected sea level rise by 2050\",     \"page\": 2,     \"chart\": \"BarChart\"   },   \"glacier_coverage_loss_rate_2020\": {     \"value\": 0.9,     \"unit\": \"million km²\/year\",     \"context\": \"rate of glacial area reduction in the Arctic ","Parsed_Successfully":false}
+{"Model":"Mistral:latest","Doc_ID":"1","Key":"quantities of plastic pollution","Value":"data not provided","Unit":"","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"1","Key":"temporal data (periods, specific years)","Value":"data not provided","Unit":"","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"1","Key":"projections (e.g., temperature, sea level, plastic production)","Value":"data not provided","Unit":"","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"1","Key":"rates and percentages of land degradation","Value":"data not provided","Unit":"%","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"1","Key":"financial amounts related to climate finance","Value":"data not provided","Unit":"$","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"1","Key":"number of people, species, or countries affected","Value":"data not provided","Unit":"","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"1","Key":"deforestation and co2 emissions","Value":"data not provided","Unit":"","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"2","Key":"rates and percentages of land degradation","Value":"3.6 billion hectares","Unit":"hectares","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"2","Key":"temporal data (periods, specific years)","Value":"[1950, 2016, 2018, 2020, 2015, 2100]","Unit":"year","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"2","Key":"financial amounts related to climate finance","Value":"$79.6 billion","Unit":"us dollars","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"2","Key":"projections (e.g., temperature, sea level, plastic production)","Value":"2.7°c","Unit":"°c","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"2","Key":"deforestation and co2 emissions","Value":"18.7 gt co2","Unit":"gigatons of carbon dioxide","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"2","Key":"number of people affected","Value":"1.5 billion","Unit":"people","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"2","Key":"quantities of plastic pollution","Value":"8.3 billion metric tons","Unit":"metric tons","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"3","Key":"financial mechanism for plastic pollution management","Value":"none","Unit":"none","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"3","Key":"quantities of plastic pollution","Value":"8 million tons per year","Unit":"metric tons","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"3","Key":"deforestation and co2 emissions","Value":"none","Unit":"none","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"4","Raw_Output_Snippet":" ```json {   \"Deforestation and CO2 emissions\": {     \"value\": \"18.7 GtCO2e\",     \"unit\": \"Gigatonnes of Carbon Dioxide equivalent\",     \"context\": \"annual global deforestation carbon emission\",     \"page\": 12,     \"chart\": \"LineChart\"   },   \"Plastic pollution\": {     \"value\": \"8 million tons\",     \"unit\": \"metric tons\",     \"context\": \"annual plastic waste entering oceans\",     \"page\": 12,     \"chart\": \"BarChart\"   },   \"Climate finance amounts\": {     \"value\": \"$100 billion\",     \"unit\": \"US ","Parsed_Successfully":false}
+{"Model":"Mistral:latest","Doc_ID":"5","Key":"rates and percentages of land degradation","Value":"3.6 billion hectares","Unit":"hectares","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"5","Key":"temporal data (periods, specific years)","Value":"2010-2050","Unit":"years","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"5","Key":"deforestation and co2 emissions","Value":"4.7 gtco2","Unit":"gigatonnes of carbon dioxide","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"5","Key":"projections (e.g., temperature, sea level, plastic production)","Value":"1.5°c","Unit":"degrees celsius","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"5","Key":"quantities of plastic pollution","Value":"8 million tons","Unit":"metric tons","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"5","Key":"number of people affected","Value":"1.5 billion","Unit":"people","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"5","Key":"financial amounts related to climate finance","Value":"100 billion usd","Unit":"united states dollars","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"6","Key":"sea level projections","Value":"not specified","Unit":"meters","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"6","Key":"deforestation co2 emissions","Value":"not specified","Unit":"million metric tons","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"6","Key":"species affected","Value":"not specified","Unit":"number","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"6","Key":"plastic production projections","Value":"not specified","Unit":"million metric tons","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"6","Key":"land degradation rates","Value":"not specified","Unit":"%","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"6","Key":"climate finance","Value":"not specified","Unit":"$","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"6","Key":"plastic pollution quantities","Value":"not specified","Unit":"million metric tons","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"6","Key":"people affected","Value":"not specified","Unit":"number","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"6","Key":"temperature projections","Value":"not specified","Unit":"°c","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"7","Key":"rates and percentages of land degradation","Value":"87%","Unit":"%","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"7","Key":"financial amounts related to climate finance","Value":"not available","Unit":"","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"7","Key":"number of people, species, or countries affected","Value":"not available","Unit":"","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"7","Key":"deforestation and co2 emissions","Value":"not available","Unit":"","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"7","Key":"quantities of plastic pollution","Value":"100","Unit":"millions of tonnes","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"7","Key":"temporal data (periods, specific years)","Value":"['2016']","Unit":"","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"7","Key":"projections (e.g., temperature, sea level, plastic production)","Value":"not available","Unit":"","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"8","Key":"plastic_pollution","Value":"50 million tons","Unit":"tons","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"8","Key":"people_affected","Value":"not available","Unit":"number of people","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"8","Key":"countries_affected","Value":"not available","Unit":"number of countries","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"8","Key":"land_degradation_rates","Value":"31%","Unit":"%","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"8","Key":"projections","Value":"15-22 cm","Unit":"cm","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"8","Key":"temporal_data","Value":"['2020-2021', '2023-2024', '2022']","Unit":"years","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"8","Key":"species_affected","Value":"polar fauna (polar bears, seals, penguins)","Unit":"species","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"8","Key":"climate_finance","Value":"not available","Unit":"$","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"8","Key":"deforestation_co2_emissions","Value":"not available","Unit":"tons of co2","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"1","Key":"climatefinanceamount","Value":"none","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"1","Key":"landdegradationrate","Value":"none","Unit":"%","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"1","Key":"plasticpollutionquantity","Value":"none","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"1","Key":"temperatureprojection","Value":"none","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"1","Key":"speciesaffected","Value":"none","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"1","Key":"co2emissionsfigures","Value":"none","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"1","Key":"peopleaffected","Value":"none","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"1","Key":"deforestationrate","Value":"none","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"1","Key":"sealevelriseprojection","Value":"none","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"1","Key":"countriesaffected","Value":"none","Unit":"","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"1","Raw_Output_Snippet":"{}","Parsed_Successfully":false}
+{"Model":"Mistral:latest","Doc_ID":"2","Raw_Output_Snippet":"{}","Parsed_Successfully":false}
+{"Model":"Mistral:latest","Doc_ID":"3","Raw_Output_Snippet":"{}","Parsed_Successfully":false}
+{"Model":"Mistral:latest","Doc_ID":"4","Raw_Output_Snippet":"{}","Parsed_Successfully":false}
+{"Model":"Mistral:latest","Doc_ID":"1","Raw_Output_Snippet":"{}","Parsed_Successfully":false}
+{"Model":"Mistral:latest","Doc_ID":"1","Raw_Output_Snippet":"{}","Parsed_Successfully":false}
+{"Model":"Mistral:latest","Doc_ID":"1","Key":"projections","Value":"temperature, sea level, plastic production","Unit":"","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"1","Key":"temporal_data","Value":"next decades","Unit":"years","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"2","Key":"temporal_data","Value":"2021 (year of the document)","Unit":"years","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"2","Key":"projections","Value":"wwf is working to put a brake on the degradation of the natural environment, planet and build a future where humans live in harmony with nature.","Unit":"","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"1","Raw_Output_Snippet":"{}","Parsed_Successfully":false}
+{"Model":"Mistral:latest","Doc_ID":"2","Raw_Output_Snippet":"{}","Parsed_Successfully":false}
+{"Model":"Mistral:latest","Doc_ID":"1","Raw_Output_Snippet":"{}","Parsed_Successfully":false}
+{"Model":"Mistral:latest","Doc_ID":"1","Key":"projections","Value":"temperature, sea level, plastic production","Unit":"","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"1","Key":"affected_entities","Value":"people, species, countries","Unit":"","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"1","Key":"temporal_data","Value":"next decades","Unit":"years","Parsed_Successfully":true}
+
+{"Model":"Mistral:latest","Doc_ID":"3","Key":"ocean_pollution","Value":"data from multiple sources:","Unit":"","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"3","Key":"climate_finance","Value":"data from multiple sources:","Unit":"","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"3","Key":"international_agreements","Value":"data from multiple sources:","Unit":"","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"3","Key":"plastic_pollution","Value":"data from multiple sources:","Unit":"","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"4","Key":"temporal_data","Value":"temperature projections are for 2030, sea level rise is projected up to 2100, and plastic production is projected by 2030.","Unit":"years","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"4","Key":"climate_finance","Value":"€1.5 billion","Unit":"€","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"4","Key":"visualization_type","Value":"linechart","Unit":"","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"4","Key":"projections","Value":"temperature projections show a rise of 1.5°c by 2030, sea level could rise up to 1 meter by 2100, and plastic production is projected to double by 2030.","Unit":"","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"5","Key":"plastic_pollution","Value":"150,000 tonnes","Unit":"tonnes","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"5","Key":"affected_entities","Value":"1.5 million people","Unit":"","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"5","Key":"climate_finance","Value":"€3.5 billion","Unit":"euros","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"5","Key":"projections","Value":"temperature increase of 2°c by 2050","Unit":"°c","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"5","Key":"temporal_data","Value":"2021","Unit":"year","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"5","Key":"land_degradation","Value":"10%","Unit":"%","Parsed_Successfully":true}

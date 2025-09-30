@@ -30,11 +30,11 @@ Different output types require distinct evaluation metrics to measure both lingu
 
 The entire setup, model pulling, and initial execution are handled by the `start_services.sh` script to ensure environment consistency.
 Execution: Run the shell script to automatically start all services, pull models, and launch the Python benchmark.
-```python
+```bash
     bash start_services.sh
 ```
 **Error Note:** If the server is already running, you will receive the "address already in use" error. Use : 
-```python
+```bash
     sudo netstat -tulnp | grep 11434 | awk '{print $7}' | cut -d/ -f1       # the number returned is the [PID]
     sudo kill [PID]                 # Replace the [PID] with the returned number
 ```
@@ -42,7 +42,7 @@ to terminate the previous process.
 
 ### Accessing Results (**MLflow**) :
 - Launch the server: In the terminal (/benchmarking directory), run:
-```python
+```bash
     mlflow ui
 ```
 - Access the browser: Go to the address indicated (usually `http://localhost:5000`)
