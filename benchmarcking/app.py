@@ -1,5 +1,8 @@
 import ollama
 import mlflow
+import pandas as pd
+import os
+import json
 
 from prompt_system import (
     SUMMARY_SYSTEM_PROMPT, SUMMARY_USER_PROMPT_TEMPLATE,
@@ -52,7 +55,6 @@ def record_json_output(extracted_data, model_name, doc_id):
     else:
         # Mode 'a' ajoute les enregistrements à la suite
         df_temp.to_json(json_file, mode='a', orient='records', lines=True, force_ascii=False, header=False)
-
 
     print(f"   -> Diagnostic des données extrait ajouté au fichier : {json_file}")
 
