@@ -37,17 +37,57 @@ def evaluate_category(generated_category, reference_category):
 
 # ------------------------ DATA_EXTRACTION --------------------------------------
 
-def safe_json_parse(json_string):
-    """
-    Attempts to parse a string into JSON and returns a dictionary or None.
-    """
-    try:
-        # Attempts to fix cases where the template includes markdown (```json ... ```)
-        if json_string.strip().startswith('```') and json_string.strip().endswith('```'):
-            json_string = json_string.strip()[7:-3]
+import json
+import re
 
-        return json.loads(json_string)
-    except json.JSONDecodeError:
+import json
+import re
+
+def safe_json_parse(json_string):
+    if not json_string:
+        return None
+        
+    cleaned_json_string = json_string
+
+    # 1. Agressiv cleaning : removing markdown tags
+    cleaned_json_string = re.sub(r'```json\s*', '', cleaned_json_string, flags=re.IGNORECASE)
+    cleaned_json_string = re.sub(r'\s*```', '', cleaned_json_string)
+    
+    # 2. Extraction of JSON block : search for the first { or [ and the last } or ]
+    
+    start_index_curly = cleaned_json_string.find('{')
+    start_index_bracket = cleaned_json_string.find('[')
+    
+    # Choose the first delimiter encountered
+    if start_index_curly == -1 and start_index_bracket == -1:
+        # No JSON delimiter found
+        return None
+    elif start_index_curly != -1 and (start_index_curly < start_index_bracket or start_index_bracket == -1):
+        start_index = start_index_curly
+        end_delimiter = '}'
+    else:
+        start_index = start_index_bracket
+        end_delimiter = ']'
+
+    # Possible end: } or ]
+    end_index = cleaned_json_string.rfind(end_delimiter)
+        
+    if end_index == -1 or end_index < start_index:
+        # End delimiter not found or mispositioned
+        return None
+
+    # Extraction of JSON block
+    cleaned_json_string = cleaned_json_string[start_index : end_index + 1].strip()
+
+    # 3. Parsing attempt
+    try:
+        # This is where the JSON object is created (dict or list)
+        return json.loads(cleaned_json_string)
+    except json.JSONDecodeError as e:
+        print(f"ERROR: Failed to parse JSON: {e}. String: {cleaned_json_string[:100]}...")
+        return None
+    except Exception as e:
+        print(f"An unexpected error occurred during JSON cleaning/parsing: {e}")
         return None
     
 def normalize_data_keys(data_dict_or_list):
