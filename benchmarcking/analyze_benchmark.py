@@ -34,7 +34,10 @@ try:
         'rouge2_fmeasure',
         'rougeL_fmeasure',
         'extraction_f1',
-        'category_accuracy'
+        'category_accuracy',
+        'latency_summary',
+        'latency_extraction',
+        'latency_classification'
     ]
 
     for metric_root in METRIC_ROOTS:
@@ -64,6 +67,9 @@ try:
         'metrics_avg.rouge1_fmeasure': 'ROUGE-1 F1 (Avg)',
         'metrics_avg.rouge2_fmeasure': 'ROUGE-2 F1 (Avg)',
         'metrics_avg.rougeL_fmeasure': 'ROUGE-L F1 (Avg)',
+        'metrics_avg.latency_summary': 'Latency Summary (Avg, s)',
+        'metrics_avg.latency_extraction': 'Latency Ext. (Avg, s)',
+        'metrics_avg.latency_classification': 'Latency Class. (Avg, s)',
     }, inplace=True)
     
     # Sort the final table by the average ROUGE-1 score (descending)
