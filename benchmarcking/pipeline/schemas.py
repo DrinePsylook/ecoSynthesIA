@@ -13,8 +13,3 @@ class ExtractedFact(BaseModel):
 class DataExtraction(BaseModel):
     """The complete set of all required facts extracted from a document."""
     facts: List[ExtractedFact]
-
-# Define the reseult of the summary category
-class ClassificationResult(BaseModel):
-    """The result of classifying the summary into one primary category."""
-    category: str = Field(description="The primary environmental sector of the summary (e.g., 'Déforestation', 'Finance Carbone', 'Pollution Plastique').")

@@ -841,6 +841,113 @@
           ]
         }
       }
+    },
+    {
+      "id": "9",
+      "title": "9_test_data.pdf",
+      "reference_summary": "Données de test pour vérifier l'extraction de données",
+      "reference_criteria": [
+        ""
+      ],
+      "reference_category":"CLIMATE AND EMISSIONS",
+      "reference_numbers": {
+        "country_comparison": {
+          "china": {
+            "share": "24",
+            "unit": "%"
+          },
+          "eu": {
+            "share": "16",
+            "unit": "%"
+          },
+          "india": {
+            "share": "9",
+            "unit": "%"
+          },
+          "usa": {
+            "share": "7",
+            "unit": "%"
+          },
+          "japan": {
+            "share": "5",
+            "unit": "%"
+          },
+          "page": 5,
+          "chart": [
+            "BarChart",
+            "PieChart",
+            "ChoroplethMap"
+          ]
+        },
+                "annual_plastic_waste": {
+          "amount": "275",
+          "unit": "millions de tonnes",
+          "page": 2,
+          "chart": [
+            "LineChart"
+          ]
+        },
+        "ocean_pollution": {
+          "amount": "12",
+          "unit": "millions de tonnes/an",
+          "page": 2,
+          "chart": [
+            "LineChart"
+          ]
+        },
+        "marine_costs": {
+          "amount": "13",
+          "unit": "milliards de dollars/an",
+          "page": 2,
+          "chart": [
+            "LineChart"
+          ]
+        },
+        "regional_data": {
+          "values": {
+            "2020": {
+              "arctic": "14,8",
+              "antarctic_west": "5,2",
+              "antarctic_east": "12,1",
+              "greenland": "1,71",
+              "temp": "-8,3",
+              "sea_level": "3,1"
+            },
+            "2021": {
+              "arctic": "13,9",
+              "antarctic_west": "4,8",
+              "antarctic_east": "11,9",
+              "greenland": "1,69",
+              "temp": "-7,9",
+              "sea_level": "3,8"
+            },
+            "2022": {
+              "arctic": "12,1",
+              "antarctic_west": "4,2",
+              "antarctic_east": "11,4",
+              "greenland": "1,65",
+              "temp": "-6,8",
+              "sea_level": "4,9"
+            },
+            "2023": {
+              "arctic": "11,6",
+              "antarctic_west": "3,9",
+              "antarctic_east": "11,0",
+              "greenland": "1,62",
+              "temp": "-6,2",
+              "sea_level": "5,1"
+            },
+            "2024*": {
+              "arctic": "10,8",
+              "antarctic_west": "3,6",
+              "antarctic_east": "10,7",
+              "greenland": "1,58",
+              "temp": "-5,7",
+              "sea_level": "5,4"
+            }
+          }
+        }
+      }
     }
   ]
 }
