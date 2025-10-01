@@ -1,19 +1,25 @@
+import os
 import json
 import time
 import ollama
 import mlflow
+from dotenv import load_dotenv
 
 from utils.prompt_system import (
-    SUMMARY_SYSTEM_PROMPT, SUMMARY_USER_PROMPT_TEMPLATE
+    SUMMARY_SYSTEM_PROMPT, SUMMARY_USER_PROMPT_TEMPLATE,
+    CLASSIFICATION_SYSTEM_PROMPT, CLASSIFICATION_USER_PROMPT_TEMPLATE
 )
 from utils.data_extraction import extract_text_from_report, load_references_titles
 from utils.evaluations import evaluate_summary, evaluate_data_extraction, evaluate_category
 from utils.record_json_output import record_json_output
-from pipeline.chaining import get_data_extraction_chain, get_classification_chain
+from pipeline.chaining import get_data_extraction_chain
 from pipeline.schemas import DataExtraction, ClassificationResult
 
+load_dotenv()
+MISTRAL_NAME = os.getenv("MISTRAL_OLLAMA")
+
 MODELS_TO_TEST = [
-    'mistral:latest', 
+    MISTRAL_NAME, 
     'llama3.1:latest', 
     'deepseek-r1:latest' # is excluded as planned
 ]
@@ -37,7 +43,6 @@ def run_full_benchmark():
 
         with mlflow.start_run(run_name=model_name):
             extraction_chain = get_data_extraction_chain(model_name)
-            classification_chain = get_classification_chain(model_name)
 
             # Iteration for documents
             for document_metadata in reference_documents:
@@ -127,26 +132,15 @@ def run_full_benchmark():
                 print("   -> APPEL 3/3: Classification...")
                 summary_to_classify = generated_summary if 'generated_summary' in locals() else document_content[:1000]  # Fallback to document content if summary not generated
                 classification_latency = -1.0
-                try:
-                    start_time = time.time()
-                    # 1. Invoke the Langchain chain for classification
-                    classification_output = classification_chain.invoke({"summary_text": summary_to_classify})
-                    classification_latency = time.time() - start_time
-
-                    # 2. Handle the output, which should be an instance of ClassificationResult
-                    from pipeline.schemas import ClassificationResult
-                    
-                    if isinstance(classification_output, ClassificationResult):
-                        generated_category = classification_output.category
-                    elif isinstance(classification_output, dict) and 'category' in classification_output:
-                        # Handle the case where the output is a dict (raw JSON)
-                        generated_category = classification_output['category']
-                    else:
-                        raise ValueError(f"Output de classification inattendu: {type(classification_output)}")
-                        
-                except Exception as e:
-                    print(f"ERROR: LangChain Classification Failed: {e}")
-                    generated_category = "ERROR_CLASSIFICATION" # Default value in case of error
+                classification_user_prompt = CLASSIFICATION_USER_PROMPT_TEMPLATE.format(document_content=generated_summary)
+                classification_response = ollama.chat(
+                    model=model_name,
+                    messages=[
+                        {"role": "system", "content": CLASSIFICATION_SYSTEM_PROMPT},
+                        {"role": "user", "content": classification_user_prompt}
+                    ]
+                )
+                generated_category = classification_response['message']['content']
 
                 mlflow.log_metric(f"latency_classification_doc_{document_id}", classification_latency)
                 print("   -> FIN APPEL 3/3: Classification terminée.")

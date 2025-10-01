@@ -33,30 +33,3 @@ def get_data_extraction_chain(model_name: str):
     )
 
     return extraction_chain
-
-def get_classification_chain(model_name: str):
-    """
-    Creates a LangChain chain for structured classification.
-    """
-
-    # Define model
-    llm = ChatOllama(
-        model=model_name,
-        base_url=OLLAMA_URL,
-        temperature=0.0,
-        format="json"  # Ensure the model outputs JSON
-    )
-
-    # Define prompt
-    prompt = ChatPromptTemplate.from_messages([
-        ("system", CLASSIFICATION_SYSTEM_PROMPT),
-            ("human", "Classify the following summary text:\n{summary_text}")
-    ])
-
-    # Create structured output chain
-    classification_chain = (
-        prompt 
-        | llm.with_structured_output(ClassificationResult)    
-    )
-
-    return classification_chain

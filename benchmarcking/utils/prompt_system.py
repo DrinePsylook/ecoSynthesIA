@@ -43,49 +43,6 @@ Data can be found in text, tables, or graphs.
 5. **No Explanation:** Output ONLY the structured data.
 """
 
-# `user_prompt` for instructions and document content
-DATA_EXTRACTION_USER_PROMPT_TEMPLATE = """Extract key data from the following document. For each data point, provide its value, unit, and context. The output must be a valid JSON object.
-Your goal is to extract the following data, if available:
-- Deforestation and CO2 emissions figures.
-- Quantities of plastic pollution.
-- Financial amounts related to climate finance.
-- Rates and percentages of land degradation.
-- Projections (e.g., temperature, sea level, plastic production).
-- Number of people, species, or countries affected.
-- Temporal data (periods, specific years).
-Data can be un text, in tables, or in graphs.
-
---- OUTPUT INSTRUCTIONS ---
-1. Your response MUST contain ONLY the valid JSON object.
-2. DO NOT include any text, commentary, or explanation before or after the JSON object.
-3. DO NOT wrap the output in markdown fences (```json...```). Output the JSON directly.
-4. The output must be a single Python dictionary (object), NOT a list.
-
-Structure your response in JSON format, without additional explanatory text. Use one JSON object per type of extracted data. Each object must contain the keys "value", "unit", "context", "page" where you find the information and "chart".
-
-The "chart" key must contain the most appropriate visualization type for the extracted data, based on these definitions:
-- **LineChart**: Best for showing a variable's evolution over time (trends, years).
-- **BarChart**: Excellent for comparing data between different categories or entities (e.g., countries, types of pollution, financial amounts).
-- **PieChart**: Used to show the proportion of each category relative to a whole (percentages, shares, parts of a total).
-- **ChoroplethMap**: Essential for geographical data (regional distribution, country comparison).
-
-Here is an example of the desired output format for a hypothetical document:
-```json
-{{
-  "key_data_name": {{
-    "value": "25",
-    "unit": "%",
-    "context": "share of global emissions",
-    "page": 10,
-    "chart": "PieChart"
-  }}
-}}
-
-Your response MUST be a single, flat JSON object (a dictionary) where each key is the unique name of a data point. Do NOT return a list of objects.
-
-Document: {document_content}
-"""
-
 CLASSIFICATION_SYSTEM_PROMPT = """You are an expert classification engine. Your task is to categorize the provided document based on its main focus. You must only respond with one of the predefined categories.
 """
 
