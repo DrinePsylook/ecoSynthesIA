@@ -428,3 +428,16 @@
 {"Model":"deepseek-r1:latest","Doc_ID":"7","Key":":","Value":":","Unit":":","Parsed_Successfully":true}
 {"Model":"deepseek-r1:latest","Doc_ID":"8","Key":"category","Value":"emissions","Unit":"","Parsed_Successfully":true}
 {"Model":"deepseek-r1:latest","Doc_ID":"8","Key":"category","Value":"emissions","Unit":"unit","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"9","Key":"page","Value":"1","Unit":"page","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"9","Key":"plastic_pollution","Value":"275000000 (approximately) tonnes of plastic waste produced annually, with 12000000 tonnes ending up in the oceans","Unit":"tonnes","Parsed_Successfully":true}
+{"Model":"Mistral:latest","Doc_ID":"9","Key":"economic_losses_marine_ecosystems","Value":"13000000000 (approximately) dollars in annual environmental damages to marine ecosystems","Unit":"dollars","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"9","Key":"plastic_production","Value":"275 millions (environ) de tonnes par an","Unit":"tonnes\/year","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"9","Key":"ocean_pollution_amount","Value":"12 millions de tonnes","Unit":"tonnes","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"9","Key":"annual_environmental_damage","Value":"13 milliards de dollars","Unit":"dollars\/year","Parsed_Successfully":true}
+{"Model":"deepseek-r1:latest","Doc_ID":"9","Key":"land","Value":"degradation","Unit":"","Parsed_Successfully":true}
+{"Model":"deepseek-r1:latest","Doc_ID":"9","Key":"finance","Value":"related","Unit":"context","Parsed_Successfully":true}
+{"Model":"deepseek-r1:latest","Doc_ID":"9","Key":"rate","Value":"degradation","Unit":"context","Parsed_Successfully":true}
+{"Model":"deepseek-r1:latest","Doc_ID":"9","Key":"plastic","Value":"pollution","Unit":"provided","Parsed_Successfully":true}
+{"Model":"deepseek-r1:latest","Doc_ID":"9","Key":"projections","Value":"unit","Unit":"context","Parsed_Successfully":true}
+{"Model":"deepseek-r1:latest","Doc_ID":"9","Key":"emissions","Value":"emissions","Unit":"not","Parsed_Successfully":true}
+{"Model":"deepseek-r1:latest","Doc_ID":"9","Key":"category","Value":"deforestation","Unit":"not provided","Parsed_Successfully":true}
