@@ -359,3 +359,72 @@
 {"Model":"deepseek-r1:latest","Doc_ID":"9","Key":"category","Value":"deforestation","Unit":"not provided","Parsed_Successfully":true}
 {"Model":"deepseek-r1:latest","Doc_ID":"9","Key":"rates","Value":"degradation","Unit":"provided","Parsed_Successfully":true}
 {"Model":"deepseek-r1:latest","Doc_ID":"9","Key":"temporal","Value":"unit","Unit":"context","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"1","Key":"page","Value":"4","Unit":"","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"1","Key":"temporal_data","Value":"next decades","Unit":"years","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"1","Key":"projections","Value":"temperature, sea level, plastic production","Unit":"","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"1","Key":"chart_type","Value":"unknown","Unit":"","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"2","Key":"page","Value":"7","Unit":"","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"2","Key":"temporal_data","Value":"1986 (panda symbol registration) and 2021 (paper recycled)","Unit":"years","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"2","Key":"projections","Value":"wwf is working to put a brake on the degradation of the natural environment, planet and build a future where humans live in harmony with nature.","Unit":"","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"3","Key":"source","Value":"united nations environment programme (unep)","Unit":"","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"3","Key":"date","Value":"2018-2020","Unit":"","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"3","Key":"location","Value":"global","Unit":"","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"4","Key":"page","Value":"12","Unit":"page number","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"4","Key":"temporal_data","Value":"2021","Unit":"year","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"5","Key":"plastic_pollution","Value":"80,000 tonnes","Unit":"tonnes","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"5","Key":"temporal_data","Value":"2019","Unit":"year","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"5","Key":"projections","Value":"2.5°c temperature increase and a sea level rise of 0.7 meters by 2100 under a high emissions scenario.","Unit":"","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"5","Key":"land_degradation","Value":"13%","Unit":"%","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"6","Key":"temporal_data","Value":"50+ years","Unit":"years","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"7","Key":"temporal data","Value":"2016","Unit":"year","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"7","Key":"quantities of plastic pollution","Value":"87 million tonnes","Unit":"millions of tonnes","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"7","Key":"chart","Value":"barchart","Unit":"unknown","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"7","Key":"rates and percentages of land degradation","Value":"87%","Unit":"%","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"7","Key":"quantities of plastic pollution per person","Value":"5 grams","Unit":"grams","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"8","Key":"land_degradation","Value":"31% reduction in antarctica western region compared to 2020 levels","Unit":"%","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"8","Key":"affected_species","Value":"polar bears, seals, penguins","Unit":"unknown","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"8","Key":"affected_populations","Value":"worldwide coastal populations","Unit":"unknown","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"8","Key":"projections","Value":"additional 15-22 cm sea level rise by 2050","Unit":"cm","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"8","Key":"page","Value":"2","Unit":"unknown","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"8","Key":"temporal_data","Value":"2020-2021 to 2023-2024 for arctic ice loss rate increase; 2022 for record losses in all regions studied","Unit":"years","Parsed_Successfully":true}
+{"Model":"mistral:latest","Doc_ID":"8","Key":"chart_type","Value":"linechart","Unit":"unknown","Parsed_Successfully":true}
+
+
+{"Model":"llama3.1:latest","Doc_ID":"3","Key":"marine_plastic_debris","Value":"marine plastic debris and microplastics are a major concern for the health of oceans and human well-being (unep, 2016)","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"3","Key":"effectiveness_of_governance_strategies","Value":"an assessment of the effectiveness of relevant international, regional and subregional governance strategies and approaches for combating marine plastic litter and microplastics (unep, 2018)","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"3","Key":"plastic_use_in_consumer_goods","Value":"the business case for measuring, managing and disclosing plastic use in the consumer goods industry is valued at $2 trillion (unep, 2014)","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"3","Key":"seafloor_microplastic_hotspots","Value":"seafloor microplastic hotspots controlled by deep-sea circulation (kane et al., 2020)","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"3","Key":"airborne_microplastics","Value":"airborne microplastics: consequences to human health? (prata, 2018)","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"3","Key":"plastic_waste_inputs","Value":"8 million tonnes of plastic waste enter the ocean every year (jambeck, 2015)","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"3","Key":"microplastics_in_snow","Value":"microplastics have been found in snow from the alps to the arctic (bergmann, 2019)","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"3","Key":"global_lessons_and_research","Value":"global lessons and research to inspire action and guide policy change for marine plastic debris and microplastics (unep, 2016)","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"3","Key":"new_global_agreement","Value":"a new global agreement is needed to address the issue of plastic pollution and microplastics (unep, 2020)","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"4","Key":"phone_number","Value":"+254 720 200200","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"4","Key":"website","Value":"www.unep.org\/fr","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"4","Key":"location","Value":"united nations avenue, gigiri, p o box 30552, 00100 nairobi, kenya","Unit":"","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"4","Key":"email","Value":"communication@unep.org","Unit":"","Parsed_Successfully":true}
+
+
+{"Model":"llama3.1:latest","Doc_ID":"7","Key":"percentage_of_plastic_pollution","Value":"87%","Unit":"%","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"7","Key":"plastic_pollution","Value":"5 grammes de plastique par semaine","Unit":"grammes\/week","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"7","Key":"plastic_pollution","Value":"100 millions de tonnes de plastiques sont entrés dans la nature en 2016.","Unit":"tonnes","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"8","Key":"temporal_data","Value":"2020-2021, 2023-2024, 2050","Unit":"years","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"8","Key":"projections","Value":"15-22 cm","Unit":"cm","Parsed_Successfully":true}
+{"Model":"llama3.1:latest","Doc_ID":"8","Key":"rates_and_percentages_of_land_degradation","Value":"31%","Unit":"%","Parsed_Successfully":true}
+{"Model":"deepseek-r1:latest","Doc_ID":"1","Key":"category","Value":"category_id","Unit":"category_type","Parsed_Successfully":true}
+{"Model":"deepseek-r1:latest","Doc_ID":"2","Key":"context","Value":"unit","Unit":"context","Parsed_Successfully":true}
+{"Model":"deepseek-r1:latest","Doc_ID":"2","Key":":","Value":"unit","Unit":"","Parsed_Successfully":true}
+{"Model":"deepseek-r1:latest","Doc_ID":"2","Key":"category1. deforestation","Value":"2.","Unit":"emissions","Parsed_Successfully":true}
+{"Model":"deepseek-r1:latest","Doc_ID":"2","Key":"value","Value":"unit","Unit":"","Parsed_Successfully":true}
+{"Model":"deepseek-r1:latest","Doc_ID":"2","Key":":","Value":":","Unit":"context","Parsed_Successfully":true}
+{"Model":"deepseek-r1:latest","Doc_ID":"3","Key":"schema","Value":"schema","Unit":"schema","Parsed_Successfully":true}
+{"Model":"deepseek-r1:latest","Doc_ID":"4","Key":"value","Value":"un","Unit":"ont","Parsed_Successfully":true}
+{"Model":"deepseek-r1:latest","Doc_ID":"4","Key":":","Value":"un","Unit":"","Parsed_Successfully":true}
+{"Model":"deepseek-r1:latest","Doc_ID":"4","Key":":","Value":":","Unit":"ont:","Parsed_Successfully":true}
+{"Model":"deepseek-r1:latest","Doc_ID":"5","Key":"v","Value":"u","Unit":":","Parsed_Successfully":true}
+{"Model":"deepseek-r1:latest","Doc_ID":"6","Key":"schema","Value":"page","Unit":"","Parsed_Successfully":true}
+{"Model":"deepseek-r1:latest","Doc_ID":"7","Key":"value","Value":":","Unit":"co","Parsed_Successfully":true}
+{"Model":"deepseek-r1:latest","Doc_ID":"7","Key":"category","Value":"deforestation","Unit":":","Parsed_Successfully":true}
+{"Model":"deepseek-r1:latest","Doc_ID":"7","Key":":","Value":":","Unit":":","Parsed_Successfully":true}
+{"Model":"deepseek-r1:latest","Doc_ID":"8","Key":"category","Value":"emissions","Unit":"","Parsed_Successfully":true}
+{"Model":"deepseek-r1:latest","Doc_ID":"8","Key":"category","Value":"emissions","Unit":"unit","Parsed_Successfully":true}
