@@ -1,8 +1,8 @@
 from langchain_ollama import ChatOllama
 from langchain.prompts import ChatPromptTemplate
 
-from .schemas import DataExtraction, ClassificationResult
-from utils.prompt_system import DATA_EXTRACTION_SYSTEM_PROMPT, CLASSIFICATION_SYSTEM_PROMPT
+from .schemas import DataExtraction
+from utils.prompt_system import DATA_EXTRACTION_SYSTEM_PROMPT
 
 # Initialize Ollama client
 OLLAMA_URL = 'http://127.0.0.1:11434'

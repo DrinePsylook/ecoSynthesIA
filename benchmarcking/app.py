@@ -13,7 +13,7 @@ from utils.data_extraction import extract_text_from_report, load_references_titl
 from utils.evaluations import evaluate_summary, evaluate_data_extraction, evaluate_category
 from utils.record_json_output import record_json_output
 from pipeline.chaining import get_data_extraction_chain
-from pipeline.schemas import DataExtraction, ClassificationResult
+from pipeline.schemas import DataExtraction
 
 load_dotenv()
 MISTRAL_NAME = os.getenv("MISTRAL_OLLAMA")
@@ -130,7 +130,6 @@ def run_full_benchmark():
 
                 # 3 - Document classification
                 print("   -> APPEL 3/3: Classification...")
-                summary_to_classify = generated_summary if 'generated_summary' in locals() else document_content[:1000]  # Fallback to document content if summary not generated
                 classification_latency = -1.0
                 classification_user_prompt = CLASSIFICATION_USER_PROMPT_TEMPLATE.format(document_content=generated_summary)
                 classification_response = ollama.chat(
