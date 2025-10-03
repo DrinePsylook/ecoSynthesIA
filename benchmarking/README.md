@@ -47,3 +47,35 @@ to terminate the previous process.
 ```
 - Access the browser: Go to the address indicated (usually `http://localhost:5000`)
 - Visualization: In the interface, be able to see your experiments, click on a "Run" (corresponding to a model), and find your files under the Artifacts tab.
+
+
+## Final Conclusions and Model Recommendations
+
+The benchmark successfully identified the strengths and weaknesses of the three SLMs for structured environmental analysis.
+
+**Performance Summary**
+The analysis shows a clear specialization between the models:
+
+| Task                      | Winner (Quality) | Score (Avg)             | Latency (Avg, s) |
+|--------------------------|------------------|--------------------------|------------------|
+| Summarization (ROUGE-1)  | mistral:latest   | 0.385                    | ~86              |
+| Classification (Accuracy)| llama3.1         | 0.625                    | ~11              |
+| Data Extraction (F1)     | llama3.1         | 0.00 (Best Precision)    | ~65              | 
+
+For data extraction, it was impossible to extract the score, so the decision was made after analyzing the data recorded in a json file.
+
+**Key Findings and Strategy**
+Summarization (Mistral): Mistral:latest achieved the highest lexical quality. To further enhance factual accuracy, we recommend integrating a RAG system to select only the most relevant source passages (introduction, key facts) before summarization.
+
+Classification (Llama 3.1): Llama 3.1 was the most reliable classifier (62.5% accuracy), but the score remains insufficient for full production use. Since classification results will be used to construct the training dataset for a downstream ML model, this accuracy level raises concerns about data quality. Therefore, the use of a more powerful, externally provisioned LLM (e.g., Azure-hosted) is being considered to ensure higher reliability for critical labeling tasks.
+
+Data Extraction (Llama 3.1): All models failed the automated F1-Score evaluation. Diagnostic analysis revealed Llama 3.1 to be the best extractor, achieving the highest precision by accurately handling complex figures and units (e.g., "13 milliards de dollars"), while deepseek-r1 was deemed unusable.
+
+**Final Architecture Proposal**
+The optimal solution is a Specialized Hybrid Architecture:
+
+Use Llama 3.1 for high-precision tasks (Data Extraction, Classification).
+
+Use Mistral for linguistic quality (Summarization and final text formatting).
+
+This chaining leverages the best of both models, mitigating individual weaknesses.

@@ -20,8 +20,8 @@ MISTRAL_NAME = os.getenv("MISTRAL_OLLAMA")
 
 MODELS_TO_TEST = [
     MISTRAL_NAME, 
-    'llama3.1:latest', 
-    'deepseek-r1:latest' # is excluded as planned
+    'llama3.1', 
+    # 'deepseek-r1:latest' # is excluded as planned
 ]
 
 def run_full_benchmark():
