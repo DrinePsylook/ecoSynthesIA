@@ -2,6 +2,7 @@ name: Frontend CI/CD
 
 on:
   push:
+    workflow_call:
     branches: [ main ]
     paths:
       - 'frontend/**'
