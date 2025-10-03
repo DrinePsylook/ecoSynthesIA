@@ -1,6 +1,7 @@
 name: Backend CI/CD
 
 on:
+  workflow_call:
   push:
     branches: [ main ]
     paths:
