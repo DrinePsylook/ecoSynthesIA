@@ -8,13 +8,13 @@ on:
 
 jobs:
   trigger-backend:
-    uses: ./.github/workflows/backend-ci.yml
+    uses: .github/workflows/backend-ci.yml
     secrets: inherit
 
   trigger-frontend:
-    uses: ./.github/workflows/frontend-ci.yml
+    uses: .github/workflows/frontend-ci.yml
     secrets: inherit
 
   trigger-IA:
-    uses: ./.github/workflows/ia_services-ci.yml
+    uses: .github/workflows/ia_services-ci.yml
     secrets: inherit
