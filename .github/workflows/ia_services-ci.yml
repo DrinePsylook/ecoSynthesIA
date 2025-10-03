@@ -1,8 +1,8 @@
 name: IA Services CI/CD
 
 on:
+  workflow_call:
   push:
-    workflow_call:
     branches: [ main ]
     paths:
       - 'ia_services/**'
