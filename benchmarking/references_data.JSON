@@ -2,7 +2,7 @@
   "documents": [
     {
       "id": "1",
-      "title": "GLO_French_Executive_Summary.pdf",
+      "title": "4_GLO_French_Executive-Summary.pdf",
       "reference_summary": "La pression croissante sur les ressources terrestres, due à la hausse démographique et à la consommation, entraîne une dégradation accélérée des sols, des forêts, des prairies et des pâturages. Cela provoque une perte de productivité, de biodiversité et accroît la pauvreté, les migrations et les conflits. Le système alimentaire mondialisé, orienté vers les profits à court terme, repose sur des monocultures, l’usage intensif d’intrants et génère 70 % des prélèvements d’eau douce et 80 % de la déforestation. Des scénarios montrent que des compromis sont nécessaires : abandon des productions intensives et carbonées, réduction des régimes carnés et du gaspillage alimentaire. La durabilité repose sur une transformation profonde des modes de consommation, de production et de gouvernance, afin de préserver les terres comme base de la sécurité humaine.",
       "reference_criteria": [
         "Causes: pressions démographiques, consommation accrue, pratiques agricoles intensives",
@@ -12,6 +12,7 @@
         "Solutions: abandon des productions intensives, réduction gaspillage et régimes carnés",
         "Lien avec sécurité humaine et Objectifs de développement durable"
       ],
+      "reference_category":"NATURAL RESOURCES",
       "reference_numbers": {
         "degradation": {
           "period": "1998-2013",
@@ -107,7 +108,7 @@
     },
     {
       "id": "2",
-      "title": "WWF_EU_Consumption_Pressure.pdf",
+      "title": "7_Résumé_Consommation_européenne_et_pression_sur_la_nature_mondiale_WWF.pdf",
       "reference_summary": "L'Union européenne est l'un des principaux moteurs de la déforestation mondiale par sa consommation de soja, huile de palme, viande de bœuf, cacao, café et produits du bois. Entre 2005 et 2017, ses importations ont entraîné 3,5 millions d'hectares de déforestation, représentant 1 807 millions de tonnes de CO2, soit 40 % des émissions annuelles de l'UE. Bien que la déforestation liée aux importations ait diminué d'environ 40 % sur cette période, l'UE reste responsable de 16 % de la déforestation associée au commerce international en 2017. Les impacts sont concentrés en Amérique du Sud et en Asie du Sud-Est, notamment dans le Cerrado, l'Amazonie et le Chaco. Les engagements 'zéro déforestation' restent insuffisants et inégaux selon les filières. La législation européenne doit intégrer non seulement les forêts, mais aussi d'autres écosystèmes naturels (prairies, savanes, zones humides) et inclure des obligations contraignantes de traçabilité, transparence et respect des droits humains.",
       "reference_criteria": [
         "Causes: importations européennes de soja, huile de palme, viande de bœuf, cacao, café et bois",
@@ -117,6 +118,7 @@
         "Solutions: législation européenne, certification, engagements zéro déforestation, prise en compte des écosystèmes non forestiers",
         "Lien avec: droits humains, commerce international, climat et biodiversité"
       ],
+      "reference_category":"POLICIES AND REGULATION",
       "reference_numbers": {
         "deforestation_imports": {
           "period": "2005-2017",
@@ -222,7 +224,7 @@
     },
     {
       "id": "3",
-      "title": "Convention_on_Plastic_Pollution_CIEL_EIA_GAIA.pdf",
+      "title": "8_fre-convention_on_plastic_pollution_-_thought_starter_ciel_eia_gaia.pdf",
       "reference_summary": "La pollution plastique est une menace mondiale transfrontalière qui nécessite un accord international juridiquement contraignant. Chaque année, environ 275 millions de tonnes de déchets plastiques sont produits, dont jusqu’à 12 millions de tonnes finissent dans les océans, avec des coûts environnementaux estimés à 13 milliards de dollars par an. L’UNEA a adopté plusieurs résolutions (2014, 2016, 2017, 2019) reconnaissant l’urgence du problème et appelant à une action coordonnée. La future convention sur la pollution plastique doit couvrir tout le cycle de vie des plastiques, de la production à la gestion des déchets, en s’appuyant sur quatre piliers : surveillance et reporting, prévention de la pollution, coordination internationale et soutien technique et financier. Les objectifs principaux incluent l’élimination des rejets de plastiques, la création d’une économie circulaire sûre, et la réduction de la production de plastique vierge. Le texte souligne aussi les enjeux liés aux microplastiques, aux additifs chimiques toxiques, aux impacts climatiques et agricoles, et à la nécessité d’un financement durable basé sur le principe pollueur-payeur.",
       "reference_criteria": [
         "Surveillance et reporting harmonisés sur la pollution plastique",
@@ -233,6 +235,7 @@
         "Régulation des microplastiques et additifs chimiques",
         "Financement durable fondé sur le principe du pollueur-payeur"
       ],
+      "reference_category":"POLLUTION AND ENVIRONMENTAL",
       "reference_numbers": {
         "annual_plastic_waste": {
           "amount": "275",
@@ -310,7 +313,7 @@
     },
     {
       "id": "4",
-      "title": "AGR23_ESFR.pdf",
+      "title": "12_AGR23_ESFR.pdf",
       "reference_summary": "Le rapport souligne l’aggravation du déficit mondial de financement de l’adaptation au climat, qui atteint 194 à 366 milliards USD par an, soit 10 à 18 fois les flux actuels d’aide internationale. Les besoins des pays en développement sont estimés entre 215 et 387 milliards USD par an au cours de cette décennie, bien au-delà des estimations précédentes. Pourtant, les flux publics internationaux d’adaptation ont diminué de 15 % depuis 2020, atteignant seulement 21,3 milliards USD en 2021, avec un taux de décaissement de 66 %. Les pays en développement, particulièrement vulnérables, dépendent fortement de financements extérieurs, et un pays sur six n’a toujours pas d’instrument national de planification. Le rapport insiste sur l’importance d’intégrer l’égalité des genres et l’inclusion sociale, encore trop marginales (2 % du budget en moyenne). Il appelle à mobiliser davantage de financements publics, privés et nationaux, à réformer l’architecture financière mondiale et à créer des sources innovantes pour combler le déficit. Même en atteignant les objectifs de l’Accord de Paris, des risques climatiques résiduels entraîneront des pertes et préjudices, nécessitant un fonds dédié et des dispositifs de gouvernance adaptés.",
       "reference_criteria": [
         "Déficit de financement de l’adaptation : besoins croissants et flux insuffisants",
@@ -321,6 +324,7 @@
         "Appel à réformes structurelles de l’architecture financière mondiale",
         "Importance de traiter les pertes et préjudices économiques et non économiques"
       ],
+      "reference_category":"CLIMATE AND EMISSIONS",
       "reference_numbers": {
         "adaptation_financing_gap": {
           "range": "194–366",
@@ -447,6 +451,7 @@
         "Renforcement des partenariats européens et internationaux",
         "Utilisation des nouvelles technologies, mégadonnées, IA et observation de la Terre"
       ],
+      "reference_category":"POLICIES AND REGULATION",
       "reference_numbers": {
         "data_growth": {
           "increase_factor": "×250",
@@ -520,6 +525,7 @@
         "Solutions : sortie progressive des fossiles, énergies renouvelables, efficacité énergétique",
         "Importance des financements et réformes structurelles"
       ],
+      "reference_category":"CLIMATE AND EMISSIONS",
       "reference_numbers": {
         "current_policies_temperature": {
           "projection": "≈ 3",
@@ -615,7 +621,7 @@
     },
     {
       "id": "7",
-      "title": "16_20190718_De_la_nature_aux_humains_jusquou_iront_les_plastiques-min",
+      "title": "16_20190718_De_la_nature_aux_humains_jusquou_iront_les_plastiques-min.pdf",
       "reference_summary": "Une personne pourrait ingérer environ 5 grammes de plastique par semaine, soit l’équivalent d’une carte de crédit. Depuis 2000, autant de plastique a été produit que dans toute l’histoire précédente, et un tiers des déchets plastiques finissent dans la nature. La production de plastique vierge a été multipliée par 200 depuis 1950 et continue de croître. En 2016, 100 millions de tonnes de plastiques sont entrés dans la nature. 75 % de tout le plastique produit est aujourd’hui un déchet, et 87 % des déchets mal gérés s’infiltrent dans la nature. La pollution plastique touche la faune et les écosystèmes, avec des conséquences sanitaires et économiques majeures, dont 8 milliards USD par an pour les océans. Le WWF appelle à un traité mondial contraignant et à des mesures systémiques.",
       "reference_criteria": [
         "Estimation de l’ingestion humaine de plastique en grammes par semaine",
@@ -624,6 +630,7 @@
         "Conséquences environnementales (faune, écosystèmes) et économiques",
         "Appel à un traité international contraignant sur la pollution plastique"
       ],
+      "reference_category":"POLLUTION AND ENVIRONMENTAL QUALITY",
       "reference_numbers": {
         "weekly_plastic_ingestion": {
           "value": "5",
@@ -715,7 +722,7 @@
     },
     {
       "id": "8",
-      "title": "fonte des glaces",
+      "title": "fonte_des_glaces.pdf",
       "reference_summary": "Entre 2020 et 2024, les observations satellitaires et in situ montrent une fonte accélérée des glaces polaires. L’Arctique a perdu en moyenne 3,2 millions de km² par an et l’Antarctique 1,8 million km². L’élévation du niveau marin atteint 4,3 mm/an, soit +23 % par rapport à la décennie précédente. En 2022, année record, toutes les régions affichent des pertes significatives : Arctique 12,1 millions km², Antarctique Ouest 4,2, Antarctique Est 11,4, Groenland 1,65. L’Antarctique Ouest est le plus vulnérable (-31 % depuis 2020). La calotte du Groenland contribue à elle seule à 40 % de l’élévation du niveau marin. Les projections annoncent +15 à 22 cm d’ici 2050. La fonte modifie les écosystèmes polaires, réduit les habitats de la faune spécialisée et perturbe la circulation thermohaline. Le rapport recommande un renforcement de la surveillance, une réduction des émissions, des stratégies d’adaptation pour les zones côtières et des corridors de protection pour la biodiversité.",
       "reference_criteria": [
         "Perte annuelle moyenne de glace par région polaire",
@@ -726,6 +733,7 @@
         "Impacts écologiques et menaces sur la biodiversité polaire",
         "Recommandations stratégiques : surveillance, réduction des émissions, adaptation côtière, corridors de protection"
       ],
+      "reference_category":"CLIMATE AND EMISSIONS",
       "reference_numbers": {
         "annual_loss": {
           "arctic": {
@@ -831,6 +839,113 @@
           "chart": [
             "LineChart"
           ]
+        }
+      }
+    },
+    {
+      "id": "9",
+      "title": "9_test_data.pdf",
+      "reference_summary": "Données de test pour vérifier l'extraction de données",
+      "reference_criteria": [
+        ""
+      ],
+      "reference_category":"CLIMATE AND EMISSIONS",
+      "reference_numbers": {
+        "country_comparison": {
+          "china": {
+            "share": "24",
+            "unit": "%"
+          },
+          "eu": {
+            "share": "16",
+            "unit": "%"
+          },
+          "india": {
+            "share": "9",
+            "unit": "%"
+          },
+          "usa": {
+            "share": "7",
+            "unit": "%"
+          },
+          "japan": {
+            "share": "5",
+            "unit": "%"
+          },
+          "page": 5,
+          "chart": [
+            "BarChart",
+            "PieChart",
+            "ChoroplethMap"
+          ]
+        },
+                "annual_plastic_waste": {
+          "amount": "275",
+          "unit": "millions de tonnes",
+          "page": 2,
+          "chart": [
+            "LineChart"
+          ]
+        },
+        "ocean_pollution": {
+          "amount": "12",
+          "unit": "millions de tonnes/an",
+          "page": 2,
+          "chart": [
+            "LineChart"
+          ]
+        },
+        "marine_costs": {
+          "amount": "13",
+          "unit": "milliards de dollars/an",
+          "page": 2,
+          "chart": [
+            "LineChart"
+          ]
+        },
+        "regional_data": {
+          "values": {
+            "2020": {
+              "arctic": "14,8",
+              "antarctic_west": "5,2",
+              "antarctic_east": "12,1",
+              "greenland": "1,71",
+              "temp": "-8,3",
+              "sea_level": "3,1"
+            },
+            "2021": {
+              "arctic": "13,9",
+              "antarctic_west": "4,8",
+              "antarctic_east": "11,9",
+              "greenland": "1,69",
+              "temp": "-7,9",
+              "sea_level": "3,8"
+            },
+            "2022": {
+              "arctic": "12,1",
+              "antarctic_west": "4,2",
+              "antarctic_east": "11,4",
+              "greenland": "1,65",
+              "temp": "-6,8",
+              "sea_level": "4,9"
+            },
+            "2023": {
+              "arctic": "11,6",
+              "antarctic_west": "3,9",
+              "antarctic_east": "11,0",
+              "greenland": "1,62",
+              "temp": "-6,2",
+              "sea_level": "5,1"
+            },
+            "2024*": {
+              "arctic": "10,8",
+              "antarctic_west": "3,6",
+              "antarctic_east": "10,7",
+              "greenland": "1,58",
+              "temp": "-5,7",
+              "sea_level": "5,4"
+            }
+          }
         }
       }
     }
