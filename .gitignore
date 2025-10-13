@@ -2,7 +2,7 @@
 bucket/
 mlruns/
 reports/
-news_dataset/
+news_datasets/
 
 # Node.js/TypeScript
 node_modules/
