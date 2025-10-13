@@ -14,8 +14,8 @@ AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT")
 DEPLOYMENT_NAME = os.getenv("DEPLOYMENT_NAME") 
 API_VERSION = os.getenv("API_VERSION")
 
-guardian_articles="./news_dataset/llm_batch_80.csv"
-labeled_articles="./news_dataset/train_80_labeled.csv"
+guardian_articles="../news_datasets/llm_batch_80.csv"
+labeled_articles="../news_datasets/train_80_labeled.csv"
 
 client = AzureOpenAI(
     api_key=AZURE_OPENAI_KEY,
@@ -88,7 +88,7 @@ def process_data():
         category = label_article_via_llm(article_text, article_id)
         df_work.loc[index, 'llm_category'] = category
 
-        print(f"Article {index+1}/{len(df)} labeled : {category}")
+        print(f"Article {index+1}/{len(df_work)} labeled : {category}")
     
     try:
         df_work.to_csv(labeled_articles, index=False)
