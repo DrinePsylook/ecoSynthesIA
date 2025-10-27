@@ -14,8 +14,10 @@ AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT")
 DEPLOYMENT_NAME = os.getenv("DEPLOYMENT_NAME") 
 API_VERSION = os.getenv("API_VERSION")
 
-guardian_articles="../news_datasets/llm_batch_80.csv"
-labeled_articles="../news_datasets/train_80_labeled.csv"
+# guardian_articles="../news_datasets/llm_batch_80.csv"
+# labeled_articles="../news_datasets/train_80_labeled.csv"
+guardian_articles="../news_datasets/llm_batch_400.csv"
+labeled_articles="../news_datasets/train_400_labeled.csv"
 
 client = AzureOpenAI(
     api_key=AZURE_OPENAI_KEY,
@@ -61,7 +63,7 @@ def process_data():
         print(f"Working file found: Resumption of labeling since '{labeled_articles}'.")
         df_work = pd.read_csv(labeled_articles)
     else:
-        print(f"No working file found: Starting labeling from the beginning with {guardian_articles}.")
+        print(f"'{labeled_articles}' not found: Starting labeling from the beginning with {guardian_articles}.")
         df_work = pd.read_csv(guardian_articles)
         if 'llm_category' not in df_work.columns:
             df_work['llm_category'] = None
@@ -98,4 +100,9 @@ def process_data():
     print(f"Article {index + 1}/{total_articles} [ID: {article_id}] labellisé : {category} -> SAUVEGARDÉ")
     time.sleep(1) 
 
-process_data()
+
+if os.path.exists(guardian_articles):
+    print(f"File found : {guardian_articles}. Start process.")
+    process_data()
+else:
+    print(f"CRITICAL ERROR: The file {guardian_articles} doesn't exist.")
