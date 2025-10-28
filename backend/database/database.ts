@@ -5,7 +5,7 @@ export let pgPool: Pool | null = null;
 export const connectToDatabase = async () => {
     let clientOptions: any = {};
     clientOptions = {
-        host: process.env.POSTGRES_HOST || 'db_ecosynthesia',
+        host: process.env.POSTGRES_HOST || (process.env.APP_ENV === 'local' ? 'localhost' : 'db_ecosynthesia'),        
         password: process.env.POSTGRES_PASSWORD,
         port: 5432,
         user: process.env.POSTGRES_USER,
