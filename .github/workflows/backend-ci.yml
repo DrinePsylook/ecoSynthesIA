@@ -2,14 +2,6 @@ name: Backend CI/CD
 
 on:
   workflow_call:
-  # push:
-  #   branches: [ main ]
-  #   paths:
-  #     - 'backend/**'
-  # pull_request:
-  #   branches: [ main ]
-  #   paths:
-  #     - 'backend/**'
 
 jobs:
   test-backend:
@@ -61,23 +53,6 @@ jobs:
         working-directory: ./backend
         run: yarn build
 
-  docker-build-backend:
-    needs: test-backend  # Only build Docker if tests pass
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      
       - name: Build Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./backend
-          file: ./backend/Dockerfile
-          push: false  
-          tags: back-ecosynthesia:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+        working-directory: ./backend
+        run: docker build -f Dockerfile -t back-ecosynthesia:latest .
