@@ -2,6 +2,10 @@ import { QueryResult } from 'pg';
 
 import { pgPool, queryResultHasRows } from '../../database/database';
 
+/**
+ * Interface defining the structure of a document to be inserted into the database
+ * Maps to the documents table schema
+ */
 export interface DocumentToInsert {
     external_doc_id: string; // use GUID from world bank (unique id)
     author: string | null;
@@ -13,14 +17,24 @@ export interface DocumentToInsert {
     user_id: string | null; 
 }
 
+/**
+ * Performs an UPSERT operation on the documents table
+ * If a document with the same external_doc_id exists, it updates it; otherwise it inserts a new record
+ * Uses PostgreSQL ON CONFLICT clause with the unique external_doc_id constraint
+ * @param doc - Document data to insert or update
+ * @returns Query result containing the database record ID, or null on error
+ */
 export const upsertDocument = async (doc: DocumentToInsert): Promise<QueryResult<any> | null> => {
+    // Validate database connection
     if (!pgPool) {
         console.error('PostgreSQL pool is not initialized');
         return null;
     }
 
+    // Get a client from the connection pool
     const client = await pgPool.connect();
     try {
+        // SQL query with UPSERT logic using ON CONFLICT
         const query = `
             INSERT INTO documents (
                 external_doc_id, title, date_publication, storage_path, 
@@ -37,6 +51,7 @@ export const upsertDocument = async (doc: DocumentToInsert): Promise<QueryResult
             RETURNING id;
         `;
 
+        // Parameterized values to prevent SQL injection
         const values = [
             doc.external_doc_id,    // $1
             doc.title,              // $2
@@ -48,8 +63,10 @@ export const upsertDocument = async (doc: DocumentToInsert): Promise<QueryResult
             doc.category_id         // $8
         ];
 
+        // Execute the query
         const result = await client.query(query, values);
 
+        // Log successful operation
         if (queryResultHasRows(result)) {
             console.log(`[DB] Document ${doc.external_doc_id} insert/update with id: ${result.rows[0].id}`);
         }
@@ -57,10 +74,12 @@ export const upsertDocument = async (doc: DocumentToInsert): Promise<QueryResult
         return result;
     }
     catch (error) {
+        // Log error and return null to indicate failure
         console.error(`Error upserting for the document ${doc.external_doc_id}:`, error);        
         return null;
     }
     finally {
+        // Always release the database client back to the pool
         client.release();
     }
 };
