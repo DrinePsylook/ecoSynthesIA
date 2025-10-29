@@ -14,8 +14,8 @@ AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT")
 DEPLOYMENT_NAME = os.getenv("DEPLOYMENT_NAME") 
 API_VERSION = os.getenv("API_VERSION")
 
-guardian_articles="../news_datasets/llm_batch_402.csv"
-labeled_articles="../news_datasets/train_402_labeled.csv"
+guardian_articles="../news_datasets/llm_batch_999.csv"
+labeled_articles="../news_datasets/full_training_dataset.csv"
 
 client = AzureOpenAI(
     api_key=AZURE_OPENAI_KEY,
