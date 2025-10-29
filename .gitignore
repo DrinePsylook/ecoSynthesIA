@@ -3,6 +3,7 @@ bucket/
 mlruns/
 reports/
 news_datasets/
+classification_report/
 
 # Node.js/TypeScript
 node_modules/
