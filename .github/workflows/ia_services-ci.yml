@@ -11,6 +11,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         
+      - name: Free up disk space
+        run: |
+          echo "Disk space before cleanup:"
+          df -h
+          
+          # Remove unnecessary packages and cache to free up space
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          sudo apt-get clean
+          sudo docker system prune -a -f
+          
+          echo "Disk space after cleanup:"
+          df -h
+        
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
@@ -21,9 +37,11 @@ jobs:
       - name: Clean pip cache
         run: pip cache purge
 
-      - name: Install dependencies
+      - name: Install dependencies (CPU-only PyTorch)
         working-directory: ./ia_service
-        run: pip install -r requirements.txt
+        run: |
+          pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cpu
+          pip install -r requirements.txt
         
       # - name: Run tests
       #   working-directory: ./ia_service
