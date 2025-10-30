@@ -2,14 +2,6 @@ name: Frontend CI/CD
 
 on:
   workflow_call:
-  push:
-    branches: [ main ]
-    paths:
-      - 'frontend/**'
-  pull_request:
-    branches: [ main ]
-    paths:
-      - 'frontend/**'
 
 jobs:
   test-frontend:
@@ -22,7 +14,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'  # Mise à jour vers Node.js 20
+          node-version: '20' 
           cache-dependency-path: 'frontend/yarn.lock'
           
       - name: Install dependencies
@@ -36,3 +28,7 @@ jobs:
       - name: Build
         working-directory: ./frontend
         run: yarn build
+
+      - name: Build Docker image
+        working-directory: ./frontend
+        run: docker build -f Dockerfile -t front-ecosynthesia:latest .
