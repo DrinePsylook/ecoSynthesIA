@@ -9,6 +9,7 @@ pytest~=8.4
 python-dotenv~=1.0
 requests~=2.32
 scikit-learn~=1.7
+seaborn~=0.12
 torch~=2.9
 transformers~=4.57
 uvicorn[standard]~=0.24
