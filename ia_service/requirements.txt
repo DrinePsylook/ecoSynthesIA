@@ -10,4 +10,6 @@ pydantic~=2.11
 pytest~=8.4
 python-dotenv~=1.0
 requests~=2.32
+# torch 2.5.1 is installed in the Dockerfile
+transformers~=4.56.2
 uvicorn[standard]~=0.24
