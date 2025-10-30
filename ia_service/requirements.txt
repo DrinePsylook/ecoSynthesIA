@@ -1,5 +1,7 @@
 fastapi~=0.104
 langchain-core~=0.3
+langchain-google-genai~=0.3
+langchain-openai~=0.3
 langgraph~=0.6
 numpy~=2.2
 openai~=2.3
