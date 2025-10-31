@@ -31,21 +31,15 @@ def load_bert_classifier():
             local_files_only=True
         ).to(DEVICE)
         
-        print(f"✅ Model successfully loaded")
-        
         # Load tokenizer
         tokenizer = DistilBertTokenizerFast.from_pretrained(
             BERT_OUTPUT_DIR,
             local_files_only=True
         )
-        
-        print(f"✅ Tokenizer chargé avec succès")
-        
+    
         # Load the label encoder
         with open(ENCODER_FILENAME_PKL, 'rb') as f:
             label_encoder = pickle.load(f)
-        
-        print(f"✅ Label encoder loaded with {len(label_encoder.classes_)} classes")
         
         # Set the model to evaluation mode
         model.eval()
