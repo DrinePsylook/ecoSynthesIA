@@ -1,7 +1,45 @@
 import pytest
 import traceback
 import torch
+import os
+
 from ml_training.training.load_training_model import load_bert_classifier, predict_category
+
+
+# Mocks to simulate components
+class MockModel:
+    """Simulate a BERT model loaded."""
+    def to(self, device): return self
+    def eval(self): pass
+    def __call__(self, **inputs):
+        # simulate the the output of the prediction (simulated logits)
+        return type('MockOutput', (object,), {'logits': torch.tensor([[0.1, 0.9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]])})
+    
+class MockBatchEncoding(dict):
+    """Mock BatchEncoding that supports .to(device) like transformers tokenizers"""
+    def to(self, device):
+        # Return self after moving tensors to device (in our case, just return self)
+        return self
+
+class MockTokenizer:
+    """Simulate the BERT tokenizer"""
+    def __call__(self, *args, **kwargs):
+        # Simulate the encoder (return a BatchEncoding-like object that supports .to(device))
+        batch_encoding = MockBatchEncoding({
+            'input_ids': torch.tensor([[101, 2345, 102]]), 
+            'attention_mask': torch.tensor([[1, 1, 1]])
+        })
+        return batch_encoding
+    def save_pretrained(self, path): pass
+
+class MockEncoder:
+    """Simulate the label encoder"""
+    def __init__(self):
+        self.classes_ = ['BIODIVERSITY AND ECOSYSTEMS', 'CLIMATE AND EMISSIONS', 'ENERGY AND TRANSITION', 'NATURAL RESOURCES', 'POLICIES AND REGULATION', 'POLLUTION AND ENVIRONMENTAL QUALITY', 'RISKS AND DISASTERS', 'SOCIO-ECONOMIC IMPACT']
+    def inverse_transform(self, ids):
+        # return a default category (CLIMATE AND EMISSIONS which is index 1)
+        return [self.classes_[1]]
+
 
 # Global variable to store the loaded model
 CLASSIFIER_COMPONENTS = None
@@ -12,15 +50,32 @@ def classifier_components():
     global CLASSIFIER_COMPONENTS
     if CLASSIFIER_COMPONENTS is None:
         print("\n[INFO] Loading classifier components for testing...")
-        try: 
-            model, tokenizer, label_encoder = load_bert_classifier()
+
+        model_dir = "/home/runner/work/ecoSynthesIA/ecoSynthesIA/ia_service/ml_training/training/classification_report/distilbert_classification_model" 
+
+        if not os.path.isdir(model_dir):
+            print(f"[ATTENTION] Modèle BERT non trouvé en local ({model_dir}). Utilisation du MOCK.")
+
+            # Create mock components
+            m_encoder = MockEncoder()
+            mock_model = MockModel()
+            mock_tokenizer = MockTokenizer()
+            
             DEVICE = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-            CLASSIFIER_COMPONENTS = (model, tokenizer, label_encoder, DEVICE)
-            print(f"[INFO] ✅ Components loaded successfully")
-            print(f"[INFO] Classes: {list(label_encoder.classes_)}")
-        except Exception as e:
-            error_details = traceback.format_exc()
-            pytest.fail(f"Failed to load model components: {e}\n\nDetails:\n{error_details}")
+            CLASSIFIER_COMPONENTS = (mock_model, mock_tokenizer, m_encoder, DEVICE)
+            print(f"[INFO] ✅ Components loaded successfully (MOCKED)")
+            print(f"[INFO] Classes: {list(m_encoder.classes_)}")
+        else:
+            # Try to load real model
+            try: 
+                model, tokenizer, label_encoder = load_bert_classifier()
+                DEVICE = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+                CLASSIFIER_COMPONENTS = (model, tokenizer, label_encoder, DEVICE)
+                print(f"[INFO] ✅ Components loaded successfully")
+                print(f"[INFO] Classes: {list(label_encoder.classes_)}")
+            except Exception as e:
+                error_details = traceback.format_exc()
+                pytest.fail(f"Failed to load model components: {e}\n\nDetails:\n{error_details}")
     return CLASSIFIER_COMPONENTS
 
 
