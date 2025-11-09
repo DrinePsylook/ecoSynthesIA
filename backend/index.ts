@@ -15,6 +15,11 @@ if (fs.existsSync(path.resolve(__dirname, '../.env'))) {
 import { connectToDatabase, pgPool } from './database/database';
 import { runMigrations } from './database/migrations/migrationRunner';
 
+import documentRoutes from './src/routes/documentRoute';
+import summaryRoutes from './src/routes/summaryRoute';
+import extractedDataRoutes from './src/routes/extractedDataRoute';
+import categoryRoutes from './src/routes/categoryRoute';
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -60,16 +65,22 @@ app.use((req, res) => {
   });
 });
 
+// Register routes
+app.use('/api/documents', documentRoutes);
+app.use('/api/summaries', summaryRoutes);
+app.use('/api/extracted-data', extractedDataRoutes);
+app.use('/api/categories', categoryRoutes);
+
 // Immediately invoked async function
 (async () => {
   try {
-    // 1. First, create database and run migrations (this will create the DB if needed)
+    // First, create database and run migrations (this will create the DB if needed)
     await runMigrations(null); // Pass null since we don't have a pool yet
     
-    // 2. Then connect to the database
+    // Then connect to the database
     await connectToDatabase();
     
-    // 3. Start server
+    // Start server
     app.listen(PORT, () => {
       console.log(`🚀 Server is running on port ${PORT}`);
       console.log(`📊 Health check available at http://localhost:${PORT}/health`);
