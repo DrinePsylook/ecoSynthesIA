@@ -1,5 +1,12 @@
 from enum import Enum
 
+class ChartType(str, Enum):
+    LINE_CHART = "LineChart"
+    BAR_CHART = "BarChart"
+    PIE_CHART = "PieChart"
+    CHOROPLETH_MAP = "ChoroplethMap"
+    UNKNOWN = "Unknown"
+
 class EnvironmentalCategory(str, Enum):
     CLIMATE = "CLIMATE AND EMISSIONS"
     BIODIVERSITY = "BIODIVERSITY AND ECOSYSTEMS"
