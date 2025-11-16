@@ -3,6 +3,12 @@ from typing import List, Optional, Union
 
 from config import ChartType
 
+class AnalyzeDocumentRequest(BaseModel):
+    """Model to represent the request to analyze a document."""
+    file_path: str = Field(
+        description="The path to the document to analyze."
+    )
+
 class ExtractedDataPoint(BaseModel):
     """Represents a single data point extracted from a document."""
     key: str = Field(
