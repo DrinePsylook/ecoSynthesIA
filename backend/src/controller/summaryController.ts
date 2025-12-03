@@ -78,6 +78,7 @@ export const createSummary = async (
         const summary = await summaryService.createSummary({
             document_id: documentId,
             textual_summary: textualSummary,
+            date_analysis: new Date(),
             confidence_score: confidenceScore
         });
 

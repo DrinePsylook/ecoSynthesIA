@@ -32,19 +32,32 @@ def get_document_retriever() -> BaseRetriever:
             raise
     return GLOBAL_RETRIEVER
 
-def retrieve_context(query: str, k: int = 4) -> List[Document]:
+def retrieve_context(query: str, k: int = 4, filter_metadata: dict = None) -> List[Document]:
     """
     Performs a similarity search in the Vector Store based on a query.
 
     Args:
         query: The search query (the document title, or the purpose of the task).
         k: The number of top documents to retrieve.
+        filter_metadata: Optional metadata filter (e.g., {"document_id": "123"})
 
     Returns:
         A list of the k most relevant Langchain Documents (chunks).
     """
-    retriever = get_document_retriever()
-    retriever.search_kwargs["k"] = k  # Update k if needed
+    embeddings = get_embedding_model(EMBEDDING_MODEL_NAME)
+    vector_store = get_vector_store(embeddings)
+    
+    # Use vector_store.similarity_search with filter instead of retriever
+    if filter_metadata:
+        documents = vector_store.similarity_search(
+            query, 
+            k=k, 
+            filter=filter_metadata
+        )
+    else:
+        # Fallback to retriever for backward compatibility
+        retriever = get_document_retriever()
+        retriever.search_kwargs["k"] = k
+        documents = retriever.invoke(query)
 
-    documents = retriever.invoke(query)
     return documents

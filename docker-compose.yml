@@ -5,10 +5,11 @@ services:
             dockerfile: Dockerfile
         container_name: front_ecosynthesia
         volumes:
-            - ./frontend:/app
-            - /var/www/html/ecoSynthesIA/frontend/node_modules
+            - ./frontend:/app          
+            - /app/node_modules        
+        working_dir: /app   
         ports:
-            - "5173:5173"
+            - "5174:5173"
         networks:
             - ecosynthesia-network
 
@@ -18,31 +19,26 @@ services:
             dockerfile: Dockerfile
         container_name: back_ecosynthesia
         volumes:
-            - ./backend:/app
+            - ./backend:/app          
+            - ./bucket:/app/bucket    
+        working_dir: /app
         depends_on:
-            - db
+            - ia_service  
+        links:                       
+        - ia_service:ia_ecosynthesia
         ports:
-            - "3000:3000"
+            - "3001:3000"
         environment:
             - NODE_ENV=development
-            - POSTGRES_HOST=db_ecosynthesia
+            - POSTGRES_HOST=host.docker.internal  
             - POSTGRES_DB=${POSTGRES_DB}
             - POSTGRES_USER=${POSTGRES_USER}
             - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+            - IA_SERVICE_URL=http://ia_ecosynthesia:8000
+        extra_hosts:
+            - "host.docker.internal:host-gateway" 
         networks:
             - ecosynthesia-network
-
-    db:
-        image: postgres:13
-        container_name: db_ecosynthesia
-        volumes:
-        - postgres_data:/var/lib/postgresql/data/
-        environment:
-        - POSTGRES_DB=${POSTGRES_DB}
-        - POSTGRES_USER=${POSTGRES_USER}
-        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-        networks:
-        - ecosynthesia-network
 
     ia_service:
         build:
@@ -51,15 +47,17 @@ services:
         container_name: ia_ecosynthesia
         volumes:
             - ./ia_service:/app
-        depends_on:
-            - db
+            - ./bucket:/app/bucket     
+        working_dir: /app   
         ports:
-            - "8000:8000"
+            - "8001:8000"
+        environment:
+            - PROJECT_ROOT=/
+            - OLLAMA_URL=http://host.docker.internal:11434
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
         networks:
             - ecosynthesia-network
-
-volumes:
-    postgres_data:
 
 networks:
     ecosynthesia-network:

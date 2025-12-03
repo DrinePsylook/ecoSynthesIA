@@ -22,14 +22,14 @@ export const getSummaryByDocumentId = async (
     try {
         const query = `
             SELECT 
-                id_summary, 
+                id,  
                 document_id, 
                 textual_summary, 
-                date_summary, 
+                date_analysis, 
                 confidence_score
             FROM summaries
             WHERE document_id = $1
-            ORDER BY date_summary DESC
+            ORDER BY date_analysis DESC
             LIMIT 1;
         `;
 
@@ -70,14 +70,15 @@ export const createSummary = async(
     const client = await pgPool.connect();
     try {
         const query = `
-            INSERT INTO summaries (document_id, textual_summary, confidence_score)
-            VALUES ($1, $2, $3)
-            RETURNING id_summary, document_id, textual_summary, date_summary, confidence_score;
+            INSERT INTO summaries (document_id, textual_summary, date_analysis, confidence_score)
+            VALUES ($1, $2, $3, $4)
+            RETURNING id, document_id, textual_summary, date_analysis, confidence_score;
             `;
 
         const result = await client.query(query, [
             summaryData.document_id,
             summaryData.textual_summary,
+            summaryData.date_analysis,
             summaryData.confidence_score
         ]);
 

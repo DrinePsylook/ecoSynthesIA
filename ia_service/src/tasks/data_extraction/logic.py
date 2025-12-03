@@ -46,22 +46,65 @@ def _clean_value_and_unit(value: str, unit: Union[str, None]) -> tuple[str, str]
         
     return value, unit
 
+
+def _has_quantifiable_value(value: str) -> bool:
+    """
+    Checks if a value contains actual quantifiable data.
+    
+    Returns:
+        True if value contains numbers, percentages, or date patterns
+        False if value is empty, generic text, or "data not provided"
+    """
+    if not value or value.strip() == "":
+        return False
+    
+    # Reject explicit "no data" markers
+    no_data_patterns = [
+        "data not provided",
+        "not available",
+        "n/a",
+        "unknown",
+        "tbd",
+        "to be determined"
+    ]
+    value_lower = value.lower().strip()
+    if value_lower in no_data_patterns:
+        return False
+    
+    # Accept if contains numbers (including decimals and separators)
+    has_number = re.search(r'\d', value)
+    if has_number:
+        return True
+    
+    # Accept date-like patterns (2023, 2020-2025, Q1 2024, etc.)
+    has_date_pattern = re.search(r'(19|20)\d{2}', value)
+    if has_date_pattern:
+        return True
+
+    return False
+
+
 def validate_and_clean_extracted_data(extracted_result: ExtractionResult) -> ExtractionResult:
     """
     Applies final validation and cleaning to the Pydantic result before storage.
-    Checks include: confidence score threshold and data format cleaning.
+    Uses quantifiable value validation based on value content.
 
     Args:
         extracted_result: The validated Pydantic object output from Mistral.
 
     Returns: 
-        The potentially modified object or the same object.
+        The cleaned and filtered result.
     """
     MIN_CONFIDENCE_THRESHOLD = MIN_CONFIDENCE_THRESHOLD_DATA
 
     cleaned_points: List[ExtractedDataPoint] = []
 
     for point in extracted_result.extracted_points:
+        # Check: Does the value contain actual quantifiable data?
+        if not _has_quantifiable_value(point.value):
+            print(f"  ⚠️ Skipping '{point.key}': value '{point.value}' is not quantifiable")
+            continue
+
         # Clean the value and unit
         cleaned_value, cleaned_unit = _clean_value_and_unit(point.value, point.unit)
         point.value = cleaned_value

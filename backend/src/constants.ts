@@ -1,7 +1,5 @@
 import * as path from 'path';
 
-// Get project root directory (ecoSynthesIA/)
-export const ROOT_DIR = path.resolve(__dirname, '..', '..');
-
-// Bucket path constant - always points to bucket/ from project root
-export const BUCKET_PATH = path.join(ROOT_DIR, 'bucket');
+// Simple: use relative path from working directory
+export const BUCKET_PATH = path.join(process.cwd(), 'bucket');
+export const ROOT_DIR = process.cwd();;

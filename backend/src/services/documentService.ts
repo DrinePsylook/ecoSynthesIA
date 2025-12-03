@@ -105,6 +105,23 @@ export const getUnanalyzedDocuments = async (): Promise<Document[]> => {
 
     const client = await pgPool.connect();
     try {
+        // First, let's check the counts to understand the situation
+        const countQuery = `
+            SELECT 
+                (SELECT COUNT(*) FROM documents) as total_documents,
+                (SELECT COUNT(DISTINCT document_id) FROM summaries) as documents_with_summary,
+                (SELECT COUNT(DISTINCT document_id) FROM extracted_data) as documents_with_extracted_data;
+        `;
+        
+        const countResult = await client.query(countQuery);
+        if (countResult.rows.length > 0) {
+            const counts = countResult.rows[0];
+            console.log('📊 Database statistics:');
+            console.log(`  - Total documents: ${counts.total_documents}`);
+            console.log(`  - Documents with summary: ${counts.documents_with_summary}`);
+            console.log(`  - Documents with extracted_data: ${counts.documents_with_extracted_data}`);
+        }
+
         const query = `
             SELECT DISTINCT d.*
             FROM documents d
@@ -112,18 +129,28 @@ export const getUnanalyzedDocuments = async (): Promise<Document[]> => {
             LEFT JOIN extracted_data ed ON d.id = ed.document_id
             WHERE s.document_id IS NULL 
                OR ed.document_id IS NULL
-            ORDER BY d.created_at ASC;
+            ORDER BY d.created_at ASC
+            LIMIT 500;
         `;
 
         const result = await client.query(query);
-
+        
         if (queryResultHasRows(result)) {
+            return result.rows as Document[];
+        }
+
+        // Fallback: return rows even if queryResultHasRows fails
+        if (result.rows && result.rows.length > 0) {
             return result.rows as Document[];
         }
 
         return [];
     } catch (error) {
-        console.error('Error getting unanalyzed documents:', error);
+        console.error('❌ Error getting unanalyzed documents:', error);
+        if (error instanceof Error) {
+            console.error('Error message:', error.message);
+            console.error('Error stack:', error.stack);
+        }
         return [];
     } finally {
         client.release();

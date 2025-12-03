@@ -1,4 +1,4 @@
--- create analysis table
+-- create summary table
 CREATE TABLE IF NOT EXISTS summaries (
     id SERIAL PRIMARY KEY,
     document_id INTEGER UNIQUE REFERENCES documents(id) ON DELETE CASCADE,
