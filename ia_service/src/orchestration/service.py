@@ -24,63 +24,72 @@ def get_document_title(file_path: str) -> str:
     return os.path.splitext(os.path.basename(file_path))[0].replace('_', ' ')
 
 
-def process_document_for_data_extraction(file_path: str) -> ExtractionResult:
+def process_document_for_data_extraction(file_path: str, document_id: int = None) -> ExtractionResult:
     """
     Main function for data extraction using RAG and the Llama->Mistral chain.
 
     Args:
         file_path: The full path to the PDF.
+        document_id: The database ID to filter chunks from this document only 
 
     Returns:
-        List of dictionaries in the format expected by the API:
-        [
-            {
-                "key": str,
-                "value": str | number,
-                "unit": str | None,
-                "page": int | None,
-                "confidence_score": float,
-                "chart_type": str | None,
-                "indicator_category": str
-            },
-            ...
-        ]
+        List of dictionaries in the format expected by the API
     """
     print(f"--- Starting Data Extraction Process for: {file_path} ---")
+
+    filter_metadata = None
+    if document_id is not None:
+        filter_metadata = {"document_id": str(document_id)}
+        print(f"🔍 Filtering RAG retrieval by document_id: {document_id}")
 
     # Focus on generic strong keywords that appear in all reports.
     rag_query = "Extract key quantifiable facts, figures, statistics, loan amounts, beneficiaries, and financial tables"
 
-    retrieved_documents = retrieve_context(query=rag_query, k=25)
+    retrieved_documents = retrieve_context(
+        query=rag_query, 
+        k=25,
+        filter_metadata=filter_metadata  
+    )
     
     if not retrieved_documents:
         print("⚠️ RAG failed or DB empty for extraction.")
         return []
     
-    # FORCE-READ: Detect and add pages that contain tables
+    table_pages = []
     try:   
-        table_pages = []
         with pdfplumber.open(file_path) as pdf:
             for page_num, page in enumerate(pdf.pages):
                 tables = page.extract_tables()
-                if tables:  # This page has at least one table
+                if tables:
                     table_pages.append(page_num)
-                    print(f"📊 Detected table on page {page_num}")
-        
-        # Load only the pages with tables
-        if table_pages:
-            all_pages = load_and_split_pdf(file_path, document_id=None)
-            
-            seen_content = set(hash(doc.page_content[:50]) for doc in retrieved_documents)
-            for doc in all_pages:
-                if doc.metadata.get("page") in table_pages:
-                    content_hash = hash(doc.page_content[:50])
-                    if content_hash not in seen_content:
-                        retrieved_documents.append(doc)
-                        seen_content.add(content_hash)
-                        print(f"✅ Force-added page {doc.metadata.get('page')} (contains table)")
     except Exception as e:
-        print(f"⚠️ Could not detect/add table pages: {e}")
+        print(f"⚠️ Could not detect table pages: {e}")
+    
+    try:   
+        all_pages = load_and_split_pdf(file_path, document_id=document_id)
+        
+        priority_pages = list(range(3)) + table_pages
+        
+        seen_content = set(hash(doc.page_content[:50]) for doc in retrieved_documents)
+        
+        priority_docs = []
+        for doc in all_pages:
+            page_num = doc.metadata.get("page")
+            if page_num in priority_pages:
+                content_hash = hash(doc.page_content[:50])
+                if content_hash not in seen_content:
+                    priority_docs.append(doc)
+                    seen_content.add(content_hash)
+        
+        retrieved_documents = priority_docs + retrieved_documents
+        
+    except Exception as e:
+        print(f"⚠️ Could not force-read priority pages: {e}")
+    
+    MAX_CHUNKS = 20
+    if len(retrieved_documents) > MAX_CHUNKS:
+        print(f"⚠️ Context too large ({len(retrieved_documents)} chunks), truncating to {MAX_CHUNKS}")
+        retrieved_documents = retrieved_documents[:MAX_CHUNKS]
     
     # Prepare the text context for data extraction
     rag_context = prepare_context_for_extraction(retrieved_documents)
@@ -210,7 +219,6 @@ def process_document_for_summary(file_path: str, document_id: int = None) -> Dic
             if content_hash not in seen_content:
                 seen_content.add(content_hash)
                 retrieved_documents.insert(0, doc)  # Insert at START
-                print(f"✅ Force-added page {doc.metadata.get('page')} directly from PDF")
     except Exception as e:
         print(f"⚠️ Could not force-read first pages: {e}")
 

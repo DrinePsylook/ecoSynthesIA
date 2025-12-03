@@ -18,9 +18,10 @@ EXTRACTION_PROMPT = """
 You are an expert data extraction agent for environmental and financial reports.
 
 --- CRITICAL RULES (MUST FOLLOW) ---
-1. If you cannot find ANY data point with COMPLETE information (indicator + value + context), output: "NO VALID DATA FOUND"
-2. NEVER extract table headers, column names, or row labels without their corresponding values
-3. STRICTLY separate numerical values and units.
+1. **PRIORITY**: Extract data from markdown tables FIRST (identified by | header | format)
+2. If you cannot find ANY data point with COMPLETE information (indicator + value + context), output: "NO VALID DATA FOUND"
+3. NEVER extract table headers, column names, or row labels without their corresponding values
+4. STRICTLY separate numerical values and units.
 
 --- OUTPUT FORMAT (MANDATORY) ---
 You MUST output ONE line per data point in this EXACT format:
