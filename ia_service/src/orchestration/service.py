@@ -1,5 +1,5 @@
-import datetime
 import os
+import pdfplumber
 from typing import Dict, Any
 
 from ..retrieval.retriever import retrieve_context
@@ -24,48 +24,84 @@ def get_document_title(file_path: str) -> str:
     return os.path.splitext(os.path.basename(file_path))[0].replace('_', ' ')
 
 
-def process_document_for_data_extraction(file_path: str) -> ExtractionResult:
+def process_document_for_data_extraction(file_path: str, document_id: int = None) -> ExtractionResult:
     """
     Main function for data extraction using RAG and the Llama->Mistral chain.
 
     Args:
         file_path: The full path to the PDF.
+        document_id: The database ID to filter chunks from this document only 
 
     Returns:
-        List of dictionaries in the format expected by the API:
-        [
-            {
-                "key": str,
-                "value": str | number,
-                "unit": str | None,
-                "page": int | None,
-                "confidence_score": float,
-                "chart_type": str | None
-            },
-            ...
-        ]
+        List of dictionaries in the format expected by the API
     """
     print(f"--- Starting Data Extraction Process for: {file_path} ---")
 
-    rag_query = f"Extract all key quantifiable facts, figures, and statistics from the report titled: {get_document_title(file_path)}"
+    filter_metadata = None
+    if document_id is not None:
+        filter_metadata = {"document_id": str(document_id)}
+        print(f"🔍 Filtering RAG retrieval by document_id: {document_id}")
 
-    retrieved_documents = retrieve_context(query=rag_query, k=6)
+    # Focus on generic strong keywords that appear in all reports.
+    rag_query = "Extract key quantifiable facts, figures, statistics, loan amounts, beneficiaries, and financial tables"
+
+    retrieved_documents = retrieve_context(
+        query=rag_query, 
+        k=25,
+        filter_metadata=filter_metadata  
+    )
     
     if not retrieved_documents:
         print("⚠️ RAG failed or DB empty for extraction.")
-        return ExtractionResult(extracted_points=[])
+        return []
+    
+    table_pages = []
+    try:   
+        with pdfplumber.open(file_path) as pdf:
+            for page_num, page in enumerate(pdf.pages):
+                tables = page.extract_tables()
+                if tables:
+                    table_pages.append(page_num)
+    except Exception as e:
+        print(f"⚠️ Could not detect table pages: {e}")
+    
+    try:   
+        all_pages = load_and_split_pdf(file_path, document_id=document_id)
+        
+        priority_pages = list(range(3)) + table_pages
+        
+        seen_content = set(hash(doc.page_content[:50]) for doc in retrieved_documents)
+        
+        priority_docs = []
+        for doc in all_pages:
+            page_num = doc.metadata.get("page")
+            if page_num in priority_pages:
+                content_hash = hash(doc.page_content[:50])
+                if content_hash not in seen_content:
+                    priority_docs.append(doc)
+                    seen_content.add(content_hash)
+        
+        retrieved_documents = priority_docs + retrieved_documents
+        
+    except Exception as e:
+        print(f"⚠️ Could not force-read priority pages: {e}")
+    
+    MAX_CHUNKS = 20
+    if len(retrieved_documents) > MAX_CHUNKS:
+        print(f"⚠️ Context too large ({len(retrieved_documents)} chunks), truncating to {MAX_CHUNKS}")
+        retrieved_documents = retrieved_documents[:MAX_CHUNKS]
     
     # Prepare the text context for data extraction
     rag_context = prepare_context_for_extraction(retrieved_documents)
 
-    print("⏳ Invoking Llama -> Mistral extraction chain...")
+    print("⏳ Invoking Llama -> extraction chain...")
 
     # Invoke the data extraction chain
     try:
         raw_extraction_result = invoke_extraction_chain(DATA_EXTRACTION_CHAIN, rag_context)
     except Exception as e:
         print(f"Error during data extraction invocation: {e}")
-        return ExtractionResult(extracted_points=[])
+        return []
     
     #  Pre-Processing and validation
     final_result = validate_and_clean_extracted_data(raw_extraction_result)
@@ -98,36 +134,113 @@ def process_document_for_data_extraction(file_path: str) -> ExtractionResult:
             "unit": point.unit,
             "page": page_value,
             "confidence_score": point.confidence_score,
-            "chart_type": chart_type_value
+            "chart_type": chart_type_value,
+            "indicator_category": point.indicator_category
         })
 
     return extracted_data
 
 
-def process_document_for_summary(file_path: str, document_id: int) -> Dict[str, Any]:    
+def process_document_for_summary(file_path: str, document_id: int = None) -> Dict[str, Any]:    
     """
     Main function to generate the summary, confidence score, and category using RAG.
 
     Args:
         file_path (str): The path to the PDF document.
+        document_id (int, optional): The database ID to filter chunks from this document only
 
     Returns:
         Dict[str, Any]: A dictionary containing the final summary and related metadata.
     """
     print(f"--- Starting Summary and Categorization Process for: {file_path} ---")
 
-    document_title = get_document_title(file_path)
+    # Build filter to retrieve ONLY chunks from this specific document
+    filter_metadata = None
+    if document_id is not None:
+        filter_metadata = {"document_id": str(document_id)}
+        print(f"🔍 Filtering RAG retrieval by document_id: {document_id}")
 
-    # Retrieve relevant context using RAG 
-    retrieved_documents = retrieve_context(document_title)
+    # Strategy: Balanced Multi-query retrieval to feed Summary AND Classification
+    # Cover page identification
+    cover_chunks = retrieve_context(
+        query="Document prepared by submitted to author organization version final report study assessment",
+        k=5,  
+        filter_metadata=filter_metadata
+    )
+    
+    # Identity & Overview
+    intro_chunks = retrieve_context(
+        query="Report Title Project Name Executive Summary Prepared by Date Introduction Background",
+        k=5,  
+        filter_metadata=filter_metadata
+    )
+
+    # Technical & Environmental Substance
+    technical_chunks = retrieve_context(
+        query="Environmental impact social assessment biodiversity emissions pollution natural resources climate change mitigation measures",
+        k=4,  
+        filter_metadata=filter_metadata
+    )
+
+    # Socio-Economic & Governance
+    socio_gov_chunks = retrieve_context(
+        query="Legal framework institutional arrangements socio-economic impact beneficiaries budget loan agreement energy transition policy regulation",
+        k=3, 
+        filter_metadata=filter_metadata
+    )
+    
+    # Risks & Objectives
+    project_chunks = retrieve_context(
+        query="Project description objectives components risk management disaster resilience adaptation",
+        k=3, 
+        filter_metadata=filter_metadata
+    )
+
+    # Fusion & Deduplication
+    seen_content = set()
+    final_chunks = []
+    
+    for doc in cover_chunks + intro_chunks + technical_chunks + socio_gov_chunks + project_chunks:
+        content_hash = hash(doc.page_content[:50])
+        if content_hash not in seen_content:
+            seen_content.add(content_hash)
+            final_chunks.append(doc)
+            
+    retrieved_documents = final_chunks
+
+    # FALLBACK: Force-read first 2 pages directly from PDF (bypasses RAG entirely)
+    try:
+        all_pages = load_and_split_pdf(file_path, document_id=document_id)
+        first_pages_direct = [p for p in all_pages if p.metadata.get("page", 999) < 2]
+        
+        # Prepend first pages to ensure they're in context
+        for doc in first_pages_direct:
+            content_hash = hash(doc.page_content[:50])
+            if content_hash not in seen_content:
+                seen_content.add(content_hash)
+                retrieved_documents.insert(0, doc)  # Insert at START
+    except Exception as e:
+        print(f"⚠️ Could not force-read first pages: {e}")
 
     if not retrieved_documents:
         print("⚠️ RAG failed or DB empty. Switching to fallback.")
-        return {"summary": "Error: Document context not available from RAG.", 
-                "category": None, "confidence_score": 0.0, "status": "failed"}    
+        return {
+            "summary": {
+                "textual_summary": "Error: Document context not available from RAG.",
+                "confidence_score": 0.0
+            },
+            "category": {
+                "name": "Unknown"
+            }
+        }
     
     # Prepare the text context for summarization
     document_context = prepare_context_for_summary(retrieved_documents)
+    
+    # INJECT filename-based title as a hint (since RAG fails to get page 1)
+    file_title = get_document_title(file_path)
+    if file_title and "document" not in file_title.lower()[:15]:  # Skip if starts with "document_"
+        document_context = f"[DOCUMENT FILENAME: {file_title}]\n\n{document_context}"
 
     # Generate the summary
     raw_summary = invoke_summary_chain(SUMMARY_CHAIN, document_context)
@@ -145,10 +258,11 @@ def process_document_for_summary(file_path: str, document_id: int) -> Dict[str, 
 
     print("✅ Summary and Categorization completed.")
     return {
-        "document_id": document_id,
-        "textual_summary": final_summary,
-        "category": category, 
-        "confidence_score": confidence_score,
-        "date_analysis": datetime.date.today().isoformat(),
-        "status": "completed",
+        "summary": {
+            "textual_summary": final_summary,
+            "confidence_score": confidence_score
+        },
+        "category": {
+            "name": category if category else "Unknown"
+        }
     }

@@ -6,7 +6,8 @@ import axios from 'axios';
  */
 
 // Configuration for IA service
-const IA_SERVICE_URL = process.env.IA_SERVICE_URL || 'http://ia_ecosynthesia:8000';
+const IA_SERVICE_URL = process.env.IA_SERVICE_URL 
+    || 'http://ia_ecosynthesia:8000'; 
 
 /**
  * Interface for the AI service analysis response
@@ -23,6 +24,7 @@ export interface AIAnalysisResponse {
         page?: number | null;
         confidence_score: number;
         chart_type?: 'bar' | 'pie' | 'line' | 'choropleth' | null;
+        indicator_category: string;
     }>;
     category: {
         name: string;
@@ -32,21 +34,23 @@ export interface AIAnalysisResponse {
 /**
  * Calls the IA service to process a document
  * @param bucketFilePath The relative path to the document in the bucket (e.g., "bucket/reportAPI/document_123.pdf")
+ * @param documentId The database ID of the document
  * @returns The analysis results from the IA service
  */
 export const callAIServiceForAnalysis = async (
-    bucketFilePath: string
+    bucketFilePath: string,
+    documentId: number
 ): Promise<AIAnalysisResponse> => {
     try {
         // Call the IA service endpoint
-        // The endpoint will be created in ia_service/main.py
         const response = await axios.post<AIAnalysisResponse>(
             `${IA_SERVICE_URL}/api/analyze-document`,
             {
-                file_path: bucketFilePath
+                file_path: bucketFilePath,
+                document_id: documentId,  // Pass the document ID
             },
             {
-                timeout: 300000, // 5 minutes timeout for large documents
+                timeout: 900000, // 15 minutes timeout for large documents
                 headers: {
                     'Content-Type': 'application/json'
                 }

@@ -4,6 +4,7 @@ mlruns/
 reports/
 news_datasets/
 classification_report/
+chroma_db/
 
 # Node.js/TypeScript
 node_modules/

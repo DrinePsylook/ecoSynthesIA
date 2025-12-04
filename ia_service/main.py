@@ -4,6 +4,7 @@ from fastapi import FastAPI, HTTPException
 from src.models import AnalyzeDocumentRequest
 from src.orchestration.service import process_document_for_data_extraction, process_document_for_summary
 from src.retrieval.utils import get_absolute_file_path
+from src.ingest import ingest_document_with_metadata
 
 app = FastAPI()
 
@@ -13,13 +14,14 @@ async def analyze_document(request: AnalyzeDocumentRequest):
     Main endpoint that orchestrates document analysis.
     
     This endpoint:
-    1. Receives a relative file path from the backend
+    1. Receives a relative file path and document_id from the backend
     2. Converts it to an absolute path
-    3. Runs both pipelines (data extraction and summary)
-    4. Combines results in the format expected by the backend
+    3. **Indexes the document in ChromaDB first**
+    4. Runs both pipelines (data extraction and summary)
+    5. Combines results in the format expected by the backend
     
     Args:
-        request: Contains file_path (relative path from project root)
+        request: Contains file_path (relative path) and document_id (DB ID)
         
     Returns:
         Combined analysis results matching AIAnalysisResponse interface
@@ -28,8 +30,21 @@ async def analyze_document(request: AnalyzeDocumentRequest):
         # Convert relative path to absolute path
         absolute_file_path = get_absolute_file_path(request.file_path)
 
+        # Index the document in ChromaDB with metadata
+        print(f"📚 Indexing document {request.document_id} into ChromaDB...")
+        ingest_document_with_metadata(
+            file_path=absolute_file_path,
+            document_id=request.document_id
+        )
+
+        # Extract data
         extracted_data = process_document_for_data_extraction(absolute_file_path)
-        summary_result = process_document_for_summary(absolute_file_path, document_id=0)
+        
+        # Generate summary with document_id filter
+        summary_result = process_document_for_summary(
+            absolute_file_path, 
+            document_id=request.document_id
+        )
 
         # Combine results 
         return {

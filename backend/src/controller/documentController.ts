@@ -4,8 +4,7 @@ import * as documentService from '../services/documentService';
 import * as summaryService from '../services/summaryService';
 import * as extractedDataService from '../services/extractedDataService';
 import * as categoryService from '../services/categoryService';
-import * as aiService from '../services/aiService';
-import { downloadDocumentToBucket, getBucketFilePath, deleteLocalFile } from '../utils/fileUtils';
+import { processPendingDocuments as processPendingDocumentsService } from '../services/documentProcessingService';
 
 /**
  * Controller layer for document operations
@@ -132,112 +131,38 @@ export const getDocumentProcessingStatus = async (
  * POST /api/documents/process-pending
  */
 export const processPendingDocuments = async (
-    req: Request, 
+    req: Request,
     res: Response
 ): Promise<void> => {
+    console.log('🚀 [CONTROLLER] processPendingDocuments called');
+    console.log('🚀 [CONTROLLER] Request received at:', new Date().toISOString());
+    
     try {
-        // Find documents that need processing
-        const unanalyzedDocuments = await documentService.getUnanalyzedDocuments();
-
-        const results: Array<{
-            documentId: number;
-            hasSummary: boolean;
-            hasExtractedData: boolean;
-            needsProcessing: boolean;
-        }> = [];
-
-        for (const doc of unanalyzedDocuments) {
-            const hasSummary = await summaryService.hasSummary(doc.id);
-            const hasExtractedData = await extractedDataService.hasExtractedData(doc.id);
-            const hasCategory = await categoryService.hasCategory(doc.id);
-            const needsProcessing = !hasSummary || !hasExtractedData;
-
-            results.push({
-                documentId: doc.id,
-                hasSummary,
-                hasExtractedData,
-                needsProcessing,
-            });
-
-            // If document need processing, trigger it
-            if (needsProcessing) {
-                let localFilePath: string | null = null;
-                
-                try {
-                    // Download the document from storage_path to bucket/reportAPI
-                    localFilePath = await downloadDocumentToBucket(doc.storage_path, doc.id);
-                    
-                    // Get the relative path to send to IA service
-                    const bucketFilePath = getBucketFilePath(localFilePath);
-                    
-                    // Call IA service for analysis
-                    const analysisResults = await aiService.callAIServiceForAnalysis(bucketFilePath);
-                    
-                    // Create summary if needed
-                    if (!hasSummary && analysisResults.summary) {
-                        await summaryService.createSummary({
-                            document_id: doc.id,
-                            textual_summary: analysisResults.summary.textual_summary,
-                            confidence_score: analysisResults.summary.confidence_score,
-                        });
-                    }
-                    
-                    // Create extracted data if needed
-                    if (!hasExtractedData && analysisResults.extracted_data && analysisResults.extracted_data.length > 0) {
-                        const extractedDataEntries = analysisResults.extracted_data.map(data => ({
-                            document_id: doc.id,
-                            key: data.key,
-                            value: data.value,
-                            unit: data.unit || null,
-                            page: data.page || null,
-                            confidence_score: data.confidence_score,
-                            chart_type: data.chart_type || null
-                        }));
-                        
-                        await extractedDataService.createExtractedData(extractedDataEntries);
-                    }
-                    
-                    // Update category if needed and if category from IA exists
-                    if (!hasCategory && analysisResults.category) {
-                        const category = await categoryService.getCategoryByName(analysisResults.category.name);
-                        // If category exists in enum, assign it; otherwise set to null
-                        const categoryId = category ? category.id : null;
-                        await documentService.updateDocumentCategory(doc.id, categoryId);
-                    }
-                    
-                } catch (error) {
-                    const errorMessage = error instanceof Error ? error.message : String(error);
-                    console.error(`Error processing document ${doc.id}:`, errorMessage);
-                    // Continue processing other documents even if one fails
-                } finally {
-                    // Clean up temporary file after processing
-                    if (localFilePath) {
-                        try {
-                            await deleteLocalFile(localFilePath);
-                            console.log(`Cleaned up temporary file for document ${doc.id}`);
-                        } catch (cleanupError) {
-                            console.warn(`Warning: Could not delete temporary file for document ${doc.id}:`, cleanupError);
-                        }
-                    }
-                }
-            }
-        }
-
-        // Response formatting
-        const processed = results.filter(r => !r.needsProcessing).length;
-        const needsProcessing = results.filter(r => r.needsProcessing).length;
+        console.log('🚀 [CONTROLLER] Calling processPendingDocumentsService...');
+        const summary = await processPendingDocumentsService();
+        console.log('🚀 [CONTROLLER] Service returned, summary:', {
+            totalFound: summary.totalFound,
+            needsProcessing: summary.needsProcessing
+        });
 
         res.status(200).json({
             success: true,
             data: {
-                totalFound: unanalyzedDocuments.length,
-                alreadyProcessed: processed,
-                needsProcessing,
-                documents: results
+                totalFound: summary.totalFound,
+                alreadyProcessed: summary.alreadyProcessed,
+                needsProcessing: summary.needsProcessing,
+                processed: summary.processed,
+                failed: summary.failed,
+                documents: summary.documents
             }
         });
+        console.log('🚀 [CONTROLLER] Response sent successfully');
     } catch (error) {
-        console.error('Error in processPendingDocuments:', error);
+        console.error('❌ [CONTROLLER] Error in processPendingDocuments:', error);
+        if (error instanceof Error) {
+            console.error('❌ [CONTROLLER] Error message:', error.message);
+            console.error('❌ [CONTROLLER] Error stack:', error.stack);
+        }
         res.status(500).json({
             error: 'Internal server error',
             message: 'Failed to process pending documents'

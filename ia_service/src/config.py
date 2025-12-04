@@ -18,22 +18,23 @@ class EnvironmentalCategory(str, Enum):
     SOCIO_ECONOMIC = "SOCIO-ECONOMIC IMPACT"
     RISKS = "RISKS AND DISASTERS"
 
-# Project directory path
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Simple: use paths relative to working directory
+BASE_DIR = os.getcwd()  # Working directory
+BUCKET_DIR = os.path.join(BASE_DIR, 'bucket')
 
-# Paths for classification model
-BASE_MODEL_DIR = os.path.join(BASE_DIR, "ia_service", "training", "classification_report")
+# ML paths
+BASE_MODEL_DIR = os.path.join(BASE_DIR, 'ml_training', 'training', 'classification_report')
+BERT_LABEL_ENCODER_PATH = os.path.join(BASE_MODEL_DIR, 'bert_label_encoder.pkl')
+DISTILBERT_MODEL_PATH = os.path.join(BASE_MODEL_DIR, 'distilbert_classification_model')
 
-# Retrieval BERT model paths
-BERT_LABEL_ENCODER_PATH = f"{BASE_MODEL_DIR}/bert_label_encoder.pkl"
-DISTILBERT_MODEL_PATH = f"{BASE_MODEL_DIR}/distilbert_classification_model"
-
-EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
-
-# --- Vector Store Configuration ---
-CHROMA_CLIENT_TYPE = "local"
+# ChromaDB
+CHROMA_PERSIST_DIR = os.path.join(BASE_DIR, 'chroma_db')
 CHROMA_COLLECTION_NAME = "ecosynthesia_collection"
-CHROMA_PERSIST_DIR = os.path.join(BASE_DIR, "chroma_db")
+CHROMA_CLIENT_TYPE = "local"
+
+# Model configuration
+EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
+SUMMARY_LLM = "llama3.1"
 
 # --- Chunking Configuration (Standard RecursiveTextSplitter) ---
 # Maximum size of each text chunk (in characters)
@@ -43,5 +44,3 @@ CHUNK_OVERLAP = 200
 
 # Minimum confidence score threshold for data extraction
 MIN_CONFIDENCE_THRESHOLD_DATA = 0.3
-
-SUMMARY_LLM = "llama3.1"  # Specify the LLM for summarization

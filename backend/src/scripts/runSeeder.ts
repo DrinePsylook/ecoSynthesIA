@@ -11,11 +11,11 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 // World Bank API configuration
 const API_URL = "https://search.worldbank.org/api/v3/wds";
 const PAGE_SIZE = 50; // Number of documents per API request
-const FIELDS_TO_FETCH = 'guid,docdt,display_title,url,pdfurl,authr'; // Fields to retrieve from API
+const FIELDS_TO_FETCH = 'guid,docdt,display_title,url,pdfurl,authr,authr_exact'; // Fields to retrieve from API
 
 // Year range for document extraction (startYear down to endYear)
 const START_YEAR = 2025;
-const END_YEAR = 2010;
+const END_YEAR = 2017;
 
 // Structure of a document returned by the World Bank API
 interface WdsDocument {
@@ -27,6 +27,7 @@ interface WdsDocument {
     url: string;
     pdfurl: string;
     authr?: any;
+    authr_exact?: any;
     user_id?: string;
 }
 
@@ -46,14 +47,33 @@ function mapDocumentData(doc: WdsDocument): DocumentToInsert | null {
     const publicationDate = doc.docdt ? doc.docdt.split('T')[0] : null;
 
     // Extract and format author information
-    let authorString: string | null = 'World Bank';
-    if (doc.authr) {
+    let authorString: string | null = null;
+    
+    // Try authr first, then authr_exact as fallback
+    const authorField = doc.authr || doc.authr_exact;
+    
+    if (authorField) {
         try {
-            // Handle both array and object formats for authors
-            const authorsArray = Array.isArray(doc.authr) ? doc.authr : Object.values(doc.authr);
-            authorString = authorsArray.join(', ');
+            if (typeof authorField === 'string') {
+                // If it's already a string, use it directly
+                authorString = authorField.trim();
+            } else if (Array.isArray(authorField)) {
+                // If it's an array, join with comma
+                const filtered = authorField.filter(a => a && a.trim());
+                authorString = filtered.length > 0 ? filtered.join(', ') : null;
+            } else if (typeof authorField === 'object') {
+                // If it's an object, extract values
+                const authorsArray = Object.values(authorField).filter(a => a && typeof a === 'string' && a.trim());
+                authorString = authorsArray.length > 0 ? authorsArray.join(', ') : null;
+            }
+            
+            // Final cleanup: if empty string, set to null
+            if (authorString === '' || authorString === 'World Bank') {
+                authorString = null;
+            }
         } catch (e) {
-            authorString = 'World Bank';
+            console.warn(`[WARN] Failed to parse author for ${doc.guid}:`, e);
+            authorString = null;
         }
     }
 
@@ -61,11 +81,10 @@ function mapDocumentData(doc: WdsDocument): DocumentToInsert | null {
     return {
         user_id: null, 
         category_id: null,
-        
         external_doc_id: doc.guid, 
-        title: doc.display_title, // Non null grâce à la validation
+        title: doc.display_title, 
         date_publication: publicationDate,
-        storage_path: doc.pdfurl, // Non null grâce à la validation
+        storage_path: doc.pdfurl, 
         url_source: doc.url,             
         author: authorString, 
     };

@@ -1,9 +1,9 @@
 // Interface for the analysis table
 export interface Summary {
-    id_summary: number;
+    id: number;
     document_id: number;
     textual_summary: string;
-    date_summary: Date;
+    date_analysis: Date;
     confidence_score: number;
 }
 
@@ -11,5 +11,6 @@ export interface Summary {
 export interface SummaryToInsert {
     document_id: number;
     textual_summary: string;
+    date_analysis: Date;
     confidence_score: number;
 }

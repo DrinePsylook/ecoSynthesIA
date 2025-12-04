@@ -29,7 +29,8 @@ export const getExtractedDataByDocumentId = async (
                 unit,
                 page,
                 confidence_score,
-                chart_type
+                chart_type,
+                indicator_category
             FROM extracted_data
             WHERE document_id = $1
             ORDER BY page ASC, key ASC;
@@ -74,15 +75,16 @@ export const createExtractedData = async (
     try {
         const insertQuery = `
             INSERT INTO extracted_data 
-                (document_id, key, value, unit, page, confidence_score, chart_type)
-            VALUES ($1, $2, $3, $4, $5, $6, $7)
+                (document_id, key, value, unit, page, confidence_score, chart_type, indicator_category)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
             ON CONFLICT (document_id, key) DO UPDATE SET
                 value = EXCLUDED.value,
                 unit = EXCLUDED.unit,
                 page = EXCLUDED.page,
                 confidence_score = EXCLUDED.confidence_score,
-                chart_type = EXCLUDED.chart_type
-            RETURNING id, document_id, key, value, unit, page, confidence_score, chart_type;
+                chart_type = EXCLUDED.chart_type,
+                indicator_category = EXCLUDED.indicator_category
+            RETURNING id, document_id, key, value, unit, page, confidence_score, chart_type, indicator_category;
         `;
 
         const insertedData : ExtractedData[] = [];
@@ -95,7 +97,8 @@ export const createExtractedData = async (
                 entry.unit || null,
                 entry.page || null,
                 entry.confidence_score,
-                entry.chart_type || null
+                entry.chart_type || null,
+                entry.indicator_category || 'other'
             ]);
 
             if (queryResultHasRows(result)) {

@@ -57,19 +57,19 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
   });
 });
 
-// 404 handler
+// Register routes 
+app.use('/api/documents', documentRoutes);
+app.use('/api/summaries', summaryRoutes);
+app.use('/api/extracted-data', extractedDataRoutes);
+app.use('/api/categories', categoryRoutes);
+
+// 404 handler 
 app.use((req, res) => {
   res.status(404).json({ 
     error: 'Route not found',
     path: req.originalUrl 
   });
 });
-
-// Register routes
-app.use('/api/documents', documentRoutes);
-app.use('/api/summaries', summaryRoutes);
-app.use('/api/extracted-data', extractedDataRoutes);
-app.use('/api/categories', categoryRoutes);
 
 // Immediately invoked async function
 (async () => {

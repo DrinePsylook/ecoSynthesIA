@@ -55,20 +55,36 @@ export const deleteLocalFile = async (
  * Downloads a document to the bucket/reportAPI directory
  * @param fileUrl The URL of the file to download (document storage_path)
  * @param documentId The document ID to use for the filename
+ * @param title Optional title to include in filename for better AI context
  * @returns The local file path where the file was saved
  */
 export const downloadDocumentToBucket = async (
     fileUrl: string,
-    documentId: number
+    documentId: number,
+    title?: string
 ): Promise<string> => {
     // Get the file extension from the URL or default to .pdf
     const urlPath = new URL(fileUrl).pathname;
     const fileExtension = path.extname(urlPath) || '.pdf';
     
-    // Construct the path: bucket/reportAPI/document_{id}.pdf
-    // Uses BUCKET_PATH constant from constants.ts
+    // Construct the path: bucket/reportAPI/document_{id}_{sanitized_title}.pdf
     const bucketPath = path.join(BUCKET_PATH, 'reportAPI');
-    const fileName = `document_${documentId}${fileExtension}`;
+    
+    let fileName = `document_${documentId}`;
+    
+    if (title) {
+        // Sanitize title: remove non-alphanumeric chars, limit length
+        const sanitizedTitle = title
+            .replace(/[^a-z0-9]/gi, '_') // Replace special chars with underscore
+            .replace(/_+/g, '_')         // Remove duplicate underscores
+            .substring(0, 50);           // Limit length to avoid filesystem errors
+            
+        if (sanitizedTitle.length > 0) {
+            fileName += `_${sanitizedTitle}`;
+        }
+    }
+    
+    fileName += fileExtension;
     const localFilePath = path.join(bucketPath, fileName);
 
     // Download the file
