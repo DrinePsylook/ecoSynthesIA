@@ -1,19 +1,67 @@
+import re
 from typing import List
 from langchain_core.documents import Document
+
+def clean_text_for_summary(text: str) -> str:
+    """
+    Cleans text by removing tables and technical codes that confuse SLMs.
+    
+    Args:
+        text: Raw text that may contain markdown tables and codes.
+    Returns:
+        Cleaned text suitable for summarization.
+    """
+    # Remove markdown tables (lines starting with |)
+    lines = text.split('\n')
+    cleaned_lines = []
+    in_table_section = False
+    
+    for line in lines:
+        # Detect table section marker
+        if '--- Tables on this page ---' in line:
+            in_table_section = True
+            continue
+        
+        # Skip markdown table lines
+        if line.strip().startswith('|'):
+            continue
+            
+        # Reset table section on new page
+        if '--- New Page ---' in line:
+            in_table_section = False
+        
+        # Skip lines that are mostly technical codes (e.g., AR-APN-123456-CS-QCBS)
+        if re.search(r'[A-Z]{2,}-[A-Z]{2,}-\d{4,}', line):
+            continue
+            
+        cleaned_lines.append(line)
+    
+    cleaned_text = '\n'.join(cleaned_lines)
+    
+    # Remove excessive whitespace
+    cleaned_text = re.sub(r'\n{3,}', '\n\n', cleaned_text)
+    
+    return cleaned_text.strip()
+
 
 def prepare_context_for_summary(documents: List[Document]) -> str:
     """
     Prepares a text context from a list of Langchain Document objects for summarization.
+    Tables and technical codes are filtered out to help SLMs focus on narrative content.
 
     Args:
         documents (List[Document]): A list of Langchain Document objects from PDF.
     Returns:
-        str: A single string containing the concatenated text from all documents.
+        str: A single string containing the concatenated and cleaned text.
     """
+    # Join all documents
+    full_text = "\n\n--- New Page ---\n\n".join([doc.page_content for doc in documents])
+    
+    # Clean the text for summarization
+    cleaned_text = clean_text_for_summary(full_text)
+    
+    return cleaned_text
 
-    full_text = full_text = "\n\n--- New Page ---\n\n".join([doc.page_content for doc in documents])
-
-    return full_text
 
 def post_process_summary(raw_summary: str) -> str:
     """
@@ -24,6 +72,23 @@ def post_process_summary(raw_summary: str) -> str:
     Returns:
         The final formatted summary.
     """
-
     processed_summary = raw_summary.strip()
+    
+    # Remove common SLM preambles that slip through
+    bad_starts = [
+        "Here is a summary",
+        "Here's a summary", 
+        "The document",
+        "This document",
+        "Based on the provided",
+    ]
+    
+    for bad_start in bad_starts:
+        if processed_summary.lower().startswith(bad_start.lower()):
+            # Find the first period or colon and skip to after it
+            for i, char in enumerate(processed_summary):
+                if char in '.:\n' and i > 10:
+                    processed_summary = processed_summary[i+1:].strip()
+                    break
+    
     return processed_summary

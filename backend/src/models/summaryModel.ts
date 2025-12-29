@@ -7,6 +7,15 @@ export interface Summary {
     confidence_score: number;
 }
 
+// Interface for formatted summary (API response)
+export interface FormattedSummary {
+    id: number;
+    document_id: number;
+    textual_summary: string;
+    date_analysis: string;  // Formatted date string (YYYY-MM-DD)
+    confidence_score: number;
+}
+
 // Interface for creating a new analysis
 export interface SummaryToInsert {
     document_id: number;

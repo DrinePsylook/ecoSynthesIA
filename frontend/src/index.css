@@ -1,4 +1,9 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* Mantine core styles */
+@import '@mantine/core/styles.css';
+@import '@mantine/charts/styles.css';
 
 @theme {
   --font-sans: InterVariable, sans-serif;

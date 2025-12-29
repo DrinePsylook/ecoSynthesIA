@@ -36,7 +36,7 @@ export const getDocumentById = async (
                 c.description AS category_description
             FROM documents d
             LEFT JOIN categories c ON d.category_id = c.id
-            WHERE d.id = $1;
+            WHERE d.id = $1 AND d.is_public = true;
         `;
 
         const result = await client.query(query, [id]);
@@ -66,11 +66,12 @@ export const getDocumentCountByCategory = async (): Promise<DocumentCountByCateg
     try {
         const query = `
             SELECT 
-                d.category_id,,
+                d.category_id,
                 c.name AS category_name,
                 COUNT(d.id) AS document_count
             FROM documents d
             LEFT JOIN categories c ON d.category_id = c.id
+            WHERE d.is_public = true
             GROUP BY d.category_id, c.name
             ORDER BY document_count DESC, category_name ASC NULLS LAST;
         `;
@@ -125,10 +126,11 @@ export const getAnalyzedDocuments = async (
                 s.confidence_score,
                 COUNT(DISTINCT ed.id) AS extracted_data_count,
                 ARRAY_AGG(DISTINCT ed.indicator_category) FILTER (WHERE ed.indicator_category IS NOT NULL) AS indicator_categories
-            FROM documents d    -- ← Plus de ligne vide avant !
+            FROM documents d
             LEFT JOIN categories c ON d.category_id = c.id
             INNER JOIN summaries s ON d.id = s.document_id
             LEFT JOIN extracted_data ed ON d.id = ed.document_id
+            WHERE d.is_public = true
             GROUP BY 
                 d.id, d.title, d.author, d.date_publication, d.is_public, 
                 d.storage_path, d.url_source, d.created_at, d.updated_at, d.user_id,
@@ -168,6 +170,110 @@ export const getAnalyzedDocuments = async (
     } catch (error) {
         console.error('Error getting analyzed documents:', error);
         return [];
+    } finally {
+        client.release();
+    }
+};
+
+/**
+ * Gets all analyzed documents with pagination
+ * GET /api/documents/analyzed/all?page=1&limit=10&sort=date&order=desc
+ */
+export const getAllAnalyzedDocumentsPaginated = async (
+    page: number = 1,
+    limit: number = 10,
+    sort: 'date' | 'title' = 'date',
+    order: 'asc' | 'desc' = 'desc'
+): Promise<{ documents: AnalyzedDocument[]; pagination: { page: number; limit: number; total: number; totalPages: number } }> => {
+    if (!pgPool) {
+        console.error('PostgreSQL pool is not initialized');
+        return { documents: [], pagination: { page, limit, total: 0, totalPages: 0 } };
+    }
+
+    const client = await pgPool.connect();
+    try {
+        // Count total analyzed PUBLIC documents
+        const countQuery = `
+            SELECT COUNT(DISTINCT d.id) as total
+            FROM documents d
+            INNER JOIN summaries s ON d.id = s.document_id
+            WHERE d.is_public = true;
+        `;
+        const countResult = await client.query(countQuery);
+        const total = parseInt(countResult.rows[0]?.total || '0', 10);
+        const totalPages = Math.ceil(total / limit);
+        const offset = (page - 1) * limit;
+
+        // Build ORDER BY clause
+        const orderColumn = sort === 'title' ? 'd.title' : 'd.date_publication';
+        const orderDirection = order.toUpperCase();
+
+        const query = `
+            SELECT 
+                d.id,
+                d.title,
+                d.author,
+                TO_CHAR(d.date_publication, 'YYYY-MM-DD') AS date_publication,
+                d.is_public,
+                d.storage_path,
+                d.url_source,
+                d.created_at,
+                d.updated_at,
+                d.user_id,
+                d.category_id,
+                c.name AS category_name,
+                c.description AS category_description,
+                s.id AS summary_id,
+                s.textual_summary,
+                s.date_analysis,
+                s.confidence_score,
+                COUNT(DISTINCT ed.id) AS extracted_data_count,
+                ARRAY_AGG(DISTINCT ed.indicator_category) FILTER (WHERE ed.indicator_category IS NOT NULL) AS indicator_categories
+            FROM documents d
+            LEFT JOIN categories c ON d.category_id = c.id
+            INNER JOIN summaries s ON d.id = s.document_id
+            LEFT JOIN extracted_data ed ON d.id = ed.document_id
+            WHERE d.is_public = true
+            GROUP BY 
+                d.id, d.title, d.author, d.date_publication, d.is_public, 
+                d.storage_path, d.url_source, d.created_at, d.updated_at, d.user_id,
+                d.category_id, c.name, c.description,
+                s.id, s.textual_summary, s.date_analysis, s.confidence_score
+            ORDER BY ${orderColumn} ${orderDirection} NULLS LAST, d.created_at DESC
+            LIMIT $1 OFFSET $2;
+        `;
+
+        const result = await client.query(query, [limit, offset]);
+
+        const documents = result.rows.map(row => ({
+            id: row.id,
+            title: cleanDocumentTitle(row.title),
+            author: row.author,
+            date_publication: row.date_publication,
+            is_public: row.is_public,
+            storage_path: row.storage_path,
+            url_source: row.url_source,
+            created_at: row.created_at,
+            updated_at: row.updated_at,
+            user_id: row.user_id,
+            category_id: row.category_id,
+            category_name: row.category_name,
+            category_description: row.category_description,
+            summary_id: row.summary_id,
+            textual_summary: row.textual_summary,
+            date_analysis: row.date_analysis,
+            confidence_score: row.confidence_score,
+            extracted_data_count: parseInt(row.extracted_data_count, 10),
+            indicator_categories: row.indicator_categories || []
+        })) as AnalyzedDocument[];
+
+        return {
+            documents,
+            pagination: { page, limit, total, totalPages }
+        };
+    } catch (error) {
+        console.error('Error getting paginated analyzed documents:', error);
+        return { documents: [], pagination: { page, limit, total: 0, totalPages: 0 } };
     } finally {
         client.release();
     }

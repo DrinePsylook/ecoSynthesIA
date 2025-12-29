@@ -1,29 +1,23 @@
 import { useState, useEffect } from 'react';
-import { useParams, useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import Markdown from 'react-markdown';
-import { normalizeFileName } from '../utils/file';
 import Button from '../components/button';
 
-// Interface for category details
-interface CategoryDetails {
-    id: number;
-    name: string;
-    description: string;
-    documentsTotal: number;
-}
-
-// Interface for document in the list
-interface CategoryDocument {
+// Interface for analyzed document
+interface AnalyzedDocument {
     id: number;
     title: string;
     author: string;
     date_publication: string;
+    category_id: number | null;
+    category_name: string | null;
     textual_summary: string | null;
+    confidence_score: number | null;
     extracted_data_count: number;
 }
 
-// Interface for pagination info
+// Interface for pagination
 interface Pagination {
     page: number;
     limit: number;
@@ -31,13 +25,10 @@ interface Pagination {
     totalPages: number;
 }
 
-export default function CategoryPage() {
-    const { id } = useParams<{ id: string }>();
+export default function AllDocumentsPage() {
     const [searchParams, setSearchParams] = useSearchParams();
     
-    // State for category and documents
-    const [category, setCategory] = useState<CategoryDetails | null>(null);
-    const [documents, setDocuments] = useState<CategoryDocument[]>([]);
+    const [documents, setDocuments] = useState<AnalyzedDocument[]>([]);
     const [pagination, setPagination] = useState<Pagination>({
         page: 1,
         limit: 10,
@@ -68,27 +59,8 @@ export default function CategoryPage() {
         setSearchParams(newParams);
     };
 
-    // Fetch category details
+    // Fetch documents
     useEffect(() => {
-        if (!id) return;
-        
-        fetch(`${import.meta.env.VITE_BACKEND_URL}/api/categories/${id}/details`)
-            .then(res => {
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                return res.json();
-            })
-            .then(data => {
-                setCategory(data.data);
-            })
-            .catch(err => {
-                console.error('Error fetching category:', err);
-                setError('Failed to load category');
-            });
-    }, [id]);
-
-    // Fetch documents when params change
-    useEffect(() => {
-        if (!id) return;
         setLoading(true);
 
         const params = new URLSearchParams({
@@ -98,7 +70,7 @@ export default function CategoryPage() {
             order: currentOrder
         });
 
-        fetch(`${import.meta.env.VITE_BACKEND_URL}/api/categories/${id}/documents?${params}`)
+        fetch(`${import.meta.env.VITE_BACKEND_URL}/api/documents/analyzed/all?${params}`)
             .then(res => {
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 return res.json();
@@ -113,11 +85,11 @@ export default function CategoryPage() {
                 setError('Failed to load documents');
                 setLoading(false);
             });
-    }, [id, currentPage, currentLimit, currentSort, currentOrder]);
+    }, [currentPage, currentLimit, currentSort, currentOrder]);
 
     // Truncate summary for display
-    const truncateSummary = (summary: string | null, maxLength: number = 150) => {
-        if (!summary) return 'No summary available';
+    const truncateSummary = (summary: string | null, maxLength: number = 200) => {
+        if (!summary) return null;
         return summary.length > maxLength 
             ? summary.slice(0, maxLength) + '...' 
             : summary;
@@ -129,19 +101,16 @@ export default function CategoryPage() {
         const pages: (number | string)[] = [];
         
         if (totalPages <= 7) {
-            // Show all pages if 7 or fewer
             for (let i = 1; i <= totalPages; i++) {
                 pages.push(i);
             }
         } else {
-            // Always show first page
             pages.push(1);
             
             if (page > 3) {
                 pages.push('...');
             }
             
-            // Show pages around current page
             const start = Math.max(2, page - 1);
             const end = Math.min(totalPages - 1, page + 1);
             
@@ -153,7 +122,6 @@ export default function CategoryPage() {
                 pages.push('...');
             }
             
-            // Always show last page
             pages.push(totalPages);
         }
         
@@ -169,37 +137,19 @@ export default function CategoryPage() {
     }
 
     return (
-        <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            {/* Category Header with Image */}
-            {category && (
-                <div className="relative">
-                    {/* Hero Image */}
-                    <div className="h-64 w-full overflow-hidden rounded-b-2xl">
-                        <img
-                            src={`/logosCategory/${normalizeFileName(category.name)}.jpg`}
-                            alt={category.name}
-                            className="w-full h-full object-cover"
-                        />
-                        {/* Overlay gradient */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/80 to-transparent" />
-                    </div>
-                    
-                    {/* Category Info Overlay */}
-                    <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                        <h1 className="text-3xl sm:text-4xl font-bold mb-2">
-                            {category.name}
-                        </h1>
-                        {category.description && (
-                            <p className="text-emerald-100 text-lg max-w-3xl">
-                                {category.description}
-                            </p>
-                        )}
-                    </div>
-                </div>
-            )}
+        <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+            {/* Header */}
+            <div className="mb-8">
+                <h1 className="text-3xl font-bold text-emerald-800 mb-2">
+                    All Analyzed Documents
+                </h1>
+                <p className="text-gray-600">
+                    Browse all documents that have been analyzed by our AI system.
+                </p>
+            </div>
 
             {/* Controls: Sort and Limit */}
-            <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-4">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-4 mb-6">
                 <div className="flex items-center gap-2 text-gray-600">
                     <span className="font-medium">
                         {pagination.total} document{pagination.total !== 1 ? 's' : ''}
@@ -244,41 +194,58 @@ export default function CategoryPage() {
             </div>
 
             {/* Documents List */}
-            <div className="mt-6 space-y-4">
+            <div className="space-y-4">
                 {loading ? (
                     <div className="text-center py-8 text-gray-500">Loading documents...</div>
                 ) : documents.length === 0 ? (
                     <div className="text-center py-8 text-gray-500">
-                        No documents found in this category.
+                        No analyzed documents found.
                     </div>
                 ) : (
                     documents.map((doc) => (
                         <div 
                             key={doc.id}
-                            className="bg-teal-50 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+                            className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow border-l-4 border-emerald-500"
                         >
-                            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                                <div className="flex-1">
-                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                                        {doc.title}
-                                    </h3>
-                                    <div className="text-gray-600 text-sm mb-3 prose prose-sm prose-emerald max-w-none line-clamp-3">
-                                        {doc.textual_summary ? (
-                                            <Markdown>{truncateSummary(doc.textual_summary)}</Markdown>
-                                        ) : (
-                                            <p className="italic text-gray-400">No summary available</p>
-                                        )}
+                            <div className="p-6">
+                                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                                    <div className="flex-1">
+                                        <div className="flex items-center gap-3 mb-2">
+                                            <h3 className="text-lg font-semibold text-gray-900">
+                                                {doc.title}
+                                            </h3>
+                                            {doc.category_name && (
+                                                <span className="inline-block bg-teal-100 text-emerald-800 text-xs px-2 py-0.5 rounded-full">
+                                                    {doc.category_name}
+                                                </span>
+                                            )}
+                                        </div>
+                                        
+                                        <div className="text-gray-600 text-sm mb-3 prose prose-sm prose-emerald max-w-none line-clamp-3">
+                                            {doc.textual_summary ? (
+                                                <Markdown>{truncateSummary(doc.textual_summary)}</Markdown>
+                                            ) : (
+                                                <p className="italic text-gray-400">No summary available</p>
+                                            )}
+                                        </div>
+                                        
+                                        <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                                            <span>📅 {doc.date_publication}</span>
+                                            {doc.author && <span>✍️ {doc.author}</span>}
+                                            <span>📊 {doc.extracted_data_count} data points</span>
+                                            {doc.confidence_score && (
+                                                <span className="text-emerald-600">
+                                                    ✓ {Math.round(doc.confidence_score * 100)}% confidence
+                                                </span>
+                                            )}
+                                        </div>
                                     </div>
-                                    <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
-                                        <span>📅 {doc.date_publication}</span>
-                                        {doc.author && <span>✍️ {doc.author}</span>}
-                                        <span>📊 {doc.extracted_data_count} data points</span>
+                                    
+                                    <div className="flex-shrink-0">
+                                        <Link to={`/documents/${doc.id}`}>
+                                            <Button>View Details</Button>
+                                        </Link>
                                     </div>
-                                </div>
-                                <div className="flex-shrink-0">
-                                    <Link to={`/documents/${doc.id}`}>
-                                        <Button>View Details</Button>
-                                    </Link>
                                 </div>
                             </div>
                         </div>

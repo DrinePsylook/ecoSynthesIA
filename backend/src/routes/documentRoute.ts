@@ -10,8 +10,11 @@ const router = express.Router();
  */
 
 
-// Get analyzed documents
+// Get analyzed documents (limited, for homepage)
 router.get('/analyzed', documentController.getAnalyzedDocuments);
+
+// Get all analyzed documents with pagination
+router.get('/analyzed/all', documentController.getAllAnalyzedDocuments);
 
 // Process pending documents
 router.post('/process-pending', documentController.processPendingDocuments);
