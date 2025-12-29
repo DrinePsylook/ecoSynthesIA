@@ -11,7 +11,8 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 // World Bank API configuration
 const API_URL = "https://search.worldbank.org/api/v3/wds";
 const PAGE_SIZE = 50; // Number of documents per API request
-const FIELDS_TO_FETCH = 'guid,docdt,display_title,url,pdfurl,authr,authr_exact'; // Fields to retrieve from API
+// Note: We don't use the 'fl' parameter because 'authors' is not retrievable via fl
+// The API returns all fields by default when fl is omitted
 
 // Year range for document extraction (startYear down to endYear)
 const START_YEAR = 2025;
@@ -26,8 +27,7 @@ interface WdsDocument {
     display_title: string;
     url: string;
     pdfurl: string;
-    authr?: any;
-    authr_exact?: any;
+    authors?: Record<string, { author: string }> | null; // { "0": { "author": "Name" }, "1": { "author": "Name2" } }
     user_id?: string;
 }
 
@@ -46,33 +46,22 @@ function mapDocumentData(doc: WdsDocument): DocumentToInsert | null {
     // Transform 'YYYY-MM-DDTHH:MM:SSZ' to 'YYYY-MM-DD'
     const publicationDate = doc.docdt ? doc.docdt.split('T')[0] : null;
 
-    // Extract and format author information
+    // Extract and format author information from the 'authors' field
+    // Format: { "0": { "author": "Name1" }, "1": { "author": "Name2" } }
     let authorString: string | null = null;
     
-    // Try authr_exact first (more precise), then authr as fallback
-    const authorField = doc.authr_exact || doc.authr;
-    
-    if (authorField) {
+    if (doc.authors && typeof doc.authors === 'object') {
         try {
-            if (typeof authorField === 'string') {
-                // If it's already a string, use it directly
-                authorString = authorField.trim();
-            } else if (Array.isArray(authorField)) {
-                // If it's an array, join with comma
-                const filtered = authorField.filter(a => a && a.trim());
-                authorString = filtered.length > 0 ? filtered.join(', ') : null;
-            } else if (typeof authorField === 'object') {
-                // If it's an object, extract values
-                const authorsArray = Object.values(authorField).filter(a => a && typeof a === 'string' && a.trim());
-                authorString = authorsArray.length > 0 ? authorsArray.join(', ') : null;
-            }
+            const authorsArray = Object.values(doc.authors)
+                .map(entry => entry?.author)
+                .filter(name => name && name.trim() && name !== 'World Bank');
             
-            // Final cleanup: if empty string, set to null
-            if (authorString === '' || authorString === 'World Bank') {
-                authorString = null;
+            if (authorsArray.length > 0) {
+                authorString = authorsArray.join(', ');
+                console.log(`[DEBUG] Authors found for ${doc.guid}: ${authorString}`);
             }
         } catch (e) {
-            console.warn(`[WARN] Failed to parse author for ${doc.guid}:`, e);
+            console.warn(`[WARN] Failed to parse authors for ${doc.guid}:`, e);
             authorString = null;
         }
     }
@@ -107,7 +96,7 @@ async function fetchDocumentByYear(year: number): Promise<WdsDocument[]> {
 
     // Paginate through all documents for the year
     while (totalRecords === -1 || offset < totalRecords) {
-        const url = `${API_URL}?format=json&strdate=${startDate}&enddate=${endDate}&os=${offset}&rows=${PAGE_SIZE}&fl=${FIELDS_TO_FETCH}`;
+        const url = `${API_URL}?format=json&strdate=${startDate}&enddate=${endDate}&os=${offset}&rows=${PAGE_SIZE}`;
         
         try {
             const response = await axios.get(url);
