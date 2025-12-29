@@ -171,6 +171,46 @@ export const processPendingDocuments = async (
 };
 
 /**
+ * Gets the most recent analyzed documents
+ * Useful for homepage preview of latest analyzed documents
+ * GET /api/documents/analyzed?limit=6
+ */
+export const getAnalyzedDocuments = async (
+    req: Request,
+    res: Response
+): Promise<void> => {
+    try {
+        // Default limit for homepage display (3 or 6 documents)
+        const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 6;
+
+        // Validate limit parameter
+        if (isNaN(limit) || limit <= 0 || limit > 50) {
+            res.status(400).json({
+                error: 'Invalid limit parameter',
+                message: 'Limit must be a positive integer between 1 and 50'
+            });
+            return;
+        }
+
+        // Call the service to get analyzed documents
+        const documents = await documentService.getAnalyzedDocuments(limit);
+
+        // Response formatting
+        res.status(200).json({
+            success: true,
+            data: documents,
+            count: documents.length
+        });
+    } catch (error) {
+        console.error('Error in getAnalyzedDocuments:', error);
+        res.status(500).json({
+            error: 'Internal server error',
+            message: 'Failed to get analyzed documents'
+        });
+    }
+};
+
+/**
  * Get a document by ID with its processing status
  * GET /api/documents/:id
  */

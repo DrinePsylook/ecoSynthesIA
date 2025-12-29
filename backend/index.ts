@@ -19,6 +19,7 @@ import documentRoutes from './src/routes/documentRoute';
 import summaryRoutes from './src/routes/summaryRoute';
 import extractedDataRoutes from './src/routes/extractedDataRoute';
 import categoryRoutes from './src/routes/categoryRoute';
+import trendRoutes from './src/routes/trendRoute';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -62,6 +63,7 @@ app.use('/api/documents', documentRoutes);
 app.use('/api/summaries', summaryRoutes);
 app.use('/api/extracted-data', extractedDataRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/trends', trendRoutes);
 
 // 404 handler 
 app.use((req, res) => {

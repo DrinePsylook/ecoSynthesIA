@@ -14,6 +14,7 @@ export enum CategoryName {
 export interface Category {
     id: number;
     name:string;
+    description?:string;
 }
 
 // Array of all category names for validation

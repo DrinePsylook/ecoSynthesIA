@@ -9,6 +9,13 @@ const router = express.Router();
  * GET /api/documents
  */
 
+
+// Get analyzed documents
+router.get('/analyzed', documentController.getAnalyzedDocuments);
+
+// Process pending documents
+router.post('/process-pending', documentController.processPendingDocuments);
+
 // Get document with its processing status
 router.get('/:id', documentController.getDocument);
 
@@ -17,8 +24,5 @@ router.get('/:id/processing-status', documentController.getDocumentProcessingSta
 
 // Get complete document data (summary, extracted data, chart types and category)
 router.get('/:id/complete', documentController.getCompleteDocumentData);
-
-// Process pending documents
-router.post('/process-pending', documentController.processPendingDocuments);
 
 export default router;
