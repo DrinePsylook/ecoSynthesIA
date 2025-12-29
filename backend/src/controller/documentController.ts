@@ -171,6 +171,79 @@ export const processPendingDocuments = async (
 };
 
 /**
+ * Gets the most recent analyzed documents
+ * Useful for homepage preview of latest analyzed documents
+ * GET /api/documents/analyzed?limit=6
+ */
+export const getAnalyzedDocuments = async (
+    req: Request,
+    res: Response
+): Promise<void> => {
+    try {
+        // Default limit for homepage display (3 or 6 documents)
+        const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 6;
+
+        // Validate limit parameter
+        if (isNaN(limit) || limit <= 0 || limit > 50) {
+            res.status(400).json({
+                error: 'Invalid limit parameter',
+                message: 'Limit must be a positive integer between 1 and 50'
+            });
+            return;
+        }
+
+        // Call the service to get analyzed documents
+        const documents = await documentService.getAnalyzedDocuments(limit);
+
+        // Response formatting
+        res.status(200).json({
+            success: true,
+            data: documents,
+            count: documents.length
+        });
+    } catch (error) {
+        console.error('Error in getAnalyzedDocuments:', error);
+        res.status(500).json({
+            error: 'Internal server error',
+            message: 'Failed to get analyzed documents'
+        });
+    }
+};
+
+/**
+ * Gets all analyzed documents with pagination
+ * GET /api/documents/analyzed/all?page=1&limit=10&sort=date&order=desc
+ */
+export const getAllAnalyzedDocuments = async (
+    req: Request,
+    res: Response
+): Promise<void> => {
+    try {
+        // Parse and validate query parameters
+        const page = Math.max(1, parseInt(req.query.page as string, 10) || 1);
+        const limit = Math.min(50, Math.max(1, parseInt(req.query.limit as string, 10) || 10));
+        const sort = (req.query.sort as string) === 'title' ? 'title' : 'date';
+        const order = (req.query.order as string) === 'asc' ? 'asc' : 'desc';
+
+        // Call the service to get paginated documents
+        const result = await documentService.getAllAnalyzedDocumentsPaginated(page, limit, sort, order);
+
+        // Response formatting
+        res.status(200).json({
+            success: true,
+            data: result.documents,
+            pagination: result.pagination
+        });
+    } catch (error) {
+        console.error('Error in getAllAnalyzedDocuments:', error);
+        res.status(500).json({
+            error: 'Internal server error',
+            message: 'Failed to get analyzed documents'
+        });
+    }
+};
+
+/**
  * Get a document by ID with its processing status
  * GET /api/documents/:id
  */

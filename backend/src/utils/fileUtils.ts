@@ -4,6 +4,14 @@ import { createWriteStream } from 'fs';
 import * as path from 'path';
 import { BUCKET_PATH, ROOT_DIR } from '../constants';
 
+/**
+ * Cleans document title by removing file extensions
+ */
+export const cleanDocumentTitle = (title: string | null): string | null => {
+    if (!title) return title;
+    return title.replace(/\.(pdf|doc|docx|txt)$/i, '').trim();
+};
+
 /** 
  * Downloads a file from a URL to a local file path.
  * @param fileUrl The URL of the file to download (document storage_path)

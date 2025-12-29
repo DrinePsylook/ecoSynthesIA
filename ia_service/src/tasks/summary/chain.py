@@ -13,31 +13,38 @@ load_dotenv()
 OLLAMA_URL = os.getenv("OLLAMA_URL")
 
 # Utilisation: `system_prompt` for the AI role
-SUMMARY_SYSTEM_PROMPT = """You are a highly skilled and meticulous environmental and financial analyst. Your task is to produce a concise and factual summary of a provided document. The summary must be neutral, **explicitly identify the contracting parties and the project title**, and focus on the key points requested. **The output must be strictly and factually based on the content provided.**
+SUMMARY_SYSTEM_PROMPT = """You are an expert science communicator who makes complex environmental projects accessible to the general public. Your role is to transform technical documents into clear, engaging summaries that anyone can understand in under 2 minutes.
 """
 
 # `user_prompt` for instructions and document content
 SUMMARY_USER_PROMPT_TEMPLATE = """Analyze the following document and write a summary in english.
 
 --- GOAL ---
-Identify the REAL WORLD IMPACT of the project. Ignore bureaucratic procedures unless they are the main subject.
+Make the reader understand the REAL WORLD IMPACT of this project. A person with no technical background should grasp the essence in 30 seconds.
 
---- STRUCTURE & REQUIREMENTS ---
-1. **Format**: Single paragraph, maximum 800 words.
-2. **OPENING (First Sentence)**: YOU MUST Start by identifying:
-   - The **Contracting Parties (EXACT NAMES)** found on the first pages.
-   - The **Project Title** (Extract it from the document text or cover page).
-   - The **Total Financial Amount**.
-3. **CORE CONTENT (Prioritize this)**:
-   - **The "WHAT" & "WHO"**: What is the actual project? Who are the direct beneficiaries? (Focus on "Project Description", "Objectives").
-   - **The "WHY"**: What specific social or environmental problem is this solving? (Drought, poverty, pollution?).
-   - **The "HOW MUCH"**: Key quantitative targets and figures.
-4. **DE-EMPHASIZE (Mention briefly only)**:
-   - Administrative manuals (ESCP, SEP, LMP).
-   - Standard legal clauses (audits, committees, effectiveness conditions).
-   - Bureaucratic entities (Steering Committees, PIUs).
+--- ABSOLUTE RULES (NEVER BREAK) ---
+- NEVER include internal codes (e.g., AR-APN-123456, P175669, TF/B7681)
+- NEVER list individual activities, contracts, or procurement items
+- NEVER mention cancelled activities
+- NEVER use unexplained acronyms (spell out or skip)
+- DO NOT exceed 200 words
 
-IMPORTANT: Write ONLY the summary paragraph in English. Do not include any introduction, meta-commentary, or phrases like "Here is a summary". Start directly with the content.
+--- STRUCTURE ---
+**Paragraph 1 - THE ESSENTIALS (2-3 sentences):**
+- Project name (human-readable title, not code)
+- Who is funding it and who is implementing it (organization names, not codes)
+- Total budget if mentioned
+
+**Paragraph 2 - THE IMPACT (3-4 sentences):**
+- What CONCRETE problem does this solve? (climate, biodiversity, poverty...)
+- Who benefits directly? (farmers, communities, ecosystems...)
+- What will change in the real world?
+
+**Paragraph 3 - KEY FIGURES (1-2 sentences, optional):**
+- Only include if there are meaningful targets (hectares restored, people helped, CO2 reduced)
+
+--- OUTPUT FORMAT ---
+Write ONLY the summary. No introduction, no "Here is a summary", no meta-commentary. Start directly with the project name.
 
 Document:
 {content}

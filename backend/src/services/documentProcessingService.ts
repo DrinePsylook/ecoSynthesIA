@@ -91,6 +91,11 @@ export const processDocument = async (doc: {
         
             await extractedDataService.createExtractedData(extractedDataEntries);
             console.log(`[Document ${doc.id}] Extracted data created successfully`);
+        } else if (!hasExtractedData && (!analysisResults.extracted_data || analysisResults.extracted_data.length === 0)) {
+            // AI analyzed the document but found no data to extract
+            // Set the no_extracted_data flag to prevent re-processing
+            await documentService.updateDocumentNoExtractedData(doc.id, true);
+            console.log(`[Document ${doc.id}] No extracted data found - flagged as no_extracted_data`);
         }
 
         // Create category if needed 

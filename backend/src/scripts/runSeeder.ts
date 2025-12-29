@@ -49,8 +49,8 @@ function mapDocumentData(doc: WdsDocument): DocumentToInsert | null {
     // Extract and format author information
     let authorString: string | null = null;
     
-    // Try authr first, then authr_exact as fallback
-    const authorField = doc.authr || doc.authr_exact;
+    // Try authr_exact first (more precise), then authr as fallback
+    const authorField = doc.authr_exact || doc.authr;
     
     if (authorField) {
         try {

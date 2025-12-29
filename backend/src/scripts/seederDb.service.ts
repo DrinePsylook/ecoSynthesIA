@@ -47,6 +47,7 @@ export const upsertDocument = async (doc: DocumentToInsert): Promise<QueryResult
                 date_publication = EXCLUDED.date_publication,
                 storage_path = EXCLUDED.storage_path,
                 url_source = EXCLUDED.url_source,
+                author = EXCLUDED.author,
                 updated_at = CURRENT_TIMESTAMP
             RETURNING id;
         `;
