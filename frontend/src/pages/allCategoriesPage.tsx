@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
-import CategoryCard from '../components/categoryCard'
+import CategoryCard from '../components/CategoryCard'
 import type { Category } from '../types/category';
 
 export default function AllCategoriesPage() {

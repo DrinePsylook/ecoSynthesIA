@@ -3,7 +3,7 @@ import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import Markdown from 'react-markdown';
 import { normalizeFileName } from '../utils/file';
-import Button from '../components/button';
+import Button from '../components/Button';
 
 // Interface for category details
 interface CategoryDetails {

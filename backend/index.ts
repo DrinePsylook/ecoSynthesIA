@@ -15,6 +15,7 @@ if (fs.existsSync(path.resolve(__dirname, '../.env'))) {
 import { connectToDatabase, pgPool } from './database/database';
 import { runMigrations } from './database/migrations/migrationRunner';
 
+import authRoutes from './src/routes/authRoutes';
 import documentRoutes from './src/routes/documentRoute';
 import summaryRoutes from './src/routes/summaryRoute';
 import extractedDataRoutes from './src/routes/extractedDataRoute';
@@ -59,6 +60,7 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
 });
 
 // Register routes 
+app.use('/api/auth', authRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/summaries', summaryRoutes);
 app.use('/api/extracted-data', extractedDataRoutes);
