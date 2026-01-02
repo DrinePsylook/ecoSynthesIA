@@ -14,6 +14,8 @@ import { processPendingDocuments as processPendingDocumentsService } from '../se
 /**
  * Gets complete document data : document, summary, extracted data, chart types and category
  * GET /api/documents/:id/complete
+ * 
+ * Access: Public documents for everyone, private documents only for owner
  */
 export const getCompleteDocumentData = async (
     req: Request,
@@ -21,6 +23,7 @@ export const getCompleteDocumentData = async (
 ): Promise<void> => {
     try {
         const documentId = parseInt(req.params.id, 10);
+        const userId = req.user?.userId; // From optional auth middleware
 
         if (isNaN(documentId) || documentId <= 0) {
             res.status(400).json({
@@ -29,8 +32,8 @@ export const getCompleteDocumentData = async (
             return;
         }
 
-        // Get document
-        const document = await documentService.getDocumentById(documentId);
+        // Get document (includes user's private docs if authenticated)
+        const document = await documentService.getDocumentById(documentId, userId);
         if (!document) {
             res.status(404).json({
                 error: 'Document not found'
@@ -89,6 +92,7 @@ export const getDocumentProcessingStatus = async (
 ): Promise<void> => {
     // Extract and validate parameters
     const documentId = parseInt(req.params.id, 10);
+    const userId = req.user?.userId; // From optional auth middleware
 
     if (isNaN(documentId) || documentId <= 0) {
         res.status(400).json({
@@ -98,8 +102,8 @@ export const getDocumentProcessingStatus = async (
         return;
     }
 
-    // Check if document exists
-    const document = await documentService.getDocumentById(documentId);
+    // Check if document exists (includes user's private docs if authenticated)
+    const document = await documentService.getDocumentById(documentId, userId);
     if (!document) {
         res.status(404).json({
             error: 'Document not found',
@@ -174,6 +178,8 @@ export const processPendingDocuments = async (
  * Gets the most recent analyzed documents
  * Useful for homepage preview of latest analyzed documents
  * GET /api/documents/analyzed?limit=6
+ * 
+ * Only returns PUBLIC documents
  */
 export const getAnalyzedDocuments = async (
     req: Request,
@@ -192,7 +198,7 @@ export const getAnalyzedDocuments = async (
             return;
         }
 
-        // Call the service to get analyzed documents
+        // Only returns public documents
         const documents = await documentService.getAnalyzedDocuments(limit);
 
         // Response formatting
@@ -213,6 +219,8 @@ export const getAnalyzedDocuments = async (
 /**
  * Gets all analyzed documents with pagination
  * GET /api/documents/analyzed/all?page=1&limit=10&sort=date&order=desc
+ * 
+ * Only returns PUBLIC documents
  */
 export const getAllAnalyzedDocuments = async (
     req: Request,
@@ -225,7 +233,7 @@ export const getAllAnalyzedDocuments = async (
         const sort = (req.query.sort as string) === 'title' ? 'title' : 'date';
         const order = (req.query.order as string) === 'asc' ? 'asc' : 'desc';
 
-        // Call the service to get paginated documents
+        // Only returns public documents
         const result = await documentService.getAllAnalyzedDocumentsPaginated(page, limit, sort, order);
 
         // Response formatting
@@ -246,6 +254,8 @@ export const getAllAnalyzedDocuments = async (
 /**
  * Get a document by ID with its processing status
  * GET /api/documents/:id
+ * 
+ * Access: Public documents for everyone, private documents only for owner
  */
 export const getDocument = async (
     req: Request,
@@ -253,6 +263,7 @@ export const getDocument = async (
 ): Promise<void> => {
     try {
         const documentId = parseInt(req.params.id, 10);
+        const userId = req.user?.userId; // From optional auth middleware
 
         if (isNaN(documentId) || documentId <= 0) {
             res.status(400).json({
@@ -261,7 +272,8 @@ export const getDocument = async (
             return;
         }
 
-        const document = await documentService.getDocumentById(documentId);
+        // Get document (includes user's private docs if authenticated)
+        const document = await documentService.getDocumentById(documentId, userId);
         
         if (!document) {
             res.status(404).json({
@@ -288,6 +300,49 @@ export const getDocument = async (
         console.error('Error in getDocument:', error);
         res.status(500).json({
             error: 'Internal server error'
+        });
+    }
+};
+
+/**
+ * Gets all documents owned by the authenticated user
+ * GET /api/documents/my-documents?page=1&limit=10
+ * 
+ * Requires authentication
+ */
+export const getMyDocuments = async (
+    req: Request,
+    res: Response
+): Promise<void> => {
+    try {
+        const userId = req.user?.userId;
+
+        // This should not happen if authMiddleware is used, but just in case
+        if (!userId) {
+            res.status(401).json({
+                error: 'Authentication required',
+                message: 'You must be logged in to view your documents'
+            });
+            return;
+        }
+
+        // Parse pagination parameters
+        const page = Math.max(1, parseInt(req.query.page as string, 10) || 1);
+        const limit = Math.min(50, Math.max(1, parseInt(req.query.limit as string, 10) || 10));
+
+        // Get user's documents
+        const result = await documentService.getUserDocuments(userId, page, limit);
+
+        res.status(200).json({
+            success: true,
+            data: result.documents,
+            pagination: result.pagination
+        });
+    } catch (error) {
+        console.error('Error in getMyDocuments:', error);
+        res.status(500).json({
+            error: 'Internal server error',
+            message: 'Failed to get your documents'
         });
     }
 };
