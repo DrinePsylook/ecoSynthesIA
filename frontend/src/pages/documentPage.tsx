@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { MantineProvider } from '@mantine/core';
 
-import SummaryCard from '../components/summaryCard';
-import DatavizPanel from '../components/datavizPanel';
-import DataTable from '../components/dataTable';
+import SummaryCard from '../components/SummaryCard';
+import DatavizPanel from '../components/DatavizPanel';
+import DataTable from '../components/DataTable';
 import type { AnalyzedDocument } from '../types/document';
 import type { Summary } from '../types/summary';
 import type { ExtractedData } from '../types/extractedData';

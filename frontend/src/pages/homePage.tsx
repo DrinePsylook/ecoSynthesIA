@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
-import CategoryCard from '../components/categoryCard'
-import TrendMapCard from '../components/trendMapCard'
-import DocumentCard from '../components/documentCard'
+import CategoryCard from '../components/CategoryCard'
+import TrendMapCard from '../components/TrendMapCard'
+import DocumentCard from '../components/DocumentCard'
 import type { Category } from '../types/category';
 import type { TrendData } from '../types/trend';
 import type { AnalyzedDocument } from '../types/document';

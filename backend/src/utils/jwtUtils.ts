@@ -32,23 +32,15 @@ const getJwtSecret = (): string => {
 }
 
 /**
- * Get token expiration time from env or use default (7 days)
- */
-const getExpiresIn = (): string => {
-    return process.env.JWT_EXPIRES_IN || '7d';
-}
-
-/**
  * Generates a JWT token for a user
  * @param payload - User data to encode in the token (userId, email)
  * @returns The signed JWT token as a string
  */
 export const generateToken = (payload: TokenPayload): string => {
     const options: SignOptions = {
-        expiresIn: Number(getExpiresIn()), // 'HS256' algorithm is the default one
-    }
+        expiresIn: (process.env.JWT_EXPIRES_IN || '7d') as SignOptions['expiresIn'],
+    };
 
-    // jwt.sign(data, secret, options) creates the token
     return jwt.sign(payload, getJwtSecret(), options);
 };
 

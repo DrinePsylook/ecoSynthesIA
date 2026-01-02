@@ -2,6 +2,9 @@ import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
+import { useAuth } from '../contexts/authContext';
+import ProfileDropdown from './ProfileDropdown';
+import AuthButtons from './AuthButtons';
 
 // Simplified category interface for the dropdown (only id and name from /api/categories)
 interface CategoryBasic {
@@ -20,8 +23,11 @@ const navigation = [
   }
 
   export default function Header() {
-    // Détecte la page actuelle
+    // Current page detection
     const { pathname: currentPath } = useLocation();
+    
+    // Auth state - determines what to show in the header (ProfileDropdown or AuthButtons)
+    const { isAuthenticated, isLoading: authLoading } = useAuth();
     
     // State for categories dropdown
     const [categories, setCategories] = useState<CategoryBasic[]>([]);
@@ -140,40 +146,17 @@ const navigation = [
                     </div>
 
                     <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                        {/* Profile dropdown */}
-                        <Menu as="div" className="relative ml-3">
-                            <MenuButton className="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
-                                <span className="absolute -inset-1.5" />
-                                <span className="sr-only">Open user menu</span>
-                                <img
-                                    alt=""
-                                    src="../src/assets/default_avatar.png"
-                                    className="size-10 rounded-full bg-emerald-900 outline -outline-offset-1 outline-white/10"
-                                />
-                            </MenuButton>
-
-                            <MenuItems
-                                transition
-                                className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg outline outline-black/5 transition data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
-                            >
-                                <MenuItem>
-                                <a 
-                                    href="#"
-                                    className="block px-4 py-2 text-lg text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
-                                >
-                                    Profile
-                                </a>
-                                </MenuItem>
-                                <MenuItem>
-                                    <a
-                                        href="#"
-                                        className="block px-4 py-2 text-lg text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
-                                    >
-                                        Sign out
-                                    </a>
-                                </MenuItem>
-                            </MenuItems>
-                        </Menu>
+                        {/* Auth section - shows ProfileDropdown or AuthButtons based on auth state */}
+                        {authLoading ? (
+                            // Loading state - show skeleton while checking auth
+                            <div className="size-10 rounded-full bg-emerald-800 animate-pulse" />
+                        ) : isAuthenticated ? (
+                            // User is logged in - show profile dropdown
+                            <ProfileDropdown />
+                        ) : (
+                            // User is not logged in - show login/register buttons
+                            <AuthButtons />
+                        )}
                     </div>
                 </div>
             </div>

@@ -1,6 +1,6 @@
 import Markdown from 'react-markdown';
 import type { AnalyzedDocument } from '../types/document';
-import Button from './button';
+import Button from './Button';
 
 interface DocumentCardProps {
     document: AnalyzedDocument;
