@@ -1,6 +1,5 @@
 import { pgPool, queryResultHasRows } from '../../database/database';
-import { Summary, SummaryToInsert, FormattedSummary } from '../models/summaryModel';
-import { formatDate } from '../utils/dateUtils';
+import { Summary, SummaryToInsert } from '../models/summaryModel';
 
 /**
  * Service layer for analysis operations
@@ -13,7 +12,7 @@ import { formatDate } from '../utils/dateUtils';
  */
 export const getSummaryByDocumentId = async (
     document_id: number
-): Promise<FormattedSummary | null> => {
+): Promise<Summary | null> => {
     if (!pgPool) {
         console.error('PostgreSQL pool is not initialized');
         return null;
@@ -41,11 +40,8 @@ export const getSummaryByDocumentId = async (
             return null;
         }
 
-        const summary = result.rows[0] as Summary;
-        return {
-            ...summary,
-            date_analysis: formatDate(summary.date_analysis)
-        };
+        // Return summary directly - date formatting is done on the frontend
+        return result.rows[0] as Summary;
     } catch (error) {
         console.error(`Error getting summary for document ${document_id}:`, error);
         return null;

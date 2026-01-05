@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { AuthService } from '../services/authService';
+import { UserService } from '../services/userService';
 
 /**
  * Auth Controller
@@ -153,4 +154,317 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
         success: true,
         message: 'Logged out successfully. Please delete your token.'
     });
+};
+
+/**
+ * Updates the current user's profile
+ * 
+ * PATH: /auth/profile
+ */
+export const updateProfile = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const userId = req.user?.userId;
+
+        if (!userId) {
+            res.status(401).json({
+                success: false,
+                message: 'Not authenticated'
+            });
+            return;
+        }
+
+        const { username, email } = req.body;
+
+        if (!username && !email) {
+            res.status(400).json({
+                success: false,
+                message: 'At least one field (username or email) must be provided'
+            });
+            return;
+        }
+
+        if (username) {
+            if (username.length < 3 || username.length > 50) {
+                res.status(400).json({
+                    success: false,
+                    message: 'Username must be between 3 and 50 characters'
+                });
+                return;
+            }
+
+            const existingUser = await UserService.findUserByUsername(username);
+            if (existingUser && existingUser.id !== userId) {
+                res.status(409).json({
+                    success: false,
+                    message: 'This username is already taken'
+                });
+                return;
+            }
+        }
+
+        if (email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                res.status(400).json({
+                    success: false,
+                    message: 'Invalid email format'
+                });
+                return;
+            }
+
+            const existingUser = await UserService.findUserByEmail(email);
+            if (existingUser && existingUser.id !== userId) {
+                res.status(409).json({
+                    success: false,
+                    message: 'This email is already in use'
+                });
+                return;
+            }
+        }
+
+        const updates: { username?: string; email?: string } = {};
+        if (username) {
+            updates.username = username;
+        }
+        if (email) {
+            updates.email = email;
+        }
+
+        const updatedUser = await UserService.updateUser(userId, updates);
+
+        if (!updatedUser) {
+            res.status(500).json({
+                success: false,
+                message: 'Failed to update profile'
+            });
+            return;
+        }
+
+        const { password_hash, ...userWithoutPassword } = updatedUser;
+
+        res.status(200).json({
+            success: true,
+            message: 'Profile updated successfully',
+            user: userWithoutPassword
+        });
+
+    } catch (error) {
+        console.error('Update profile error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'An error occurred while updating profile'
+        });
+    }
+};
+
+/**
+ * Updates the current user's password
+ * 
+ * PATCH /auth/password
+ */
+export const updatePassword = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const userId = req.user?.userId;
+
+        if (!userId) {
+            res.status(401).json({
+                success: false,
+                message: 'Not authenticated'
+            });
+            return;
+        }
+
+        const { currentPassword, newPassword } = req.body;
+
+        // Validate required fields
+        if (!currentPassword || !newPassword) {
+            res.status(400).json({
+                success: false,
+                message: 'Current password and new password are required'
+            });
+            return;
+        }
+
+        // Validate new password strength
+        if (newPassword.length < 8) {
+            res.status(400).json({
+                success: false,
+                message: 'New password must be at least 8 characters long'
+            });
+            return;
+        }
+
+        // Get the user to verify current password
+        const user = await UserService.findUserById(userId);
+        if (!user) {
+            res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+            return;
+        }
+
+        // Verify current password is correct
+        const isPasswordValid = await AuthService.verifyPassword(currentPassword, user.password_hash);
+        if (!isPasswordValid) {
+            res.status(401).json({
+                success: false,
+                message: 'Current password is incorrect'
+            });
+            return;
+        }
+
+        // Hash the new password
+        const hashedPassword = await AuthService.hashPassword(newPassword);
+
+        // Update the password in database
+        const success = await UserService.updateUserPassword(userId, hashedPassword);
+
+        if (!success) {
+            res.status(500).json({
+                success: false,
+                message: 'Failed to update password'
+            });
+            return;
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Password updated successfully'
+        });
+
+    } catch (error) {
+        console.error('Update password error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'An error occurred while updating password'
+        });
+    }
+};
+
+/**
+ * Uploads a new avatar for the current user
+ * 
+ * POST /auth/avatar
+ * Content-Type: multipart/form-data
+ * Body: avatar (file)
+ */
+export const uploadAvatar = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const userId = req.user?.userId;
+
+        if (!userId) {
+            res.status(401).json({
+                success: false,
+                message: 'Not authenticated'
+            });
+            return;
+        }
+
+        // Check if file was uploaded (multer adds it to req.file)
+        if (!req.file) {
+            res.status(400).json({
+                success: false,
+                message: 'No file uploaded'
+            });
+            return;
+        }
+
+        // Validate file type
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        if (!allowedTypes.includes(req.file.mimetype)) {
+            res.status(400).json({
+                success: false,
+                message: 'Invalid file type. Allowed: JPEG, PNG, GIF, WebP'
+            });
+            return;
+        }
+
+        // Validate file size (max 5MB)
+        const maxSize = 5 * 1024 * 1024; // 5MB
+        if (req.file.size > maxSize) {
+            res.status(400).json({
+                success: false,
+                message: 'File too large. Maximum size is 5MB'
+            });
+            return;
+        }
+
+        // Upload the avatar
+        const updatedUser = await UserService.uploadAvatar(
+            userId,
+            req.file.buffer,
+            req.file.mimetype
+        );
+
+        if (!updatedUser) {
+            res.status(500).json({
+                success: false,
+                message: 'Failed to upload avatar'
+            });
+            return;
+        }
+
+        // Return user without password
+        const { password_hash, ...userWithoutPassword } = updatedUser;
+
+        res.status(200).json({
+            success: true,
+            message: 'Avatar uploaded successfully',
+            user: userWithoutPassword
+        });
+
+    } catch (error) {
+        console.error('Upload avatar error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'An error occurred while uploading avatar'
+        });
+    }
+};
+
+/**
+ * Deletes the current user's avatar
+ * 
+ * DELETE /auth/avatar
+ */
+export const deleteAvatar = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const userId = req.user?.userId;
+
+        if (!userId) {
+            res.status(401).json({
+                success: false,
+                message: 'Not authenticated'
+            });
+            return;
+        }
+
+        // Remove the avatar
+        const updatedUser = await UserService.removeAvatar(userId);
+
+        if (!updatedUser) {
+            res.status(500).json({
+                success: false,
+                message: 'Failed to delete avatar'
+            });
+            return;
+        }
+
+        // Return user without password
+        const { password_hash, ...userWithoutPassword } = updatedUser;
+
+        res.status(200).json({
+            success: true,
+            message: 'Avatar deleted successfully',
+            user: userWithoutPassword
+        });
+
+    } catch (error) {
+        console.error('Delete avatar error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'An error occurred while deleting avatar'
+        });
+    }
 };

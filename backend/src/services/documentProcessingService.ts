@@ -5,6 +5,36 @@ import * as categoryService from './categoryService';
 import * as aiService from './aiService';
 import { downloadDocumentToBucket, getBucketFilePath, deleteLocalFile } from '../utils/fileUtils';
 import { ProcessingResult, ProcessingSummary } from 'src/models/processingInterface';
+import * as fs from 'fs/promises';
+import * as path from 'path';
+import { BUCKET_PATH } from '../constants';
+
+/**
+ * Checks if a storage_path is a local bucket path or an external URL
+ */
+const isLocalBucketPath = (storagePath: string): boolean => {
+    return storagePath.startsWith('bucket/');
+};
+
+/**
+ * Gets the full local path for a bucket file
+ */
+const getFullLocalPath = (storagePath: string): string => {
+    const relativePath = storagePath.replace(/^bucket\//, '');
+    return path.join(BUCKET_PATH, relativePath);
+};
+
+/**
+ * Checks if a local file exists
+ */
+const localFileExists = async (filePath: string): Promise<boolean> => {
+    try {
+        await fs.access(filePath);
+        return true;
+    } catch {
+        return false;
+    }
+};
 
 /**
  * Service layer for document processing operations
@@ -41,12 +71,30 @@ export const processDocument = async (doc: {
     }
 
     let localFilePath: string | null = null;
+    let isLocalFile = false;
 
     try {
-        // Pass the title to generate a meaningful filename
-        localFilePath = await downloadDocumentToBucket(doc.storage_path, doc.id, doc.title);
+        // Check if the document is already in the local bucket or needs to be downloaded
+        if (isLocalBucketPath(doc.storage_path)) {
+            // Document is already in the bucket (uploaded by user)
+            localFilePath = getFullLocalPath(doc.storage_path);
+            isLocalFile = true;
+            
+            // Verify the file exists
+            if (!await localFileExists(localFilePath)) {
+                console.error(`[Document ${doc.id}] Local file not found: ${localFilePath}`);
+                result.error = 'Local file not found';
+                return result;
+            }
+            console.log(`[Document ${doc.id}] Using local file: ${localFilePath}`);
+        } else {
+            // Document is external, download it
+            localFilePath = await downloadDocumentToBucket(doc.storage_path, doc.id, doc.title);
+            console.log(`[Document ${doc.id}] Downloaded to: ${localFilePath}`);
+        }
 
-        const bucketFilePath = getBucketFilePath(localFilePath);
+        // Get the relative path for the AI service
+        const bucketFilePath = isLocalFile ? doc.storage_path : getBucketFilePath(localFilePath);
 
         const analysisResults = await aiService.callAIServiceForAnalysis(bucketFilePath, doc.id);
         console.log(`[Document ${doc.id}] IA service responded successfully`);
@@ -118,11 +166,12 @@ export const processDocument = async (doc: {
         result.error = errorMessage;
         console.error(`[Document ${doc.id}] ❌ Error during processing:`, errorMessage);
     } finally {
-        if (localFilePath) {
+        // Only delete temporary files (downloaded from external URLs)
+        // Don't delete local files uploaded by users!
+        if (localFilePath && !isLocalFile) {
             try {
-
                 await deleteLocalFile(localFilePath);
-                console.log(`[Document ${doc.id}] Temporary file kept for ingestion`);
+                console.log(`[Document ${doc.id}] Temporary file deleted`);
             } catch (cleanupError) {
                 console.warn(`[Document ${doc.id}] Warning: Could not delete temporary file:`, cleanupError);
             }
@@ -132,14 +181,26 @@ export const processDocument = async (doc: {
 };
 
 /**
- * Processes all pending documents
+ * Processes pending documents
+ * @param documentId - Optional. If provided, only process this specific document
  * @returns Summary of processing results
  */
-export const processPendingDocuments = async (): Promise<ProcessingSummary> => {
+export const processPendingDocuments = async (documentId?: number): Promise<ProcessingSummary> => {
     console.log('🔍 Finding documents that need processing...');
 
-    // Find documents that need processing
-    const unanalyzedDocuments = await documentService.getUnanalyzedDocuments();
+    let unanalyzedDocuments;
+
+    if (documentId) {
+        // Process a specific document (use internal function to bypass visibility rules)
+        console.log(`🎯 Processing specific document: ${documentId}`);
+        const doc = await documentService.getDocumentByIdInternal(documentId);
+        unanalyzedDocuments = doc ? [doc] : [];
+        console.log(`📄 Document found: ${doc ? 'yes' : 'no'}`);
+    } else {
+        // Process all unanalyzed documents
+        unanalyzedDocuments = await documentService.getUnanalyzedDocuments();
+    }
+    
     console.log(`📋 Found ${unanalyzedDocuments.length} document(s) to process`);
 
     const results: ProcessingResult[] = [];

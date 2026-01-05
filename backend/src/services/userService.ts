@@ -218,7 +218,7 @@ export class UserService {
         const client = await pgPool.connect();
         try {
             const result = await client.query(
-                `UPDATE users SET "password_hash" = $1, "updated_at" = NOW() WHERE "user_id" = $2 RETURNING *`,
+                `UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2 RETURNING *`,
                 [hashedPassword, id]
             );
 

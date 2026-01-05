@@ -3,6 +3,7 @@ import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import Markdown from 'react-markdown';
 import { normalizeFileName } from '../utils/file';
+import { formatDate } from '../utils/formatters';
 import Button from '../components/Button';
 
 // Interface for category details
@@ -270,7 +271,7 @@ export default function CategoryPage() {
                                         )}
                                     </div>
                                     <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
-                                        <span>📅 {doc.date_publication}</span>
+                                        <span>📅 {formatDate(doc.date_publication)}</span>
                                         {doc.author && <span>✍️ {doc.author}</span>}
                                         <span>📊 {doc.extracted_data_count} data points</span>
                                     </div>
