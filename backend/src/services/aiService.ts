@@ -6,8 +6,13 @@ import axios from 'axios';
  */
 
 // Configuration for IA service
+// In Docker: use container name (ia_ecosynthesia:8000)
+// In local dev: use localhost:8001 (Docker port mapping)
+const isDocker = process.cwd() === '/app';
 const IA_SERVICE_URL = process.env.IA_SERVICE_URL 
-    || 'http://ia_ecosynthesia:8000'; 
+    || (isDocker ? 'http://ia_ecosynthesia:8000' : 'http://localhost:8001');
+
+console.log(`🤖 AI Service config: cwd=${process.cwd()}, isDocker=${isDocker}, URL=${IA_SERVICE_URL}`); 
 
 /**
  * Interface for the AI service analysis response

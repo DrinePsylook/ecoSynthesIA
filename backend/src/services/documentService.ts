@@ -7,6 +7,87 @@ import { cleanDocumentTitle } from '../utils/fileUtils';
  */
 
 /**
+ * Create a new document in the database
+ * @param document - The document data to insert
+ * @returns The created document or null if failed
+ */
+export const createDocument = async (document: {
+    title: string;
+    author?: string;
+    date_publication?: string;
+    is_public?: boolean;
+    storage_path: string;
+    url_source?: string;
+    user_id: number;
+}): Promise<Document | null> => {
+    if (!pgPool) {
+        console.error('PostgreSQL pool is not initialized');
+        return null;
+    }
+
+    const client = await pgPool.connect();
+    try {
+        const query = `
+            INSERT INTO documents (
+                title, author, date_publication, is_public, 
+                storage_path, url_source, user_id, created_at, updated_at
+            ) VALUES (
+                $1, $2, $3, $4, $5, $6, $7, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+            )
+            RETURNING *;
+        `;
+
+        const result = await client.query(query, [
+            document.title,
+            document.author || null,
+            document.date_publication || new Date().toISOString().split('T')[0], 
+            document.is_public ?? false,
+            document.storage_path,
+            document.url_source || null,
+            document.user_id,
+        ]);
+
+        if (result.rows.length > 0) {
+            console.log(`Document created: ${result.rows[0].id} - ${document.title}`);
+            return result.rows[0] as Document;
+        }
+
+        return null;
+    } catch (error) {
+        console.error('Error creating document:', error);
+        return null;
+    } finally {
+        client.release();
+    }
+};
+
+/**
+ * Deletes a document by ID
+ * @param id - Document ID
+ * @returns True if deleted, false otherwise
+ */
+export const deleteDocument = async (id: number): Promise<boolean> => {
+    if (!pgPool) {
+        console.error('PostgreSQL pool is not initialized');
+        return false;
+    }
+
+    const client = await pgPool.connect();
+    try {
+        const result = await client.query(
+            'DELETE FROM documents WHERE id = $1 RETURNING id',
+            [id]
+        );
+        return result.rowCount !== null && result.rowCount > 0;
+    } catch (error) {
+        console.error('Error deleting document:', error);
+        return false;
+    } finally {
+        client.release();
+    }
+};
+
+/**
  * Gets a document by its ID
  * 
  * Access rules:
@@ -62,6 +143,82 @@ export const getDocumentById = async (
     } catch (error) {
         console.error(`Error getting document ${id}:`, error);
         return null;
+    } finally {
+        client.release();
+    }
+};
+
+/**
+ * Gets a document by ID without visibility restrictions
+ * For internal/system use only (e.g., AI processing)
+ */
+export const getDocumentByIdInternal = async (
+    id: number
+): Promise<Document | null> => {
+    if (!pgPool) {
+        console.error('PostgreSQL pool is not initialized');
+        return null;
+    }
+
+    const client = await pgPool.connect();
+    try {
+        const query = `
+            SELECT 
+                d.id,
+                d.author,
+                d.date_publication,
+                d.is_public,
+                d.storage_path,
+                d.title,
+                d.url_source,
+                d.created_at,
+                d.updated_at,
+                d.category_id,
+                d.user_id,
+                c.name AS category_name,
+                c.description AS category_description
+            FROM documents d
+            LEFT JOIN categories c ON d.category_id = c.id
+            WHERE d.id = $1;
+        `;
+
+        const result = await client.query(query, [id]);
+
+        if (queryResultHasRows(result)) {
+            return result.rows[0] as Document;
+        }
+
+        return null;
+    } catch (error) {
+        console.error(`Error getting document ${id}:`, error);
+        return null;
+    } finally {
+        client.release();
+    }
+};
+
+/**
+ * Checks if a user owns a specific document
+ * Simple ownership check without visibility rules
+ */
+export const isDocumentOwner = async (
+    documentId: number,
+    userId?: number
+): Promise<boolean> => {
+    if (!userId || !pgPool) {
+        return false;
+    }
+
+    const client = await pgPool.connect();
+    try {
+        const result = await client.query(
+            'SELECT 1 FROM documents WHERE id = $1 AND user_id = $2',
+            [documentId, userId]
+        );
+        return queryResultHasRows(result);
+    } catch (error) {
+        console.error(`Error checking document ownership:`, error);
+        return false;
     } finally {
         client.release();
     }
@@ -486,6 +643,73 @@ export const getUnanalyzedDocuments = async (): Promise<Document[]> => {
         client.release();
     }
 };
+
+/**
+ * Updates a document by ID
+ * @param id - Document ID
+ * @param updates - Fields to update
+ * @returns True if updated, false otherwise
+ */
+export const updateDocument = async (
+    id: number,
+    updates: {
+        title?: string;
+        author?: string | null;
+        date_publication?: string | null;
+        is_public?: boolean;
+    }
+): Promise<boolean> => {
+    if (!pgPool) {
+        console.error('PostgreSQL pool is not initialized');
+        return false;
+    }
+
+    const client = await pgPool.connect();
+    try {
+        const setClauses: string[] = [];
+        const values: unknown[] = [];
+        let paramIndex = 1;
+
+        if (updates.title !== undefined) {
+            setClauses.push(`title = $${paramIndex++}`);
+            values.push(updates.title);
+        }
+        if (updates.author !== undefined) {
+            setClauses.push(`author = $${paramIndex++}`);
+            values.push(updates.author);
+        }
+        if (updates.date_publication !== undefined) {
+            setClauses.push(`date_publication = $${paramIndex++}`);
+            values.push(updates.date_publication);
+        }
+        if (updates.is_public !== undefined) {
+            setClauses.push(`is_public = $${paramIndex++}`);
+            values.push(updates.is_public);
+        }
+
+        if (setClauses.length === 0) {
+            return true; // Nothing to update
+        }
+
+        setClauses.push(`updated_at = CURRENT_TIMESTAMP`);
+        values.push(id);
+
+        const query = `
+            UPDATE documents 
+            SET ${setClauses.join(', ')}
+            WHERE id = $${paramIndex}
+            RETURNING id
+        `;
+
+        const result = await client.query(query, values);
+        return result.rowCount !== null && result.rowCount > 0;
+    } catch (error) {
+        console.error('Error updating document:', error);
+        return false;
+    } finally {
+        client.release();
+    }
+}; 
 
 
 /**

@@ -1,6 +1,7 @@
 import Markdown from 'react-markdown';
 import type { AnalyzedDocument } from '../types/document';
 import Button from './Button';
+import { formatDate } from '../utils/formatters';
 
 interface DocumentCardProps {
     document: AnalyzedDocument;
@@ -19,7 +20,7 @@ export default function DocumentCard({document}: DocumentCardProps) {
         <div className="bg-white max-w-sm rounded overflow-hidden shadow-lg flex flex-col h-full">
             {/* Date de publication */}
             <div className="px-6 pt-4 flex justify-end">
-                <span className="text-sm font-bold text-gray-500">{date_publication}</span>
+                <span className="text-sm font-bold text-gray-500">{formatDate(date_publication)}</span>
             </div>
             
             {/* Titre et résumé */}

@@ -2,7 +2,6 @@ import { pgPool, queryResultHasRows } from '../../database/database';
 
 import { Category } from '../models/categoryModel';
 import { PaginatedDocuments } from '../models/documentModel';
-import { formatDate } from '../utils/dateUtils';
 /**
  * Service layer for category operations
  * Handles all database queries related to categories
@@ -229,11 +228,12 @@ export const getDocumentsByCategory = async (
 
         const result = await client.query(query, [categoryId, limit, offset]);
 
+        // Return documents with raw dates - formatting is done on the frontend
         const documents = result.rows.map(row => ({
             id: row.id,
             title: row.title,
             author: row.author,
-            date_publication: formatDate(row.date_publication),
+            date_publication: row.date_publication,
             textual_summary: row.textual_summary,
             extracted_data_count: parseInt(row.extracted_data_count, 10)
         }));

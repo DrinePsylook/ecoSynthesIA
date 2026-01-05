@@ -1,22 +1,13 @@
-// Interface for the analysis table
+// Interface for the summary table
 export interface Summary {
     id: number;
     document_id: number;
     textual_summary: string;
-    date_analysis: Date;
+    date_analysis: Date; 
     confidence_score: number;
 }
 
-// Interface for formatted summary (API response)
-export interface FormattedSummary {
-    id: number;
-    document_id: number;
-    textual_summary: string;
-    date_analysis: string;  // Formatted date string (YYYY-MM-DD)
-    confidence_score: number;
-}
-
-// Interface for creating a new analysis
+// Interface for creating a new summary
 export interface SummaryToInsert {
     document_id: number;
     textual_summary: string;

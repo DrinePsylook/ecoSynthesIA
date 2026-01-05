@@ -21,6 +21,7 @@ import summaryRoutes from './src/routes/summaryRoute';
 import extractedDataRoutes from './src/routes/extractedDataRoute';
 import categoryRoutes from './src/routes/categoryRoute';
 import trendRoutes from './src/routes/trendRoute';
+import { BUCKET_PATH } from './src/constants';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -31,6 +32,13 @@ app.use(cors()); // Enable CORS
 app.use(morgan('combined')); // Logging
 app.use(express.json()); // Parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
+
+// Serve static files from the bucket directory (for avatars, uploaded files, etc.)
+// We need to set Cross-Origin-Resource-Policy to allow the frontend (different origin) to load these files
+app.use('/bucket', (req, res, next) => {
+  res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+  next();
+}, express.static(BUCKET_PATH));
 
 // Basic routes
 app.get('/', (req, res) => {

@@ -5,11 +5,183 @@ import * as summaryService from '../services/summaryService';
 import * as extractedDataService from '../services/extractedDataService';
 import * as categoryService from '../services/categoryService';
 import { processPendingDocuments as processPendingDocumentsService } from '../services/documentProcessingService';
+import { StorageService } from '../services/storageService';
 
 /**
  * Controller layer for document operations
  * Handles HTTP request/response, validation or orchestrates services
  */
+
+/**
+ * Creates a new document with file upload
+ * POST /api/documents
+ * 
+ * Requires authentication
+ */
+export const createDocument = async (
+    req: Request,
+    res: Response
+): Promise<void> => {
+    try {
+        const userId = req.user?.userId;
+        if (!userId) {
+            res.status(401).json({
+                success: false,
+                message: 'Authentication required'
+            });
+            return;
+        }
+
+        // Check if file was uploaded
+        const file = req.file;
+        if (!file) {
+            res.status(400).json({
+                success: false,
+                message: 'No file uploaded. Please select a PDF file.'
+            });
+            return;
+        }
+
+        // Validate file type (PDF only)
+        if (file.mimetype !== 'application/pdf') {
+            res.status(400).json({
+                success: false,
+                message: 'Only PDF files are allowed'
+            });
+            return;
+        }
+
+        // Get form data
+        const { title, author, date_publication, is_public, analyze_with_ai } = req.body;
+        if (!title || !title.trim()) {
+            res.status(400).json({
+                success: false,
+                message: 'Title is required'
+            });
+            return;
+        }
+
+        const storagePath = await StorageService.saveDocument(
+            userId,
+            file.buffer,
+            file.originalname
+        );
+
+        // Create document in database
+        const document = await documentService.createDocument({
+            title: title.trim(),
+            author: author?.trim()|| undefined,
+            date_publication: date_publication || undefined,
+            is_public: is_public ?? false,
+            storage_path: storagePath,
+            user_id: userId,
+        });
+
+        if (!document) {
+            // Clean up uploaded file if DB insert failed
+            await StorageService.deleteDocument(storagePath);
+            res.status(500).json({
+                success: false,
+                message: 'Failed to create document'
+            });
+            return;
+        }
+
+        // Optionally trigger AI analysis
+        if (analyze_with_ai === 'true') {
+            // This will be processed by process-pending
+            console.log(`Document ${document.id} queued for AI analysis`);
+        }
+
+        res.status(201).json({
+            success: true,
+            message: 'Document uploaded successfully',
+            document: document
+        });
+
+    } catch (error) {
+        console.error('Error in createDocument:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to upload document'
+        });
+    }
+};
+
+/**
+ * Deletes a document owned by the authenticated user
+ * DELETE /api/documents/:id
+ */
+export const deleteDocument = async (
+    req: Request,
+    res: Response
+): Promise<void> => {
+    try {
+        const userId = req.user?.userId;
+        const documentId = parseInt(req.params.id, 10);
+
+        if (!userId) {
+            res.status(401).json({
+                success: false,
+                message: 'Authentication required'
+            });
+            return;
+        }
+
+        if (isNaN(documentId) || documentId <= 0) {
+            res.status(400).json({
+                success: false,
+                message: 'Invalid document ID'
+            });
+            return;
+        }
+
+        // Get document to verify ownership
+        const document = await documentService.getDocumentById(documentId, userId);
+        
+        if (!document) {
+            res.status(404).json({
+                success: false,
+                message: 'Document not found'
+            });
+            return;
+        }
+
+        // Verify ownership
+        if (document.user_id !== userId) {
+            res.status(403).json({
+                success: false,
+                message: 'You can only delete your own documents'
+            });
+            return;
+        }
+
+        // Delete the document (this will also delete related data via CASCADE)
+        const deleted = await documentService.deleteDocument(documentId);
+
+        if (deleted) {
+            // Also delete the file from storage
+            const { StorageService } = await import('../services/storageService');
+            await StorageService.deleteDocument(document.storage_path);
+
+            res.status(200).json({
+                success: true,
+                message: 'Document deleted successfully'
+            });
+        } else {
+            res.status(500).json({
+                success: false,
+                message: 'Failed to delete document'
+            });
+        }
+    } catch (error) {
+        console.error('Error in deleteDocument:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to delete document'
+        });
+    }
+};
 
 /**
  * Gets complete document data : document, summary, extracted data, chart types and category
@@ -133,6 +305,10 @@ export const getDocumentProcessingStatus = async (
 /**
  * Finds and processes pending documents
  * POST /api/documents/process-pending
+ * 
+ * Optional body parameter:
+ * - document_id: If provided, only process this specific document (must be owned by authenticated user)
+ *                If not provided, process all pending documents
  */
 export const processPendingDocuments = async (
     req: Request,
@@ -142,8 +318,40 @@ export const processPendingDocuments = async (
     console.log('🚀 [CONTROLLER] Request received at:', new Date().toISOString());
     
     try {
+        const { document_id } = req.body;
+        const userId = req.user?.userId;
+
+        // If document_id is provided, verify ownership before processing
+        if (document_id) {
+            const docId = parseInt(document_id, 10);
+            
+            console.log(`🔍 [CONTROLLER] Checking document ${docId} for user ${userId}`);
+            
+            if (isNaN(docId) || docId <= 0) {
+                res.status(400).json({
+                    success: false,
+                    message: 'Invalid document ID'
+                });
+                return;
+            }
+
+            // Verify the user owns this document (regardless of public/private status)
+            const isOwner = await documentService.isDocumentOwner(docId, userId);
+            console.log(`🔍 [CONTROLLER] isDocumentOwner result: ${isOwner}`);
+            
+            if (!isOwner) {
+                res.status(404).json({
+                    success: false,
+                    message: 'Document not found or access denied'
+                });
+                return;
+            }
+
+            console.log(`🚀 [CONTROLLER] Processing single document: ${docId}`);
+        }
+
         console.log('🚀 [CONTROLLER] Calling processPendingDocumentsService...');
-        const summary = await processPendingDocumentsService();
+        const summary = await processPendingDocumentsService(document_id ? parseInt(document_id, 10) : undefined);
         console.log('🚀 [CONTROLLER] Service returned, summary:', {
             totalFound: summary.totalFound,
             needsProcessing: summary.needsProcessing
@@ -343,6 +551,94 @@ export const getMyDocuments = async (
         res.status(500).json({
             error: 'Internal server error',
             message: 'Failed to get your documents'
+        });
+    }
+};
+
+/**
+ * Updates a document owned by the authenticated user
+ * PATCH /api/documents/:id
+ */
+export const updateDocument = async (
+    req: Request,
+    res: Response
+): Promise<void> => {
+    try {
+        const userId = req.user?.userId;
+        const documentId = parseInt(req.params.id, 10);
+
+        if (!userId) {
+            res.status(401).json({
+                success: false,
+                message: 'Authentication required'
+            });
+            return;
+        }
+
+        if (isNaN(documentId) || documentId <= 0) {
+            res.status(400).json({
+                success: false,
+                message: 'Invalid document ID'
+            });
+            return;
+        }
+
+        // Get document to verify ownership
+        const document = await documentService.getDocumentById(documentId, userId);
+        
+        if (!document) {
+            res.status(404).json({
+                success: false,
+                message: 'Document not found'
+            });
+            return;
+        }
+
+        // Verify ownership
+        if (document.user_id !== userId) {
+            res.status(403).json({
+                success: false,
+                message: 'You can only edit your own documents'
+            });
+            return;
+        }
+
+        // Extract allowed fields from request body
+        const { title, author, date_publication, is_public } = req.body;
+
+        // Validate title if provided
+        if (title !== undefined && !title.trim()) {
+            res.status(400).json({
+                success: false,
+                message: 'Title cannot be empty'
+            });
+            return;
+        }
+
+        // Update the document
+        const updated = await documentService.updateDocument(documentId, {
+            title: title?.trim(),
+            author: author,
+            date_publication: date_publication,
+            is_public: is_public,
+        });
+
+        if (updated) {
+            res.status(200).json({
+                success: true,
+                message: 'Document updated successfully'
+            });
+        } else {
+            res.status(500).json({
+                success: false,
+                message: 'Failed to update document'
+            });
+        }
+    } catch (error) {
+        console.error('Error in updateDocument:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to update document'
         });
     }
 };

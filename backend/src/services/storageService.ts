@@ -228,5 +228,72 @@ export class StorageService {
         const avatarPath = await this.findExistingAvatar(userId);
         return avatarPath !== null;
     }
-}
 
+    // ==================== DOCUMENT STORAGE ====================
+
+    /**
+     * Gets the documents directory path for a user
+     * @param userId - The user ID
+     * @returns The full path to the user's documents directory
+     */
+    private static getUserDocumentsDirectory(userId: number): string {
+        return path.join(BUCKET_PATH, 'user', String(userId), 'documents');
+    }
+
+    /**
+     * Ensures the user's documents directory exists
+     * @param userId - The user ID
+     */
+    private static async ensureUserDocumentsDirectory(userId: number): Promise<void> {
+        const docsDir = this.getUserDocumentsDirectory(userId);
+        await fs.mkdir(docsDir, { recursive: true });
+    }
+
+    /**
+     * Saves a document file for a user
+     * @param userId - The user ID
+     * @param fileBuffer - The file content as a Buffer
+     * @param originalFileName - The original file name (to preserve extension)
+     * @returns The relative path to the saved document (for storing in DB)
+     */
+    static async saveDocument(
+        userId: number,
+        fileBuffer: Buffer,
+        originalFileName: string
+    ): Promise<string> {
+        // Ensure documents directory exists
+        await this.ensureUserDocumentsDirectory(userId);
+
+        // Generate unique filename: timestamp_originalname
+        const timestamp = Date.now();
+        const sanitizedFilename = originalFileName
+            .replace(/[^a-z0-9._-]/gi, '_')
+            .substring(0, 100);
+        const fileName = `${timestamp}_${sanitizedFilename}`;
+
+        const fullPath = path.join(this.getUserDocumentsDirectory(userId), fileName);
+        const relativePath = path.join('bucket', 'user', String(userId), 'documents', fileName);
+
+        await fs.writeFile(fullPath, fileBuffer);
+        console.log(`Document saved for user ${userId}: ${relativePath}`);
+
+        return relativePath;
+    }
+
+    /**
+     * Deletes a document file
+     * @param relativePath - The relative path stored in the database
+     * @returns True if the file was deleted, false otherwise
+     */
+    static async deleteDocument(relativePath: string): Promise<boolean> {
+        try {
+            const fullPath = path.join(path.dirname(BUCKET_PATH), relativePath);
+            await fs.unlink(fullPath);
+            console.log(`Document deleted: ${relativePath}`);
+            return true;
+        } catch (error) {
+            console.error(`Error deleting document ${relativePath}:`, error);
+            return false;
+        }
+    }
+}

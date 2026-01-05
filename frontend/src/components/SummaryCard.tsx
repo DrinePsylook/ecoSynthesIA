@@ -1,5 +1,6 @@
 import Markdown from 'react-markdown';
 import type { Summary } from '../types/summary';
+import { formatDate } from '../utils/formatters';
 
 interface SummaryCardProps {
     summary: Summary;
@@ -24,7 +25,7 @@ export default function SummaryCard({summary}: SummaryCardProps) {
                     Summary
                 </span>
                 <span className="text-sm text-gray-500">
-                    {date_analysis}
+                    {formatDate(date_analysis)}
                 </span>
             </div>
             

@@ -1,34 +1,47 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { MantineProvider } from '@mantine/core';
 
 import SummaryCard from '../components/SummaryCard';
 import DatavizPanel from '../components/DatavizPanel';
 import DataTable from '../components/DataTable';
+import Button from '../components/Button';
+import { getToken } from '../services/authService';
 import type { AnalyzedDocument } from '../types/document';
 import type { Summary } from '../types/summary';
 import type { ExtractedData } from '../types/extractedData';
 
 export default function DocumentPage() {
-    const {id} = useParams<{id: string}>();
+    const { id } = useParams<{id: string}>();
 
     const [document, setDocument] = useState<AnalyzedDocument | null>(null);
     const [summary, setSummary] = useState<Summary | null>(null);
     const [extractedData, setExtractedData] = useState<ExtractedData[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         if (!id) return;
 
-        const fetchDocument = fetch(`${import.meta.env.VITE_BACKEND_URL}/api/documents/${id}`)
-            .then(res => res.json())
-            .then(({ data: { document: doc } }) => setDocument(doc));
+        // Build headers with optional auth token
+        const token = getToken();
+        const headers: HeadersInit = token 
+            ? { 'Authorization': `Bearer ${token}` } 
+            : {};
 
-        const fetchSummary = fetch(`${import.meta.env.VITE_BACKEND_URL}/api/summaries/document/${id}`)
+        const fetchDocument = fetch(`${import.meta.env.VITE_BACKEND_URL}/api/documents/${id}`, { headers })
+            .then(res => {
+                if (!res.ok) throw new Error('Document not found');
+                return res.json();
+            })
+            .then(({ data: { document: doc } }) => setDocument(doc))
+            .catch(err => setError(err.message));
+
+        const fetchSummary = fetch(`${import.meta.env.VITE_BACKEND_URL}/api/summaries/document/${id}`, { headers })
             .then(res => res.ok ? res.json() : null)
             .then(response => response?.data && setSummary(response.data));
 
-        const fetchExtractedData = fetch(`${import.meta.env.VITE_BACKEND_URL}/api/extracted-data/document/${id}`)
+        const fetchExtractedData = fetch(`${import.meta.env.VITE_BACKEND_URL}/api/extracted-data/document/${id}`, { headers })
             .then(res => res.ok ? res.json() : null)
             .then(response => response?.data && setExtractedData(response.data));
 
@@ -46,6 +59,19 @@ export default function DocumentPage() {
         );
     }
 
+    if (error || !document) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 to-teal-100">
+                <div className="text-center">
+                    <p className="text-red-600 text-xl mb-4">{error || 'Document not found'}</p>
+                    <Link to="/my-documents">
+                        <Button variant="primary">Back to My Documents</Button>
+                    </Link>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <MantineProvider>
             <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
@@ -53,9 +79,9 @@ export default function DocumentPage() {
                 <header className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-6 px-8 shadow-lg">
                     <div className="max-w-7xl mx-auto flex items-center justify-between">
                         <h1 className="text-3xl font-bold tracking-tight">
-                            {document?.title || 'Untitled Document'}
+                            {document.title}
                         </h1>
-                        {document?.category_name && (
+                        {document.category_name && (
                             <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium">
                                 {document.category_name}
                             </span>
