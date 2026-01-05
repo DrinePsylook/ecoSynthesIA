@@ -20,9 +20,9 @@ export class UserService {
             await client.query('BEGIN');
 
             const result = await client.query(
-                `INSERT INTO users (avatar_path, email, password_hash, username) 
-                VALUES ($1, $2, $3, $4) RETURNING *`, 
-                [user.avatar_path, user.email, user.password_hash, user.username]);
+                `INSERT INTO users (avatar_path, email, password_hash, preferred_language, username) 
+                VALUES ($1, $2, $3, $4, $5) RETURNING *`, 
+                [user.avatar_path, user.email, user.password_hash, user.preferred_language || 'en', user.username]);
 
             await client.query('COMMIT');
 
@@ -181,6 +181,11 @@ export class UserService {
             if (updates.email) {
                 setClauses.push(`email = $${paramIndex++}`);
                 queryParams.push(updates.email);
+            }
+
+            if (updates.preferred_language) {
+                setClauses.push(`preferred_language = $${paramIndex++}`);
+                queryParams.push(updates.preferred_language);
             }
 
             if (updates.username) {

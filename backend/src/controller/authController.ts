@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { AuthService } from '../services/authService';
 import { UserService } from '../services/userService';
+import { SUPPORTED_LANGUAGES, isValidLanguage, type SupportedLanguage } from '../constants';
 
 /**
  * Auth Controller
@@ -173,12 +174,12 @@ export const updateProfile = async (req: Request, res: Response): Promise<void> 
             return;
         }
 
-        const { username, email } = req.body;
+        const { username, email, preferred_language } = req.body;
 
-        if (!username && !email) {
+        if (!username && !email && !preferred_language) {
             res.status(400).json({
                 success: false,
-                message: 'At least one field (username or email) must be provided'
+                message: 'At least one field (username or email or preferred_language) must be provided'
             });
             return;
         }
@@ -222,12 +223,23 @@ export const updateProfile = async (req: Request, res: Response): Promise<void> 
             }
         }
 
-        const updates: { username?: string; email?: string } = {};
+        if (preferred_language && !isValidLanguage(preferred_language)) {
+            res.status(400).json({
+                success: false,
+                message: `Invalid language. Supported: ${SUPPORTED_LANGUAGES.join(', ')}`
+            });
+            return;
+        }
+
+        const updates: { username?: string; email?: string; preferred_language?: SupportedLanguage } = {};
         if (username) {
             updates.username = username;
         }
         if (email) {
             updates.email = email;
+        }
+        if (preferred_language) {
+            updates.preferred_language = preferred_language;
         }
 
         const updatedUser = await UserService.updateUser(userId, updates);
