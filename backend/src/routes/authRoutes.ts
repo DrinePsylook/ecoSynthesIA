@@ -44,4 +44,7 @@ router.patch('/password', authMiddleware, authController.updatePassword);
 router.post('/avatar', authMiddleware, upload.single('avatar'), authController.uploadAvatar);
 router.delete('/avatar', authMiddleware, authController.deleteAvatar);
 
+// Account deletion routes
+router.delete('/account', authMiddleware, authController.deleteAccount);
+
 export default router;

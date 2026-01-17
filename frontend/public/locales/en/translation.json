@@ -145,7 +145,19 @@
     "error": {
       "updateFailed": "An error occurred while updating",
       "uploadFailed": "An error occurred while uploading avatar",
-      "deleteFailed": "An error occurred while deleting avatar"
+      "deleteFailed": "An error occurred while deleting avatar",
+      "accountDeleteFailed": "An error occurred while deleting your account"
+    },
+    "deleteAccount": {
+      "title": "Delete Account",
+      "warning": "This action is irreversible. All your data will be deleted.",
+      "button": "Delete",
+      "confirmTitle": "Confirm Deletion",
+      "confirmMessage": "Are you sure you want to delete your account? All your documents and data will be permanently deleted.",
+      "enterPassword": "Enter your password to confirm",
+      "passwordRequired": "Password is required",
+      "deleting": "Deleting...",
+      "confirmButton": "Delete my account"
     }
   },
   "auth": {

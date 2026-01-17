@@ -480,3 +480,76 @@ export const deleteAvatar = async (req: Request, res: Response): Promise<void> =
         });
     }
 };
+
+/**
+ * Deletes the current user's account and all associated data
+ * 
+ * DELETE /auth/account
+ * 
+ * Requires password confirmation for security
+ */
+export const deleteAccount = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const userId = req.user?.userId;
+        if (!userId) {
+            res.status(401).json({
+                success: false,
+                message: 'Not authenticated'
+            });
+            return;
+        }
+
+        const { password } = req.body;
+        // Require password confirmation for security
+        if (!password) {
+            res.status(400).json({
+                success: false,
+                message: 'Password confirmation is required to delete your account'
+            });
+            return;
+        }
+
+        // Get the user to verify password
+        const user = await UserService.findUserById(userId);
+        if (!user) {
+            res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+            return;
+        }
+        
+        // Verify password is correct
+        const isPasswordValid = await AuthService.verifyPassword(password, user.password_hash);
+        if (!isPasswordValid) {
+            res.status(401).json({
+                success: false,
+                message: 'Incorrect password'
+            });
+            return;
+        }
+
+        // Delete the user and all associated data
+        const deleted = await UserService.deleteUserWithFiles(userId);
+        if (!deleted) {
+            res.status(500).json({
+                success: false,
+                message: 'Failed to delete account'
+            });
+            return;
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Account deleted successfully'
+        });
+
+    } catch (error) {
+        console.error('Delete account error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'An error occurred while deleting account'
+        });
+    }
+};
+

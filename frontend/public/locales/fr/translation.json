@@ -145,7 +145,19 @@
     "error": {
       "updateFailed": "Une erreur est survenue lors de la mise à jour",
       "uploadFailed": "Une erreur est survenue lors du téléchargement de l'avatar",
-      "deleteFailed": "Une erreur est survenue lors de la suppression de l'avatar"
+      "deleteFailed": "Une erreur est survenue lors de la suppression de l'avatar",
+      "accountDeleteFailed": "Une erreur est survenue lors de la suppression du compte"
+    },
+    "deleteAccount": {
+      "title": "Supprimer le compte",
+      "warning": "Cette action est irréversible. Toutes vos données seront supprimées.",
+      "button": "Supprimer",
+      "confirmTitle": "Confirmer la suppression",
+      "confirmMessage": "Êtes-vous sûr de vouloir supprimer votre compte ? Tous vos documents et données seront définitivement supprimés.",
+      "enterPassword": "Entrez votre mot de passe pour confirmer",
+      "passwordRequired": "Le mot de passe est requis",
+      "deleting": "Suppression...",
+      "confirmButton": "Supprimer mon compte"
     }
   },
   "auth": {

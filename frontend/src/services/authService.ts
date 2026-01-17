@@ -204,7 +204,50 @@ export const logout = async (): Promise<void> => {
 
     removeToken();
 };
+
+/** 
+ * Delete the current user's account
+ * 
+ * DELETE /auth/account
+ * 
+ * @param password - Password confirmation for security
+ */
+export const deleteAccount = async (password: string): Promise<AuthResponse> => {
+    const token = getToken();
     
+    if (!token) {
+        return {
+            success: false,
+            message: 'Not authenticated'
+        };
+    }
+
+    try {
+        const response = await fetch(`${API_URL}/api/auth/account`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({ password }),
+        });
+
+        const result = await response.json();
+        
+        // If deletion was successful, remove the token
+        if (result.success) {
+            removeToken();
+        }
+        
+        return result;
+    } catch (error) {
+        console.error('Delete account error:', error);
+        return {
+            success: false,
+            message: 'Network error occurred'
+        };
+    }
+};
 
 /**
  * Updates the current user's profile
