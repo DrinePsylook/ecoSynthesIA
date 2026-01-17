@@ -1,5 +1,6 @@
 import { pgPool, queryResultHasRows } from '../../database/database';
 import { ExtractedData, ExtractedDataToInsert } from '../models/extractedDataModel';
+import logger from '../utils/logger';
 
 /**
  * Service layer for extracted datas operations
@@ -14,7 +15,7 @@ export const getExtractedDataByDocumentId = async (
     document_id: number
 ): Promise<ExtractedData[] | null> => {
     if (!pgPool) {
-        console.error('PostgreSQL pool is not initialized');
+        logger.error('PostgreSQL pool is not initialized');
         return null;
     }
 
@@ -44,7 +45,7 @@ export const getExtractedDataByDocumentId = async (
 
         return [];
     } catch (error) {
-        console.error(`Error getting extracted data for document ${document_id}:`, error);
+        logger.error({ err: error, documentId: document_id }, 'Error getting extracted data');
         return [];
     } finally {
         client.release();
@@ -67,7 +68,7 @@ export const createExtractedData = async (
     dataEntries: ExtractedDataToInsert[]
 ): Promise<ExtractedData[]> => {
     if (!pgPool) {
-        console.error('PostgreSQL pool is not initialized');
+        logger.error('PostgreSQL pool is not initialized');
         return [];
     }
 
@@ -110,7 +111,7 @@ export const createExtractedData = async (
         return insertedData;
     } catch (error) {
         await client.query('ROLLBACK');
-        console.error('Error creating extracted data:', error);
+        logger.error({ err: error }, 'Error creating extracted data');
         return [];
     } finally {
         client.release();

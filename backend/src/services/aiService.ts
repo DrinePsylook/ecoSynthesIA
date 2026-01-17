@@ -1,4 +1,5 @@
 import axios from 'axios';
+import logger from '../utils/logger';
 
 /**
  * Service layer for AI operations
@@ -12,7 +13,7 @@ const isDocker = process.cwd() === '/app';
 const IA_SERVICE_URL = process.env.IA_SERVICE_URL 
     || (isDocker ? 'http://ia_ecosynthesia:8000' : 'http://localhost:8001');
 
-console.log(`🤖 AI Service config: cwd=${process.cwd()}, isDocker=${isDocker}, URL=${IA_SERVICE_URL}`); 
+logger.info({ cwd: process.cwd(), isDocker, url: IA_SERVICE_URL }, 'AI Service configuration loaded'); 
 
 /**
  * Interface for the AI service analysis response
@@ -65,7 +66,7 @@ export const callAIServiceForAnalysis = async (
         return response.data;
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
-        console.error(`Error calling IA service for ${bucketFilePath}:`, errorMessage);
+        logger.error({ err: error, filePath: bucketFilePath, documentId }, 'Error calling IA service');
         
         // Re-throw with more context
         if (axios.isAxiosError(error)) {

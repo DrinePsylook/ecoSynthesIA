@@ -1,4 +1,5 @@
 import jwt, { JwtPayload, SignOptions } from 'jsonwebtoken';
+import logger from './logger';
 
 /**
  * Payload stored inside the JWT token
@@ -55,7 +56,7 @@ export const verifyToken = (token: string): DecodedToken | null => {
         const decoded = jwt.verify(token, getJwtSecret()) as DecodedToken;
         return decoded;
     } catch (error) {
-        console.error('Error verifying token:', error);
+        logger.warn({ err: error }, 'Error verifying token');
         return null;
     }
 }

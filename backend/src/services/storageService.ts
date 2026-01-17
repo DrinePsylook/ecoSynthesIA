@@ -1,6 +1,7 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { BUCKET_PATH } from '../constants';
+import logger from '../utils/logger';
 
 /**
  * Supported avatar MIME types and their extensions
@@ -49,10 +50,10 @@ export class StorageService {
 
         try {
             await fs.rm(userDir, { recursive: true, force: true });
-            console.log(`User directory deleted: ${userDir}`);
+            logger.info({ userId, path: userDir }, 'User directory deleted');
             return true;
         } catch (error) {
-            console.error(`Error deleting user directory for user ${userId}:`, error);
+            logger.error({ err: error, userId }, 'Error deleting user directory');
             return false;
         }
     }
@@ -118,7 +119,7 @@ export class StorageService {
         // Write the file
         await fs.writeFile(fullPath, fileBuffer);
 
-        console.log(`Avatar saved for user ${userId}: ${relativePath}`);
+        logger.info({ userId, path: relativePath }, 'Avatar saved');
 
         return relativePath;
     }
@@ -155,7 +156,7 @@ export class StorageService {
         try {
             return await fs.readFile(fullPath);
         } catch (error) {
-            console.error(`Error reading avatar for user ${userId}:`, error);
+            logger.error({ err: error, userId }, 'Error reading avatar');
             return null;
         }
     }
@@ -192,7 +193,7 @@ export class StorageService {
                 mimeType,
             };
         } catch (error) {
-            console.error(`Error getting avatar metadata for user ${userId}:`, error);
+            logger.error({ err: error, userId }, 'Error getting avatar metadata');
             return null;
         }
     }
@@ -211,10 +212,10 @@ export class StorageService {
 
         try {
             await fs.unlink(fullPath);
-            console.log(`Avatar deleted for user ${userId}: ${fullPath}`);
+            logger.info({ userId, path: fullPath }, 'Avatar deleted');
             return true;
         } catch (error) {
-            console.error(`Error deleting avatar for user ${userId}:`, error);
+            logger.error({ err: error, userId }, 'Error deleting avatar');
             return false;
         }
     }
@@ -275,7 +276,7 @@ export class StorageService {
         const relativePath = path.join('bucket', 'user', String(userId), 'documents', fileName);
 
         await fs.writeFile(fullPath, fileBuffer);
-        console.log(`Document saved for user ${userId}: ${relativePath}`);
+        logger.info({ userId, path: relativePath }, 'Document saved');
 
         return relativePath;
     }
@@ -289,10 +290,10 @@ export class StorageService {
         try {
             const fullPath = path.join(path.dirname(BUCKET_PATH), relativePath);
             await fs.unlink(fullPath);
-            console.log(`Document deleted: ${relativePath}`);
+            logger.info({ path: relativePath }, 'Document deleted');
             return true;
         } catch (error) {
-            console.error(`Error deleting document ${relativePath}:`, error);
+            logger.error({ err: error, path: relativePath }, 'Error deleting document');
             return false;
         }
     }

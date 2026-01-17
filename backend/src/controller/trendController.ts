@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import * as trendService from '../services/trendService';
+import logger from '../utils/logger';
 
 /**
  * Controller layer for trend operations
@@ -45,7 +46,7 @@ export const getHotTopics = async (
             count: hotTopics.length
         });
     } catch (error) {
-        console.error('Error in getHotTopics:', error);
+        logger.error({ err: error }, 'Error in getHotTopics');
         res.status(500).json({
             error: 'Internal server error',
             message: 'Failed to get hot topics'
