@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../contexts/authContext";
 import { formatDate } from "../utils/formatters";
 import { updateProfile, updatePassword, uploadAvatar, deleteAvatar, getAvatarUrl } from "../services/authService";
@@ -7,9 +8,11 @@ import Button from "../components/Button";
 
 /**
  * ProfilePage Component
+ * Displays and allows editing of user profile information.
  */
 export default function ProfilePage() {
-    const {user, isLoading, refreshUser } = useAuth();
+    const { t } = useTranslation();
+    const { user, isLoading, refreshUser } = useAuth();
     const navigate = useNavigate();
 
     // ==================== Edit Mode States ====================
@@ -44,7 +47,7 @@ export default function ProfilePage() {
     if (isLoading) {
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <p className="text-gray-500">Loading profile...</p>
+                <p className="text-gray-500">{t('profile.loadingProfile')}</p>
             </div>
         );
     }
@@ -52,7 +55,7 @@ export default function ProfilePage() {
     if (!user) {
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <p className="text-gray-500">Please log in to view your profile.</p>
+                <p className="text-gray-500">{t('auth.pleaseLogin')}</p>
             </div>
         );
     }
@@ -76,7 +79,7 @@ export default function ProfilePage() {
 
     const handleSaveUsername = async () => {
         if (!usernameValue.trim()) {
-            setError('Username cannot be empty');
+            setError(t('profile.validation.usernameEmpty'));
             return;
         }
 
@@ -93,7 +96,7 @@ export default function ProfilePage() {
 
             if (response.success) {
                 await refreshUser();
-                setSuccess('Username updated successfully');
+                setSuccess(t('profile.success.username'));
                 setSuccessField('username');
                 setIsEditingUsername(false);
                 setTimeout(() => {
@@ -104,7 +107,7 @@ export default function ProfilePage() {
                 setError(response.message);
             }
         } catch (err) {
-            setError('An error occurred while updating');
+            setError(t('profile.error.updateFailed'));
             console.error(err);
         } finally {
             setIsSaving(false);
@@ -129,14 +132,14 @@ export default function ProfilePage() {
     const handleSaveEmail = async () => {
         // Validation - check if empty
         if (!emailValue.trim()) {
-            setError('Email cannot be empty');
+            setError(t('profile.validation.emailEmpty'));
             return;
         }
 
         // Validation - check email format
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(emailValue)) {
-            setError('Invalid email format');
+            setError(t('profile.validation.emailInvalid'));
             return;
         }
 
@@ -155,7 +158,7 @@ export default function ProfilePage() {
 
             if (response.success) {
                 await refreshUser();
-                setSuccess('Email updated successfully');
+                setSuccess(t('profile.success.email'));
                 setSuccessField('email');
                 setIsEditingEmail(false);
                 setTimeout(() => {
@@ -166,7 +169,7 @@ export default function ProfilePage() {
                 setError(response.message);
             }
         } catch (err) {
-            setError('An error occurred while updating');
+            setError(t('profile.error.updateFailed'));
             console.error(err);
         } finally {
             setIsSaving(false);
@@ -196,25 +199,25 @@ export default function ProfilePage() {
     const handleSavePassword = async () => {
         // Validation - check if all fields are filled
         if (!currentPassword || !newPassword || !confirmPassword) {
-            setError('All password fields are required');
+            setError(t('profile.validation.passwordRequired'));
             return;
         }
 
         // Validation - check if new password is long enough
         if (newPassword.length < 8) {
-            setError('New password must be at least 8 characters');
+            setError(t('profile.validation.passwordMinLength'));
             return;
         }
 
         // Validation - check if passwords match
         if (newPassword !== confirmPassword) {
-            setError('New passwords do not match');
+            setError(t('profile.validation.passwordMismatch'));
             return;
         }
 
         // Validation - check if new password is different from current
         if (newPassword === currentPassword) {
-            setError('New password must be different from current password');
+            setError(t('profile.validation.passwordSame'));
             return;
         }
 
@@ -228,7 +231,7 @@ export default function ProfilePage() {
             });
 
             if (response.success) {
-                setSuccess('Password updated successfully');
+                setSuccess(t('profile.success.password'));
                 setSuccessField('password');
                 setIsEditingPassword(false);
                 // Clear password fields for security
@@ -244,7 +247,7 @@ export default function ProfilePage() {
                 setError(response.message);
             }
         } catch (err) {
-            setError('An error occurred while updating password');
+            setError(t('profile.error.updateFailed'));
             console.error(err);
         } finally {
             setIsSaving(false);
@@ -281,13 +284,13 @@ export default function ProfilePage() {
         // Validate file type on client side
         const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
         if (!allowedTypes.includes(file.type)) {
-            setError('Invalid file type. Allowed: JPEG, PNG, GIF, WebP');
+            setError(t('profile.validation.fileTypeInvalid'));
             return;
         }
 
         // Validate file size (5MB max)
         if (file.size > 5 * 1024 * 1024) {
-            setError('File too large. Maximum size is 5MB');
+            setError(t('profile.validation.fileTooLarge'));
             return;
         }
 
@@ -300,7 +303,7 @@ export default function ProfilePage() {
             if (response.success) {
                 await refreshUser();
                 setAvatarCacheBuster(Date.now()); // Force browser to reload the new avatar
-                setSuccess('Avatar uploaded successfully');
+                setSuccess(t('profile.success.avatar'));
                 setSuccessField('avatar');
                 setIsEditingAvatar(false);
                 setTimeout(() => {
@@ -311,7 +314,7 @@ export default function ProfilePage() {
                 setError(response.message);
             }
         } catch (err) {
-            setError('An error occurred while uploading avatar');
+            setError(t('profile.error.uploadFailed'));
             console.error(err);
         } finally {
             setIsSaving(false);
@@ -335,7 +338,7 @@ export default function ProfilePage() {
             if (response.success) {
                 await refreshUser();
                 setAvatarCacheBuster(Date.now()); // Reset cache-buster
-                setSuccess('Avatar deleted successfully');
+                setSuccess(t('profile.success.avatarDeleted'));
                 setSuccessField('avatar');
                 setIsEditingAvatar(false);
                 setTimeout(() => {
@@ -346,7 +349,7 @@ export default function ProfilePage() {
                 setError(response.message);
             }
         } catch (err) {
-            setError('An error occurred while deleting avatar');
+            setError(t('profile.error.deleteFailed'));
             console.error(err);
         } finally {
             setIsSaving(false);
@@ -360,7 +363,7 @@ export default function ProfilePage() {
                 
                 {/* Page Title */}
                 <h1 className="text-3xl font-bold text-gray-900 mb-8">
-                    My Profile
+                    {t('profile.title')}
                 </h1>
 
                 {/* ==================== SECTION 1: User Information ==================== */}
@@ -368,7 +371,7 @@ export default function ProfilePage() {
                     
                     {/* Section Header */}
                     <h2 className="text-xl font-semibold text-gray-800 mb-6 pb-2 border-b border-gray-200">
-                        Personal Information
+                        {t('profile.personalInfo')}
                     </h2>
 
                     {/* Avatar Row */}
@@ -377,7 +380,7 @@ export default function ProfilePage() {
                             <div className="flex items-center gap-4">
                                 {/* Avatar Label */}
                                 <span className="text-sm font-medium text-gray-500 w-24">
-                                    Avatar
+                                    {t('profile.avatar')}
                                 </span>
                                 {/* Avatar Image or Placeholder */}
                                 <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center overflow-hidden">
@@ -403,7 +406,7 @@ export default function ProfilePage() {
                                         onClick={handleClickUpload}
                                         disabled={isSaving}
                                     >
-                                        {isSaving ? 'Uploading...' : 'Upload'}
+                                        {isSaving ? t('profile.uploading') : t('profile.upload')}
                                     </Button>
                                     {user.avatar_path && (
                                         <Button
@@ -412,7 +415,7 @@ export default function ProfilePage() {
                                             onClick={handleDeleteAvatar}
                                             disabled={isSaving}
                                         >
-                                            Delete
+                                            {t('common.delete')}
                                         </Button>
                                     )}
                                     <Button
@@ -421,7 +424,7 @@ export default function ProfilePage() {
                                         onClick={handleCancelAvatar}
                                         disabled={isSaving}
                                     >
-                                        Cancel
+                                        {t('common.cancel')}
                                     </Button>
                                 </div>
                             ) : (
@@ -430,7 +433,7 @@ export default function ProfilePage() {
                                     size="sm"
                                     onClick={handleEditAvatar}
                                 >
-                                    Edit
+                                    {t('common.edit')}
                                 </Button>
                             )}
                         </div>
@@ -462,7 +465,7 @@ export default function ProfilePage() {
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-4">
                                 <span className="text-sm font-medium text-gray-500 w-24">
-                                    Username
+                                    {t('profile.username')}
                                 </span>
 
                                 {isEditingUsername ? (
@@ -472,7 +475,7 @@ export default function ProfilePage() {
                                         onChange={(e) => setUsernameValue(e.target.value)}
                                         className="border border-gray-300 rounded-md px-3 py-1.5 text-sm 
                                                    focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                                        placeholder="New username"
+                                        placeholder={t('profile.newUsername')}
                                         autoFocus
                                     />
                                 ) : (
@@ -490,7 +493,7 @@ export default function ProfilePage() {
                                         onClick={handleSaveUsername}
                                         disabled={isSaving}
                                     >
-                                        {isSaving ? 'Saving...' : 'Save'}
+                                        {isSaving ? t('profile.saving') : t('common.save')}
                                     </Button>
                                     <Button
                                         variant="ghost"
@@ -498,7 +501,7 @@ export default function ProfilePage() {
                                         onClick={handleCancelUsername}
                                         disabled={isSaving}
                                     >
-                                        Cancel
+                                        {t('common.cancel')}
                                     </Button>
                                 </div>
                             ) : (
@@ -507,7 +510,7 @@ export default function ProfilePage() {
                                     size="sm"
                                     onClick={handleEditUsername}
                                 >
-                                    Edit
+                                    {t('common.edit')}
                                 </Button>
                             )}
                         </div>
@@ -530,7 +533,7 @@ export default function ProfilePage() {
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-4">
                                 <span className="text-sm font-medium text-gray-500 w-24">
-                                    Email
+                                    {t('profile.email')}
                                 </span>
 
                                 {isEditingEmail ? (
@@ -558,7 +561,7 @@ export default function ProfilePage() {
                                         onClick={handleSaveEmail}
                                         disabled={isSaving}
                                     >
-                                        {isSaving ? 'Saving...' : 'Save'}
+                                        {isSaving ? t('profile.saving') : t('common.save')}
                                     </Button>
                                     <Button
                                         variant="ghost"
@@ -566,7 +569,7 @@ export default function ProfilePage() {
                                         onClick={handleCancelEmail}
                                         disabled={isSaving}
                                     >
-                                        Cancel
+                                        {t('common.cancel')}
                                     </Button>
                                 </div>
                             ) : (
@@ -575,7 +578,7 @@ export default function ProfilePage() {
                                     size="sm"
                                     onClick={handleEditEmail}
                                 >
-                                    Edit
+                                    {t('common.edit')}
                                 </Button>
                             )}
                         </div>
@@ -600,17 +603,17 @@ export default function ProfilePage() {
                             <div className="space-y-4">
                                 <div className="flex items-center gap-4">
                                     <span className="text-sm font-medium text-gray-500 w-24">
-                                        Password
+                                        {t('profile.password')}
                                     </span>
                                     <span className="text-sm text-gray-600">
-                                        Change your password
+                                        {t('profile.changePassword')}
                                     </span>
                                 </div>
                                 
                                 {/* Current Password */}
                                 <div className="ml-28">
                                     <label className="block text-sm text-gray-600 mb-1">
-                                        Current password
+                                        {t('profile.currentPassword')}
                                     </label>
                                     <input
                                         type="password"
@@ -626,7 +629,7 @@ export default function ProfilePage() {
                                 {/* New Password */}
                                 <div className="ml-28">
                                     <label className="block text-sm text-gray-600 mb-1">
-                                        New password
+                                        {t('profile.newPassword')}
                                     </label>
                                     <input
                                         type="password"
@@ -634,14 +637,14 @@ export default function ProfilePage() {
                                         onChange={(e) => setNewPassword(e.target.value)}
                                         className="w-full max-w-xs border border-gray-300 rounded-md px-3 py-1.5 text-sm 
                                                    focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                                        placeholder="At least 8 characters"
+                                        placeholder={t('profile.atLeast8Chars')}
                                     />
                                 </div>
                                 
                                 {/* Confirm New Password */}
                                 <div className="ml-28">
                                     <label className="block text-sm text-gray-600 mb-1">
-                                        Confirm new password
+                                        {t('profile.confirmPassword')}
                                     </label>
                                     <input
                                         type="password"
@@ -649,7 +652,7 @@ export default function ProfilePage() {
                                         onChange={(e) => setConfirmPassword(e.target.value)}
                                         className="w-full max-w-xs border border-gray-300 rounded-md px-3 py-1.5 text-sm 
                                                    focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                                        placeholder="Repeat new password"
+                                        placeholder={t('profile.repeatPassword')}
                                     />
                                 </div>
 
@@ -668,7 +671,7 @@ export default function ProfilePage() {
                                         onClick={handleSavePassword}
                                         disabled={isSaving}
                                     >
-                                        {isSaving ? 'Saving...' : 'Save'}
+                                        {isSaving ? t('profile.saving') : t('common.save')}
                                     </Button>
                                     <Button
                                         variant="ghost"
@@ -676,7 +679,7 @@ export default function ProfilePage() {
                                         onClick={handleCancelPassword}
                                         disabled={isSaving}
                                     >
-                                        Cancel
+                                        {t('common.cancel')}
                                     </Button>
                                 </div>
                             </div>
@@ -685,7 +688,7 @@ export default function ProfilePage() {
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-4">
                                     <span className="text-sm font-medium text-gray-500 w-24">
-                                        Password
+                                        {t('profile.password')}
                                     </span>
                                     <span className="text-gray-900">
                                         ••••••••
@@ -696,7 +699,7 @@ export default function ProfilePage() {
                                     size="sm"
                                     onClick={handleEditPassword}
                                 >
-                                    Edit
+                                    {t('common.edit')}
                                 </Button>
                             </div>
                         )}
@@ -713,7 +716,7 @@ export default function ProfilePage() {
                     <div className="flex items-center py-4">
                         <div className="flex items-center gap-4">
                             <span className="text-sm font-medium text-gray-500 w-24">
-                                Member since
+                                {t('profile.memberSince')}
                             </span>
                             <span className="text-gray-900">
                                 {formatDate(user.created_at)}
@@ -732,7 +735,7 @@ export default function ProfilePage() {
                     {/* Section Header with Button */}
                     <div className="flex items-center justify-between">
                         <h2 className="text-xl font-semibold text-gray-800">
-                            My Documents
+                            {t('documents.myDocuments')}
                         </h2>
 
                         <Button
@@ -741,7 +744,7 @@ export default function ProfilePage() {
                             className="w-24"
                             onClick={() => navigate('/my-documents')}
                         >
-                            View all
+                            {t('documents.viewAll')}
                         </Button>
                     </div>
 
@@ -755,7 +758,7 @@ export default function ProfilePage() {
                     {/* Section Header with Button */}
                     <div className="flex items-center justify-between">
                         <h2 className="text-xl font-semibold text-gray-800">
-                            Add Document
+                            {t('documents.addDocument')}
                         </h2>
 
                         <Button
@@ -764,7 +767,7 @@ export default function ProfilePage() {
                             className="w-24"
                             onClick={() => navigate('/new-document')}
                         >
-                            Add new
+                            {t('documents.addNew')}
                         </Button>
                     </div>
 
@@ -776,4 +779,3 @@ export default function ProfilePage() {
         
     );
 }
-

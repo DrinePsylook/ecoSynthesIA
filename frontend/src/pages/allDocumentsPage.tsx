@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import Markdown from 'react-markdown';
 import Button from '../components/Button';
@@ -27,6 +28,7 @@ interface Pagination {
 }
 
 export default function AllDocumentsPage() {
+    const { t } = useTranslation();
     const [searchParams, setSearchParams] = useSearchParams();
     
     const [documents, setDocuments] = useState<AnalyzedDocument[]>([]);
@@ -83,10 +85,10 @@ export default function AllDocumentsPage() {
             })
             .catch(err => {
                 console.error('Error fetching documents:', err);
-                setError('Failed to load documents');
+                setError(t('documents.failedToLoad'));
                 setLoading(false);
             });
-    }, [currentPage, currentLimit, currentSort, currentOrder]);
+    }, [currentPage, currentLimit, currentSort, currentOrder, t]);
 
     // Truncate summary for display
     const truncateSummary = (summary: string | null, maxLength: number = 200) => {
@@ -142,10 +144,10 @@ export default function AllDocumentsPage() {
             {/* Header */}
             <div className="mb-8">
                 <h1 className="text-3xl font-bold text-emerald-800 mb-2">
-                    All Analyzed Documents
+                    {t('documents.allDocuments')}
                 </h1>
                 <p className="text-gray-600">
-                    Browse all documents that have been analyzed by our AI system.
+                    {t('documents.allDocumentsDescription')}
                 </p>
             </div>
 
@@ -153,14 +155,14 @@ export default function AllDocumentsPage() {
             <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-4 mb-6">
                 <div className="flex items-center gap-2 text-gray-600">
                     <span className="font-medium">
-                        {pagination.total} document{pagination.total !== 1 ? 's' : ''}
+                        {pagination.total} {pagination.total !== 1 ? t('documents.documents_plural') : t('documents.document')}
                     </span>
                 </div>
                 
                 <div className="flex flex-wrap items-center gap-4">
                     {/* Sort Select */}
                     <div className="flex items-center gap-2">
-                        <label htmlFor="sort" className="text-sm text-gray-600">Sort by:</label>
+                        <label htmlFor="sort" className="text-sm text-gray-600">{t('common.sortBy')}:</label>
                         <select
                             id="sort"
                             value={`${currentSort}-${currentOrder}`}
@@ -170,16 +172,16 @@ export default function AllDocumentsPage() {
                             }}
                             className="rounded-md border border-gray-300 px-3 py-1.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                         >
-                            <option value="date-desc">Date (newest first)</option>
-                            <option value="date-asc">Date (oldest first)</option>
-                            <option value="title-asc">Title (A-Z)</option>
-                            <option value="title-desc">Title (Z-A)</option>
+                            <option value="date-desc">{t('documents.sortDateDesc')}</option>
+                            <option value="date-asc">{t('documents.sortDateAsc')}</option>
+                            <option value="title-asc">{t('documents.sortTitleAsc')}</option>
+                            <option value="title-desc">{t('documents.sortTitleDesc')}</option>
                         </select>
                     </div>
                     
                     {/* Limit Select */}
                     <div className="flex items-center gap-2">
-                        <label htmlFor="limit" className="text-sm text-gray-600">Show:</label>
+                        <label htmlFor="limit" className="text-sm text-gray-600">{t('common.show')}:</label>
                         <select
                             id="limit"
                             value={currentLimit}
@@ -197,10 +199,10 @@ export default function AllDocumentsPage() {
             {/* Documents List */}
             <div className="space-y-4">
                 {loading ? (
-                    <div className="text-center py-8 text-gray-500">Loading documents...</div>
+                    <div className="text-center py-8 text-gray-500">{t('documents.loadingDocuments')}</div>
                 ) : documents.length === 0 ? (
                     <div className="text-center py-8 text-gray-500">
-                        No analyzed documents found.
+                        {t('documents.noAnalyzedDocuments')}
                     </div>
                 ) : (
                     documents.map((doc) => (
@@ -226,17 +228,17 @@ export default function AllDocumentsPage() {
                                             {doc.textual_summary ? (
                                                 <Markdown>{truncateSummary(doc.textual_summary)}</Markdown>
                                             ) : (
-                                                <p className="italic text-gray-400">No summary available</p>
+                                                <p className="italic text-gray-400">{t('documents.noSummary')}</p>
                                             )}
                                         </div>
                                         
                                         <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
                                             <span>📅 {formatDate(doc.date_publication)}</span>
                                             {doc.author && <span>✍️ {doc.author}</span>}
-                                            <span>📊 {doc.extracted_data_count} data points</span>
+                                            <span>📊 {doc.extracted_data_count} {t('documents.dataPoints')}</span>
                                             {doc.confidence_score && (
                                                 <span className="text-emerald-600">
-                                                    ✓ {Math.round(doc.confidence_score * 100)}% confidence
+                                                    ✓ {Math.round(doc.confidence_score * 100)}% {t('documents.confidence')}
                                                 </span>
                                             )}
                                         </div>
@@ -244,7 +246,7 @@ export default function AllDocumentsPage() {
                                     
                                     <div className="flex-shrink-0">
                                         <Link to={`/documents/${doc.id}`}>
-                                            <Button>View Details</Button>
+                                            <Button>{t('documents.viewDetails')}</Button>
                                         </Link>
                                     </div>
                                 </div>
@@ -264,7 +266,7 @@ export default function AllDocumentsPage() {
                         className="flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <ChevronLeftIcon className="h-4 w-4" />
-                        Previous
+                        {t('common.previous')}
                     </button>
                     
                     {/* Page Numbers */}
@@ -292,7 +294,7 @@ export default function AllDocumentsPage() {
                     
                     {/* Mobile: Current Page Indicator */}
                     <span className="sm:hidden text-sm text-gray-600">
-                        Page {currentPage} of {pagination.totalPages}
+                        {t('common.page')} {currentPage} {t('common.of')} {pagination.totalPages}
                     </span>
                     
                     {/* Next Button */}
@@ -301,7 +303,7 @@ export default function AllDocumentsPage() {
                         disabled={currentPage >= pagination.totalPages}
                         className="flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Next
+                        {t('common.next')}
                         <ChevronRightIcon className="h-4 w-4" />
                     </button>
                 </nav>
@@ -309,4 +311,3 @@ export default function AllDocumentsPage() {
         </main>
     );
 }
-

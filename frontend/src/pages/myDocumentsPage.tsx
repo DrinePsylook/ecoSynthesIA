@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import Markdown from 'react-markdown';
 
@@ -29,6 +30,7 @@ interface Pagination {
 }
 
 export default function MyDocumentsPage() {
+    const { t } = useTranslation();
     const { user, isLoading } = useAuth();
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
@@ -96,10 +98,10 @@ export default function MyDocumentsPage() {
             })
             .catch(err => {
                 console.error('Error fetching documents:', err);
-                setError('Failed to load your documents');
+                setError(t('documents.failedToLoadYours'));
                 setLoading(false);
             });
-    }, [user,currentPage, currentLimit]);
+    }, [user, currentPage, currentLimit, t]);
 
     // Truncate summary for display
     const truncateSummary = (summary: string | null, maxLength: number = 200) => {
@@ -149,14 +151,14 @@ export default function MyDocumentsPage() {
                     setPagination(data.pagination);
                 }
                 
-                alert('Analysis started! It may take a few minutes to complete.');
+                alert(t('documents.analysisStarted'));
             } else {
                 const result = await response.json();
-                alert(result.message || 'Failed to start analysis');
+                alert(result.message || t('documents.deleteFailed'));
             }
         } catch (err) {
             console.error('Error analyzing document:', err);
-            alert('An error occurred while starting analysis');
+            alert(t('common.error'));
         } finally {
             setAnalyzing(null);
         }
@@ -164,7 +166,7 @@ export default function MyDocumentsPage() {
 
     // Handle document deletion
     const handleDeleteDocument = async (docId: number, docTitle: string) => {
-        if (!confirm(`Are you sure you want to delete "${docTitle}"?`)) {
+        if (!confirm(`${t('documents.deleteConfirm')} "${docTitle}"?`)) {
             return;
         }
 
@@ -191,11 +193,11 @@ export default function MyDocumentsPage() {
                 }));
             } else {
                 const result = await response.json();
-                alert(result.message || 'Failed to delete document');
+                alert(result.message || t('documents.deleteFailed'));
             }
         } catch (err) {
             console.error('Error deleting document:', err);
-            alert('An error occurred while deleting the document');
+            alert(t('common.error'));
         }
     };
 
@@ -234,7 +236,7 @@ export default function MyDocumentsPage() {
     if (isLoading) {
         return (
             <main className="mx-auto max-w-7xl px-4 py-8">
-                <div className="text-center text-gray-500">Loading...</div>
+                <div className="text-center text-gray-500">{t('common.loading')}</div>
             </main>
         );
     }
@@ -252,10 +254,10 @@ export default function MyDocumentsPage() {
             {/* Header */}
             <div className="mb-8">
                 <h1 className="text-3xl font-bold text-emerald-800 mb-2">
-                    My Documents
+                    {t('documents.myDocuments')}
                 </h1>
                 <p className="text-gray-600">
-                    View and manage all your uploaded documents.
+                    {t('documents.myDocumentsDescription')}
                 </p>
             </div>
 
@@ -263,12 +265,12 @@ export default function MyDocumentsPage() {
             <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-4 mb-6">
                 <div className="flex items-center gap-2 text-gray-600">
                     <span className="font-medium">
-                        {pagination.total} document{pagination.total !== 1 ? 's' : ''}
+                        {pagination.total} {pagination.total !== 1 ? t('documents.documents_plural') : t('documents.document')}
                     </span>
                 </div>
                 
                 <div className="flex items-center gap-2">
-                    <label htmlFor="limit" className="text-sm text-gray-600">Show:</label>
+                    <label htmlFor="limit" className="text-sm text-gray-600">{t('common.show')}:</label>
                     <select
                         id="limit"
                         value={currentLimit}
@@ -285,10 +287,10 @@ export default function MyDocumentsPage() {
             {/* Documents List */}
             <div className="space-y-4">
                 {loading ? (
-                    <div className="text-center py-8 text-gray-500">Loading your documents...</div>
+                    <div className="text-center py-8 text-gray-500">{t('documents.loadingYourDocuments')}</div>
                 ) : documents.length === 0 ? (
                     <div className="text-center py-8 text-gray-500">
-                        You haven't uploaded any documents yet.
+                        {t('documents.noUserDocuments')}
                     </div>
                 ) : (
                     documents.map((doc) => (
@@ -309,7 +311,7 @@ export default function MyDocumentsPage() {
                                                     ? 'bg-green-100 text-green-800' 
                                                     : 'bg-gray-100 text-gray-600'
                                             }`}>
-                                                {doc.is_public ? 'Public' : 'Private'}
+                                                {doc.is_public ? t('common.public') : t('common.private')}
                                             </span>
                                             {doc.category_name && (
                                                 <span className="inline-block bg-teal-100 text-emerald-800 text-xs px-2 py-0.5 rounded-full">
@@ -322,17 +324,17 @@ export default function MyDocumentsPage() {
                                             {doc.textual_summary ? (
                                                 <Markdown>{truncateSummary(doc.textual_summary)}</Markdown>
                                             ) : (
-                                                <p className="italic text-gray-400">No summary available</p>
+                                                <p className="italic text-gray-400">{t('documents.noSummary')}</p>
                                             )}
                                         </div>
                                         
                                         <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
                                             <span>📅 {formatDate(doc.date_publication)}</span>
                                             {doc.author && <span>✍️ {doc.author}</span>}
-                                            <span>📊 {doc.extracted_data_count} data points</span>
+                                            <span>📊 {doc.extracted_data_count} {t('documents.dataPoints')}</span>
                                             {doc.confidence_score && (
                                                 <span className="text-emerald-600">
-                                                    ✓ {Math.round(doc.confidence_score * 100)}% confidence
+                                                    ✓ {Math.round(doc.confidence_score * 100)}% {t('documents.confidence')}
                                                 </span>
                                             )}
                                         </div>
@@ -342,7 +344,7 @@ export default function MyDocumentsPage() {
                                         {/* Show "View" if analyzed, "Analyze" if not */}
                                         {doc.textual_summary ? (
                                             <Link to={`/documents/${doc.id}`}>
-                                                <Button size="sm">View</Button>
+                                                <Button size="sm">{t('common.view')}</Button>
                                             </Link>
                                         ) : (
                                             <Button 
@@ -351,18 +353,18 @@ export default function MyDocumentsPage() {
                                                 onClick={() => handleAnalyzeDocument(doc.id)}
                                                 disabled={analyzing === doc.id}
                                             >
-                                                {analyzing === doc.id ? '⏳ Analyzing...' : '🤖 Analyze'}
+                                                {analyzing === doc.id ? `⏳ ${t('documents.analyzing')}` : `🤖 ${t('documents.analyze')}`}
                                             </Button>
                                         )}
                                         <Link to={`/documents/${doc.id}/edit`}>
-                                            <Button variant="ghost" size="sm">Edit</Button>
+                                            <Button variant="ghost" size="sm">{t('common.edit')}</Button>
                                         </Link>
                                         <Button 
                                             variant="danger" 
                                             size="sm"
                                             onClick={() => handleDeleteDocument(doc.id, doc.title)}
                                         >
-                                            Delete
+                                            {t('common.delete')}
                                         </Button>
                                     </div>
                                 </div>
@@ -381,7 +383,7 @@ export default function MyDocumentsPage() {
                         className="flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <ChevronLeftIcon className="h-4 w-4" />
-                        Previous
+                        {t('common.previous')}
                     </button>
                     
                     <div className="hidden sm:flex items-center gap-1">
@@ -405,7 +407,7 @@ export default function MyDocumentsPage() {
                     </div>
                     
                     <span className="sm:hidden text-sm text-gray-600">
-                        Page {currentPage} of {pagination.totalPages}
+                        {t('common.page')} {currentPage} {t('common.of')} {pagination.totalPages}
                     </span>
                     
                     <button
@@ -413,7 +415,7 @@ export default function MyDocumentsPage() {
                         disabled={currentPage >= pagination.totalPages}
                         className="flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Next
+                        {t('common.next')}
                         <ChevronRightIcon className="h-4 w-4" />
                     </button>
                 </nav>

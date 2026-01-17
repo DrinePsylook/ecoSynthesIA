@@ -1,11 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { DocumentArrowUpIcon } from '@heroicons/react/24/outline';
 import Button from '../components/Button';
 import { useAuth } from '../contexts/authContext';
 import { getToken } from '../services/authService';
 
 export default function NewDocumentPage() {
+    const { t } = useTranslation();
     const { user, isLoading } = useAuth();
     const navigate = useNavigate();
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -34,7 +36,7 @@ export default function NewDocumentPage() {
         const file = e.target.files?.[0];
         if (file) {
             if (file.type !== 'application/pdf') {
-                setError('Only PDF files are allowed');
+                setError(t('newDocument.onlyPdf'));
                 return;
             }
             setSelectedFile(file);
@@ -50,11 +52,11 @@ export default function NewDocumentPage() {
         e.preventDefault();
         
         if (!title.trim()) {
-            setError('Title is required');
+            setError(t('newDocument.titleRequired'));
             return;
         }
         if (!selectedFile) {
-            setError('Please select a PDF file');
+            setError(t('newDocument.fileRequired'));
             return;
         }
 
@@ -84,13 +86,13 @@ export default function NewDocumentPage() {
             const result = await response.json();
 
             if (response.ok && result.success) {
-                setSuccess('Document uploaded successfully!');
+                setSuccess(t('newDocument.uploadSuccess'));
                 setTimeout(() => navigate('/my-documents'), 2000);
             } else {
-                setError(result.message || 'Failed to upload document');
+                setError(result.message || t('newDocument.uploadFailed'));
             }
         } catch (err) {
-            setError('An error occurred while uploading');
+            setError(t('common.error'));
             console.error(err);
         } finally {
             setIsSubmitting(false);
@@ -101,7 +103,7 @@ export default function NewDocumentPage() {
     if (isLoading) {
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <div className="text-gray-500">Loading...</div>
+                <div className="text-gray-500">{t('common.loading')}</div>
             </div>
         );
     }
@@ -113,10 +115,10 @@ export default function NewDocumentPage() {
                 {/* Header */}
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold text-emerald-800 mb-2">
-                        Add New Document
+                        {t('newDocument.title')}
                     </h1>
                     <p className="text-gray-600">
-                        Upload a PDF document to your collection.
+                        {t('newDocument.description')}
                     </p>
                 </div>
 
@@ -140,14 +142,14 @@ export default function NewDocumentPage() {
                     {/* Title Field */}
                     <div>
                         <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-                            Title <span className="text-red-500">*</span>
+                            {t('newDocument.titleField')} <span className="text-red-500">*</span>
                         </label>
                         <input
                             type="text"
                             id="title"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            placeholder="Enter document title"
+                            placeholder={t('newDocument.titlePlaceholder')}
                             className="w-full border border-gray-300 rounded-md px-3 py-2 
                                        focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                             required
@@ -157,14 +159,14 @@ export default function NewDocumentPage() {
                     {/* Author Field */}
                     <div>
                         <label htmlFor="author" className="block text-sm font-medium text-gray-700 mb-1">
-                            Author
+                            {t('newDocument.author')}
                         </label>
                         <input
                             type="text"
                             id="author"
                             value={author}
                             onChange={(e) => setAuthor(e.target.value)}
-                            placeholder="Enter author name (optional)"
+                            placeholder={t('newDocument.authorPlaceholder')}
                             className="w-full border border-gray-300 rounded-md px-3 py-2 
                                        focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                         />
@@ -173,7 +175,7 @@ export default function NewDocumentPage() {
                     {/* Date Publication Field */}
                     <div>
                         <label htmlFor="datePublication" className="block text-sm font-medium text-gray-700 mb-1">
-                            Publication Date
+                            {t('newDocument.publicationDate')}
                         </label>
                         <input
                             type="date"
@@ -188,7 +190,7 @@ export default function NewDocumentPage() {
                     {/* File Upload */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                            PDF Document <span className="text-red-500">*</span>
+                            {t('newDocument.pdfDocument')} <span className="text-red-500">*</span>
                         </label>
                         <input
                             type="file"
@@ -211,10 +213,10 @@ export default function NewDocumentPage() {
                             ) : (
                                 <>
                                     <p className="mt-2 text-sm text-gray-600">
-                                        Click to select a PDF file
+                                        {t('newDocument.clickToSelect')}
                                     </p>
                                     <p className="text-xs text-gray-400">
-                                        PDF files only
+                                        {t('newDocument.pdfOnly')}
                                     </p>
                                 </>
                             )}
@@ -234,7 +236,7 @@ export default function NewDocumentPage() {
                                            border-gray-300 rounded"
                             />
                             <label htmlFor="isPublic" className="ml-2 block text-sm text-gray-700">
-                                Make this document public
+                                {t('newDocument.makePublic')}
                             </label>
                         </div>
 
@@ -249,7 +251,7 @@ export default function NewDocumentPage() {
                                            border-gray-300 rounded"
                             />
                             <label htmlFor="analyzeWithAI" className="ml-2 block text-sm text-gray-700">
-                                Analyze with AI (extract summary, data, and category)
+                                {t('newDocument.analyzeWithAI')}
                             </label>
                         </div>
                     </div>
@@ -262,7 +264,7 @@ export default function NewDocumentPage() {
                             disabled={isSubmitting}
                             className="flex-1"
                         >
-                            {isSubmitting ? 'Uploading...' : 'Upload Document'}
+                            {isSubmitting ? t('newDocument.uploading') : t('newDocument.upload')}
                         </Button>
                         <Button
                             type="button"
@@ -270,7 +272,7 @@ export default function NewDocumentPage() {
                             onClick={() => navigate('/my-documents')}
                             disabled={isSubmitting}
                         >
-                            Cancel
+                            {t('common.cancel')}
                         </Button>
                     </div>
                 </form>

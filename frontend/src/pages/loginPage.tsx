@@ -1,12 +1,15 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../contexts/authContext";
 import Button from "../components/Button";
 
 /**
  * LoginPage Component
+ * Displays a login form with email and password fields.
  */
 export default function LoginPage() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { login } = useAuth();
 
@@ -23,7 +26,7 @@ export default function LoginPage() {
         setError(null);
 
         if (!email || !password) {
-            setError('Please fill in all fields');
+            setError(t('auth.fillAllFields'));
             return;
         }
         setIsLoading(true);
@@ -37,7 +40,7 @@ export default function LoginPage() {
             }
         } catch (err) {
             // Network or unexpected error
-            setError('An unexpected error occurred. Please try again.');
+            setError(t('auth.unexpectedError'));
             console.error('Login error:', err);
         } finally {
             setIsLoading(false);
@@ -54,12 +57,12 @@ export default function LoginPage() {
                     alt="EcoSynthesIA"
                 />
                 <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-                    Sign in to your account
+                    {t('auth.loginTitle')}
                 </h2>
                 <p className="mt-2 text-center text-sm text-gray-600">
-                    Or{' '}
+                    {t('auth.noAccount')}{' '}
                     <Link to="/register" className="font-medium text-emerald-600 hover:text-emerald-500">
-                        create a new account
+                        {t('auth.createNewAccount')}
                     </Link>
                 </p>
             </div>
@@ -79,7 +82,7 @@ export default function LoginPage() {
                         {/* Email field */}
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                                Email address
+                                {t('auth.email')}
                             </label>
                             <div className="mt-1">
                                 <input
@@ -99,7 +102,7 @@ export default function LoginPage() {
                         {/* Password field */}
                         <div>
                             <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                                Password
+                                {t('auth.password')}
                             </label>
                             <div className="mt-1">
                                 <input
@@ -124,7 +127,7 @@ export default function LoginPage() {
                                 fullWidth
                                 disabled={isLoading}
                             >
-                                {isLoading ? 'Signing in...' : 'Sign in'}
+                                {isLoading ? t('auth.signingIn') : t('auth.signIn')}
                             </Button>
                         </div>
                     </form>
