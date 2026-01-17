@@ -145,7 +145,19 @@
     "error": {
       "updateFailed": "Error al actualizar",
       "uploadFailed": "Error al subir el avatar",
-      "deleteFailed": "Error al eliminar el avatar"
+      "deleteFailed": "Error al eliminar el avatar",
+      "accountDeleteFailed": "Error al eliminar tu cuenta"
+    },
+    "deleteAccount": {
+      "title": "Eliminar cuenta",
+      "warning": "Esta acción es irreversible. Todos tus datos serán eliminados.",
+      "button": "Eliminar",
+      "confirmTitle": "Confirmar eliminación",
+      "confirmMessage": "¿Estás seguro de que quieres eliminar tu cuenta? Todos tus documentos y datos serán eliminados permanentemente.",
+      "enterPassword": "Introduce tu contraseña para confirmar",
+      "passwordRequired": "La contraseña es obligatoria",
+      "deleting": "Eliminando...",
+      "confirmButton": "Eliminar mi cuenta"
     }
   },
   "auth": {

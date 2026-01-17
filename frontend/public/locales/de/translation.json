@@ -145,7 +145,19 @@
     "error": {
       "updateFailed": "Fehler beim Aktualisieren aufgetreten",
       "uploadFailed": "Fehler beim Hochladen des Profilbilds aufgetreten",
-      "deleteFailed": "Fehler beim Löschen des Profilbilds aufgetreten"
+      "deleteFailed": "Fehler beim Löschen des Profilbilds aufgetreten",
+      "accountDeleteFailed": "Fehler beim Löschen Ihres Kontos aufgetreten"
+    },
+    "deleteAccount": {
+      "title": "Konto löschen",
+      "warning": "Diese Aktion ist unwiderruflich. Alle Ihre Daten werden gelöscht.",
+      "button": "Löschen",
+      "confirmTitle": "Löschung bestätigen",
+      "confirmMessage": "Sind Sie sicher, dass Sie Ihr Konto löschen möchten? Alle Ihre Dokumente und Daten werden dauerhaft gelöscht.",
+      "enterPassword": "Geben Sie Ihr Passwort zur Bestätigung ein",
+      "passwordRequired": "Passwort ist erforderlich",
+      "deleting": "Wird gelöscht...",
+      "confirmButton": "Mein Konto löschen"
     }
   },
   "auth": {

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../contexts/authContext";
 import { formatDate } from "../utils/formatters";
-import { updateProfile, updatePassword, uploadAvatar, deleteAvatar, getAvatarUrl } from "../services/authService";
+import { updateProfile, updatePassword, uploadAvatar, deleteAvatar, deleteAccount, getAvatarUrl } from "../services/authService";
 import Button from "../components/Button";
 
 /**
@@ -12,7 +12,7 @@ import Button from "../components/Button";
  */
 export default function ProfilePage() {
     const { t } = useTranslation();
-    const { user, isLoading, refreshUser } = useAuth();
+    const { user, isLoading, refreshUser, logout } = useAuth();
     const navigate = useNavigate();
 
     // ==================== Edit Mode States ====================
@@ -32,6 +32,11 @@ export default function ProfilePage() {
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+
+    // Account deletion requires password
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [deletePassword, setDeletePassword] = useState('');
+    const [isDeleting, setIsDeleting] = useState(false);
 
     // ==================== Loading & Error States ====================
     const [isSaving, setIsSaving] = useState(false);
@@ -251,6 +256,48 @@ export default function ProfilePage() {
             console.error(err);
         } finally {
             setIsSaving(false);
+        }
+    };
+
+    // ==================== Delete Account Handlers ====================
+
+    const handleOpenDeleteModal = () => {
+        setDeletePassword('');
+        setIsDeleteModalOpen(true);
+        setError(null);
+    };
+
+    const handleCloseDeleteModal = () => {
+        setIsDeleteModalOpen(false);
+        setDeletePassword('');
+        setError(null);
+    };
+
+    const handleDeleteAccount = async () => {
+        if (!deletePassword) {
+            setError(t('profile.deleteAccount.passwordRequired'));
+            return;
+        }
+
+        setIsDeleting(true);
+        setError(null);
+
+        try {
+            const response = await deleteAccount(deletePassword);
+
+            if (response.success) {
+                // Clear auth context state (removes token and sets user to null)
+                await logout();
+                // Redirect to home after successful deletion
+                navigate('/');
+            } else {
+                setError(response.message);
+            }
+        } catch (err) {
+            setError(t('profile.error.deleteFailed'));
+            console.error(err);
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -773,6 +820,85 @@ export default function ProfilePage() {
 
                 </div>
                 {/* End Section 3 */}
+
+                {/* ==================== SECTION 4: Delete Account ==================== */}
+                <div className="bg-white shadow rounded-lg p-6 mt-6 border border-red-100">
+                    
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h2 className="text-xl font-semibold text-red-600">
+                                {t('profile.deleteAccount.title')}
+                            </h2>
+                            <p className="text-sm text-gray-500 mt-1">
+                                {t('profile.deleteAccount.warning')}
+                            </p>
+                        </div>
+
+                        <Button
+                            variant="danger"
+                            size="sm"
+                            onClick={handleOpenDeleteModal}
+                        >
+                            {t('profile.deleteAccount.button')}
+                        </Button>
+                    </div>
+
+                </div>
+                {/* End Section 4 */}
+
+                {/* Delete Account Confirmation Modal */}
+                {isDeleteModalOpen && (
+                    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                        <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                                {t('profile.deleteAccount.confirmTitle')}
+                            </h3>
+                            <p className="text-sm text-gray-600 mb-4">
+                                {t('profile.deleteAccount.confirmMessage')}
+                            </p>
+                            
+                            <div className="mb-4">
+                                <label className="block text-sm text-gray-600 mb-1">
+                                    {t('profile.deleteAccount.enterPassword')}
+                                </label>
+                                <input
+                                    type="password"
+                                    value={deletePassword}
+                                    onChange={(e) => setDeletePassword(e.target.value)}
+                                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm 
+                                            focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                                    placeholder="••••••••"
+                                    autoFocus
+                                />
+                            </div>
+
+                            {error && (
+                                <div className="mb-4 p-2 rounded-md bg-red-50 border border-red-200">
+                                    <p className="text-sm text-red-600">{error}</p>
+                                </div>
+                            )}
+
+                            <div className="flex gap-3 justify-end">
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={handleCloseDeleteModal}
+                                    disabled={isDeleting}
+                                >
+                                    {t('common.cancel')}
+                                </Button>
+                                <Button
+                                    variant="danger"
+                                    size="sm"
+                                    onClick={handleDeleteAccount}
+                                    disabled={isDeleting || !deletePassword}
+                                >
+                                    {isDeleting ? t('profile.deleteAccount.deleting') : t('profile.deleteAccount.confirmButton')}
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
             </div>
         </div>
