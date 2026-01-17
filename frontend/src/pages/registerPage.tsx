@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/authContext';
 import Button from '../components/Button';
 
@@ -10,6 +11,7 @@ import Button from '../components/Button';
  * On successful registration, the user is automatically logged in and redirected.
  */
 export default function RegisterPage() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { register } = useAuth();
 
@@ -32,29 +34,29 @@ export default function RegisterPage() {
 
         // Validation
         if (!username || !email || !password || !confirmPassword) {
-            setError('Please fill in all fields');
+            setError(t('auth.fillAllFields'));
             return;
         }
 
         if (username.length < 3) {
-            setError('Username must be at least 3 characters');
+            setError(t('auth.usernameMinLength'));
             return;
         }
 
         if (password.length < 8) {
-            setError('Password must be at least 8 characters');
+            setError(t('auth.passwordMinLength'));
             return;
         }
 
         if (password !== confirmPassword) {
-            setError('Passwords do not match');
+            setError(t('auth.passwordMismatch'));
             return;
         }
 
         // Email format validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
-            setError('Please enter a valid email address');
+            setError(t('auth.invalidEmail'));
             return;
         }
 
@@ -71,7 +73,7 @@ export default function RegisterPage() {
                 setError(response.message);
             }
         } catch (err) {
-            setError('An unexpected error occurred. Please try again.');
+            setError(t('auth.unexpectedError'));
             console.error('Registration error:', err);
         } finally {
             setIsLoading(false);
@@ -88,12 +90,12 @@ export default function RegisterPage() {
                     alt="EcoSynthesIA"
                 />
                 <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-                    Create your account
+                    {t('auth.registerTitle')}
                 </h2>
                 <p className="mt-2 text-center text-sm text-gray-600">
-                    Already have an account?{' '}
+                    {t('auth.hasAccount')}{' '}
                     <Link to="/login" className="font-medium text-emerald-600 hover:text-emerald-500">
-                        Sign in
+                        {t('auth.signIn')}
                     </Link>
                 </p>
             </div>
@@ -113,7 +115,7 @@ export default function RegisterPage() {
                         {/* Username field */}
                         <div>
                             <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                                Username
+                                {t('auth.username')}
                             </label>
                             <div className="mt-1">
                                 <input
@@ -129,14 +131,14 @@ export default function RegisterPage() {
                                 />
                             </div>
                             <p className="mt-1 text-xs text-gray-500">
-                                At least 3 characters
+                                {t('auth.atLeast3Chars')}
                             </p>
                         </div>
 
                         {/* Email field */}
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                                Email address
+                                {t('auth.email')}
                             </label>
                             <div className="mt-1">
                                 <input
@@ -156,7 +158,7 @@ export default function RegisterPage() {
                         {/* Password field */}
                         <div>
                             <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                                Password
+                                {t('auth.password')}
                             </label>
                             <div className="mt-1">
                                 <input
@@ -172,14 +174,14 @@ export default function RegisterPage() {
                                 />
                             </div>
                             <p className="mt-1 text-xs text-gray-500">
-                                At least 8 characters
+                                {t('auth.atLeast8Chars')}
                             </p>
                         </div>
 
                         {/* Confirm Password field */}
                         <div>
                             <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                                Confirm password
+                                {t('auth.confirmPassword')}
                             </label>
                             <div className="mt-1">
                                 <input
@@ -204,20 +206,20 @@ export default function RegisterPage() {
                                 fullWidth
                                 disabled={isLoading}
                             >
-                                {isLoading ? 'Creating account...' : 'Create account'}
+                                {isLoading ? t('auth.creatingAccount') : t('auth.createAccount')}
                             </Button>
                         </div>
                     </form>
 
                     {/* Terms notice */}
                     <p className="mt-6 text-center text-xs text-gray-500">
-                        By creating an account, you agree to our{' '}
+                        {t('auth.terms')}{' '}
                         <a href="#" className="text-emerald-600 hover:text-emerald-500">
-                            Terms of Service
+                            {t('auth.termsOfService')}
                         </a>{' '}
-                        and{' '}
+                        {t('auth.and')}{' '}
                         <a href="#" className="text-emerald-600 hover:text-emerald-500">
-                            Privacy Policy
+                            {t('auth.privacyPolicy')}
                         </a>
                     </p>
                 </div>

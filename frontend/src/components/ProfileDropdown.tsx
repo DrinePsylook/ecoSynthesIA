@@ -1,14 +1,23 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/authContext';
+import { SUPPORTED_LANGUAGES, type SupportedLanguageCode } from '../i18n';
 import Button from './Button';
+import { updateProfile } from '../services/authService';
 
 /**
  * ProfileDropdown - Component for the profile dropdown menu
+ * Includes user info, navigation links, language selector, and sign out button.
  */
 export default function ProfileDropdown() {
-    const { user, logout } = useAuth();
+    const { user, logout, refreshUser } = useAuth();
     const navigate = useNavigate();
+    const { t, i18n } = useTranslation();
+
+    // Get current language info
+    const currentLanguage = SUPPORTED_LANGUAGES.find(l => l.code === i18n.language) 
+        || SUPPORTED_LANGUAGES[0];
 
     /**
      * Handle logout click
@@ -18,6 +27,25 @@ export default function ProfileDropdown() {
         navigate('/');
     };
 
+    /**
+     * Handle language change
+     * Updates i18n, localStorage, and syncs with backend if authenticated
+     */
+    const handleLanguageChange = async (langCode: SupportedLanguageCode) => {
+        i18n.changeLanguage(langCode);
+        localStorage.setItem('preferred_language', langCode);
+        
+        // Save to backend if user is authenticated
+        if (user) {
+            try {
+                await updateProfile({ preferred_language: langCode });
+                await refreshUser();
+            } catch (error) {
+                console.error('Failed to save language preference:', error);
+            }
+        }
+    };
+    
     /**
      * Get avatar URL
      */
@@ -33,7 +61,7 @@ export default function ProfileDropdown() {
             {/* Avatar button that opens the dropdown */}
             <MenuButton className="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500">
                 <span className="absolute -inset-1.5" />
-                <span className="sr-only">Open user menu</span>
+                <span className="sr-only">{t('common.openUserMenu')}</span>
                 <img
                     alt={user?.username || 'User avatar'}
                     src={getAvatarUrl()}
@@ -44,7 +72,7 @@ export default function ProfileDropdown() {
             {/* Dropdown menu */}
             <MenuItems
                 transition
-                className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg outline outline-black/5 transition data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
+                className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white py-1 shadow-lg outline outline-black/5 transition data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
             >
                 {/* User info header */}
                 <div className="px-4 py-2 border-b border-gray-100">
@@ -62,7 +90,7 @@ export default function ProfileDropdown() {
                         to="/profile"
                         className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
                     >
-                        Profile
+                        {t('nav.profile')}
                     </Link>
                 </MenuItem>
 
@@ -72,9 +100,36 @@ export default function ProfileDropdown() {
                         to="/my-documents"
                         className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
                     >
-                        My Documents
+                        {t('nav.myDocuments')}
                     </Link>
                 </MenuItem>
+
+                {/* Separator */}
+                <div className="border-t border-gray-100 my-1" />
+
+                {/* Language selector */}
+                <div className="px-4 py-2">
+                    <label 
+                        htmlFor="language-select"
+                        className="block text-xs font-medium text-gray-500 mb-1.5"
+                    >
+                        {t('common.language')}
+                    </label>
+                    <select
+                        id="language-select"
+                        value={currentLanguage.code}
+                        onChange={(e) => handleLanguageChange(e.target.value as SupportedLanguageCode)}
+                        className="w-full px-2.5 py-1.5 text-sm text-gray-700 bg-white border border-gray-300 rounded-md 
+                                   focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500
+                                   cursor-pointer hover:border-gray-400 transition-colors"
+                    >
+                        {SUPPORTED_LANGUAGES.map((lang) => (
+                            <option key={lang.code} value={lang.code}>
+                                {lang.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
 
                 {/* Separator */}
                 <div className="border-t border-gray-100 my-1" />
@@ -87,7 +142,7 @@ export default function ProfileDropdown() {
                         fullWidth
                         onClick={handleLogout}
                     >
-                        Sign out
+                        {t('nav.signOut')}
                     </Button>
                 </MenuItem>
             </MenuItems>

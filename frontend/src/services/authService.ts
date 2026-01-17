@@ -36,11 +36,14 @@ export const getAvatarUrl = (avatarPath: string | null | undefined, cacheBuster?
 
 // ==================== Types ====================
 
+export type SupportedLanguage = 'en' | 'fr' | 'de' | 'es';
+
 export interface User {
     id: number;
     avatar_path: string | null;
     created_at: Date;
     email: string;
+    preferred_language: SupportedLanguage;
     updated_at: Date;
     username: string;
 }
@@ -208,7 +211,7 @@ export const logout = async (): Promise<void> => {
  * 
  * PATCH /auth/profile
  */
-export const updateProfile = async (data: { username?: string; email?: string }): Promise<AuthResponse> => {
+export const updateProfile = async (data: { username?: string; email?: string; preferred_language?: SupportedLanguage }): Promise<AuthResponse> => {
     const token = getToken();
     
     if (!token) {

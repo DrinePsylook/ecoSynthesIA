@@ -12,10 +12,19 @@ import ProfilePage from '../pages/profilePage';
 import MyDocumentsPage from '../pages/myDocumentsPage';
 import NewDocumentPage from '../pages/newDocumentPage';
 import EditDocumentPage from '../pages/editDocumentPage';
+import { useLanguageSync } from '../hooks/useLanguageSync';
 
-function App() { 
+/**
+ * AppContent Component
+ * Contains the main app content with language sync.
+ * Must be inside AuthProvider to access user context.
+ */
+function AppContent() { 
+  // Sync language with user preference from backend
+  useLanguageSync();
+
   return (
-    <AuthProvider>
+    <>
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -30,6 +39,18 @@ function App() {
         <Route path="/my-documents" element={<MyDocumentsPage />} />
         <Route path="/new-document" element={<NewDocumentPage />} />
       </Routes>
+    </>
+  );
+}
+
+/**
+ * App Component
+ * Root component that wraps the app with AuthProvider.
+ */
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
     </AuthProvider>
   );
 }

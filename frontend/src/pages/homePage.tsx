@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import CategoryCard from '../components/CategoryCard'
 import TrendMapCard from '../components/TrendMapCard'
@@ -9,6 +10,7 @@ import type { TrendData } from '../types/trend';
 import type { AnalyzedDocument } from '../types/document';
 
 export default function HomePage() {
+  const { t } = useTranslation();
   const [categories, setCategories] = useState<Category[]>([]);
   const [trends, setTrends] = useState<TrendData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,13 +52,13 @@ export default function HomePage() {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>{t('common.loading')}</div>;
   }
 
   return (
     <>
       <main className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 space-y-8 py-8">
-      {/* Section des catégories */}
+      {/* Categories Section */}
         <section className="flex justify-center items-center py-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">            
             {categories.map(category => (
@@ -67,23 +69,23 @@ export default function HomePage() {
           </div>
         </section>
   
-        {/* Section TrendMap */}
+        {/* TrendMap Section */}
         <section className="flex justify-center items-center py-8">
           <TrendMapCard trends={trends}/>
         </section>
 
-        {/* Section Documents */}
+        {/* Documents Section */}
         <section className="py-8">
           <div className="bg-teal-50 rounded-lg shadow-2xl p-6">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold text-emerald-800">
-                Recently analyzed documents
+                {t('home.recentlyAnalyzed')}
               </h2>
               <a 
                 href="/documents" 
                 className="text-emerald-500 hover:text-emerald-600 font-medium"
               >
-                View all →
+                {t('home.viewAll')}
               </a>
             </div>
             
@@ -95,7 +97,7 @@ export default function HomePage() {
             
             {analyzedDocuments.length === 0 && (
               <p className="text-gray-500 text-center py-8">
-                No analyzed document for the moment
+                {t('home.noDocuments')}
               </p>
             )}
           </div>
