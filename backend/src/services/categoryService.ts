@@ -2,6 +2,7 @@ import { pgPool, queryResultHasRows } from '../../database/database';
 
 import { Category } from '../models/categoryModel';
 import { PaginatedDocuments } from '../models/documentModel';
+import logger from '../utils/logger';
 /**
  * Service layer for category operations
  * Handles all database queries related to categories
@@ -12,7 +13,7 @@ import { PaginatedDocuments } from '../models/documentModel';
  */
 export const getAllCategories = async (): Promise<Category[]> => {
     if (!pgPool) {
-        console.error('PostgreSQL pool is not initialized');
+        logger.error('PostgreSQL pool is not initialized');
         return [];
     }
 
@@ -43,7 +44,7 @@ export const getAllCategories = async (): Promise<Category[]> => {
 
         return [];
     } catch (error) {
-        console.error('Error getting all categories:', error);
+        logger.error({ err: error }, 'Error getting all categories');
         return [];
     } finally {
         client.release();
@@ -57,7 +58,7 @@ export const getCategoryById = async (
     id: number
 ): Promise<Category | null> => {
     if (!pgPool) {
-        console.error('PostgreSQL pool is not initialized');
+        logger.error('PostgreSQL pool is not initialized');
         return null;
     }
 
@@ -77,7 +78,7 @@ export const getCategoryById = async (
 
         return null;
     } catch (error) {
-        console.error(`Error getting category ${id}:`, error);
+        logger.error({ err: error, categoryId: id }, 'Error getting category');
         return null;
     } finally {
         client.release();
@@ -91,7 +92,7 @@ export const getCategoryByName = async (
     name: string
 ): Promise<Category | null> => {
     if (!pgPool) {
-        console.error('PostgreSQL pool is not initialized');
+        logger.error('PostgreSQL pool is not initialized');
         return null;
     }
 
@@ -111,7 +112,7 @@ export const getCategoryByName = async (
 
         return null;
     } catch (error) {
-        console.error(`Error getting category by name ${name}:`, error);
+        logger.error({ err: error, name }, 'Error getting category by name');
         return null;
     } finally {
         client.release();
@@ -126,7 +127,7 @@ export const getTopCategoriesByDocumentCount = async (
     limit: number = 4
 ): Promise<(Category & { documentsTotal: number })[]> => {
     if (!pgPool) {
-        console.error('PostgreSQL pool is not initialized');
+        logger.error('PostgreSQL pool is not initialized');
         return [];
     }
 
@@ -158,7 +159,7 @@ export const getTopCategoriesByDocumentCount = async (
 
         return [];
     } catch (error) {
-        console.error('Error getting top categories by document count:', error);
+        logger.error({ err: error }, 'Error getting top categories by document count');
         return [];
     } finally {
         client.release();
@@ -183,7 +184,7 @@ export const getDocumentsByCategory = async (
     order: 'asc' | 'desc' = 'desc'
 ): Promise<PaginatedDocuments> => {
     if (!pgPool) {
-        console.error('PostgreSQL pool is not initialized');
+        logger.error('PostgreSQL pool is not initialized');
         return { documents: [], pagination: { page, limit, total: 0, totalPages: 0 } };
     }
 
@@ -248,7 +249,7 @@ export const getDocumentsByCategory = async (
             }
         };
     } catch (error) {
-        console.error(`Error getting documents for category ${categoryId}:`, error);
+        logger.error({ err: error, categoryId }, 'Error getting documents for category');
         return { documents: [], pagination: { page, limit, total: 0, totalPages: 0 } };
     } finally {
         client.release();
@@ -262,7 +263,7 @@ export const getCategoryByIdWithDetails = async (
     id: number
 ): Promise<(Category & { documentsTotal: number }) | null> => {
     if (!pgPool) {
-        console.error('PostgreSQL pool is not initialized');
+        logger.error('PostgreSQL pool is not initialized');
         return null;
     }
 
@@ -294,7 +295,7 @@ export const getCategoryByIdWithDetails = async (
 
         return null;
     } catch (error) {
-        console.error(`Error getting category details ${id}:`, error);
+        logger.error({ err: error, categoryId: id }, 'Error getting category details');
         return null;
     } finally {
         client.release();
@@ -306,7 +307,7 @@ export const getCategoryByIdWithDetails = async (
  */
 export const hasCategory = async (document_id: number): Promise<boolean> => {
     if (!pgPool) {
-        console.error('PostgreSQL pool is not initialized');
+        logger.error('PostgreSQL pool is not initialized');
         return false;
     }
 
@@ -322,7 +323,7 @@ export const hasCategory = async (document_id: number): Promise<boolean> => {
 
         return queryResultHasRows(result);
     } catch (error) {
-        console.error(`Error checking category for document ${document_id}:`, error);
+        logger.error({ err: error, documentId: document_id }, 'Error checking category for document');
         return false;
     } finally {
         client.release();

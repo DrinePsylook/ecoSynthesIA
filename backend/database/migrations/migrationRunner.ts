@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { Pool } from 'pg';
 import { fileURLToPath } from 'url';
+import logger from '../../src/utils/logger';
 
 /**
  * Create database if it doesn't exist
@@ -24,11 +25,11 @@ async function createDatabaseIfNotExists() {
         );
 
         if (result.rows.length === 0) {
-            console.log(`Creating database: ${process.env.POSTGRES_DB}`);
+            logger.info({ database: process.env.POSTGRES_DB }, 'Creating database');
             await adminPool.query(`CREATE DATABASE "${process.env.POSTGRES_DB}"`);
-            console.log('Database created successfully');
+            logger.info('Database created successfully');
         } else {
-            console.log('Database already exists');
+            logger.debug('Database already exists');
         }
     } finally {
         await adminPool.end();
@@ -65,7 +66,7 @@ async function getAppliedMigrations(pool: Pool): Promise<string[]> {
  */
 export const runMigrations = async (pool: Pool | null = null) => {
     try {
-        console.log('Running migrations...');
+        logger.info('Running migrations...');
 
         // 1. Create the database if it doesn't exist
         await createDatabaseIfNotExists();
@@ -86,9 +87,9 @@ export const runMigrations = async (pool: Pool | null = null) => {
 
         // 3. Create the vector extension if necessary
         if (process.env.APP_ENV === 'cicd' || process.env.APP_ENV === 'local') {
-            console.log('Creating vector extension...');
+            logger.debug('Creating vector extension...');
             await pool.query(`CREATE EXTENSION IF NOT EXISTS vector;`);
-            console.log('Vector extension created or already exists.');
+            logger.debug('Vector extension created or already exists.');
         }
 
         // 4. Execute the SQL migrations
@@ -97,14 +98,14 @@ export const runMigrations = async (pool: Pool | null = null) => {
             .filter(file => file.endsWith('.sql'))
             .sort(); // sort to ensure migrations run in order (001_, 002_, etc.)
 
-        console.info('Running migration files', migrationFiles);
+        logger.info({ files: migrationFiles }, 'Running migration files');
 
         // Get already applied migrations
         const appliedMigrations = await getAppliedMigrations(pool);
 
         for (const file of migrationFiles) {
             if (!appliedMigrations.includes(file)) {
-                console.log(`Applying migration: ${file}`);
+                logger.info({ file }, 'Applying migration');
 
                 const filePath = path.join(migrationsDir, file);
                 const sql = fs.readFileSync(filePath, 'utf-8');
@@ -118,19 +119,19 @@ export const runMigrations = async (pool: Pool | null = null) => {
                         VALUES ($1)
                         `, [file]);
                     await client.query('COMMIT');
-                    console.log(`Migration ${file} applied successfully`);
+                    logger.info({ file }, 'Migration applied successfully');
                 } catch (error) {
                     await client.query('ROLLBACK');
-                    console.error(`Error applying migration ${file}:`, error);
+                    logger.error({ err: error, file }, 'Error applying migration');
                     throw error; // rethrow to stop further migrations
                 } finally {
                     client.release();
                 }
             }
         }
-        console.log('All migrations applied successfully.');
+        logger.info('All migrations applied successfully.');
     } catch (error) {
-        console.error('Migration process failed:', error);
+        logger.error({ err: error }, 'Migration process failed');
         throw error;
     }
 };

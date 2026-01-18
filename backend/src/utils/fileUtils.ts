@@ -3,6 +3,7 @@ import * as fs from 'fs/promises';
 import { createWriteStream } from 'fs';
 import * as path from 'path';
 import { BUCKET_PATH, ROOT_DIR } from '../constants';
+import logger from './logger';
 
 /**
  * Cleans document title by removing file extensions
@@ -39,7 +40,7 @@ export const downloadFile = async (
         });
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
-        console.error(`Error downloading file from ${fileUrl}:`, error);
+        logger.error({ err: error, url: fileUrl }, 'Error downloading file');
         throw new Error(`Download failed: ${errorMessage}`);
     }
 };
@@ -54,8 +55,7 @@ export const deleteLocalFile = async (
     try {
         await fs.unlink(localFilePath);
     } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        console.warn(`Warning: Could not delete file ${localFilePath}: ${errorMessage}`);
+        logger.warn({ err: error, path: localFilePath }, 'Could not delete file');
     }
 };
 

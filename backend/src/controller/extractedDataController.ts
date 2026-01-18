@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import * as extractedDataService from '../services/extractedDataService';
+import logger from '../utils/logger';
 
 /**
  * Controller layer for extracted data operations
@@ -41,7 +42,7 @@ export const getExtractedDataForDocument = async (
             count: extractedData?.length || 0
         });
     } catch (error) {
-        console.error('Error in getExtractedDataByDocumentId:', error);
+        logger.error({ err: error }, 'Error in getExtractedDataByDocumentId');
         res.status(500).json({
             error: 'Internal server error',
             message: 'Failed to get extracted data'
@@ -88,7 +89,7 @@ export const createExtractedData = async (
             count: createdData?.length || 0
         });
     } catch (error) {
-        console.error('Error in createExtractedData:', error);
+        logger.error({ err: error }, 'Error in createExtractedData');
         res.status(500).json({
             error: 'Internal server error',
             message: 'Failed to create extracted data'

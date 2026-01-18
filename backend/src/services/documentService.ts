@@ -1,6 +1,8 @@
 import { pgPool, queryResultHasRows } from '../../database/database';
 import { AnalyzedDocument, Document, DocumentCountByCategory } from '../models/documentModel';
 import { cleanDocumentTitle } from '../utils/fileUtils';
+import logger from '../utils/logger';
+
 /**
  * Service layer for document operations
  * Handles all database queries related to documents
@@ -21,7 +23,7 @@ export const createDocument = async (document: {
     user_id: number;
 }): Promise<Document | null> => {
     if (!pgPool) {
-        console.error('PostgreSQL pool is not initialized');
+        logger.error('PostgreSQL pool is not initialized');
         return null;
     }
 
@@ -48,13 +50,13 @@ export const createDocument = async (document: {
         ]);
 
         if (result.rows.length > 0) {
-            console.log(`Document created: ${result.rows[0].id} - ${document.title}`);
+            logger.info({ documentId: result.rows[0].id, title: document.title }, 'Document created');
             return result.rows[0] as Document;
         }
 
         return null;
     } catch (error) {
-        console.error('Error creating document:', error);
+        logger.error({ err: error }, 'Error creating document');
         return null;
     } finally {
         client.release();
@@ -68,7 +70,7 @@ export const createDocument = async (document: {
  */
 export const deleteDocument = async (id: number): Promise<boolean> => {
     if (!pgPool) {
-        console.error('PostgreSQL pool is not initialized');
+        logger.error('PostgreSQL pool is not initialized');
         return false;
     }
 
@@ -80,7 +82,7 @@ export const deleteDocument = async (id: number): Promise<boolean> => {
         );
         return result.rowCount !== null && result.rowCount > 0;
     } catch (error) {
-        console.error('Error deleting document:', error);
+        logger.error({ err: error, documentId: id }, 'Error deleting document');
         return false;
     } finally {
         client.release();
@@ -102,7 +104,7 @@ export const getDocumentById = async (
     userId?: number
 ): Promise<Document | null> => {
     if (!pgPool) {
-        console.error('PostgreSQL pool is not initialized');
+        logger.error('PostgreSQL pool is not initialized');
         return null;
     }
 
@@ -141,7 +143,7 @@ export const getDocumentById = async (
 
         return null;
     } catch (error) {
-        console.error(`Error getting document ${id}:`, error);
+        logger.error({ err: error, documentId: id }, 'Error getting document');
         return null;
     } finally {
         client.release();
@@ -156,7 +158,7 @@ export const getDocumentByIdInternal = async (
     id: number
 ): Promise<Document | null> => {
     if (!pgPool) {
-        console.error('PostgreSQL pool is not initialized');
+        logger.error('PostgreSQL pool is not initialized');
         return null;
     }
 
@@ -190,7 +192,7 @@ export const getDocumentByIdInternal = async (
 
         return null;
     } catch (error) {
-        console.error(`Error getting document ${id}:`, error);
+        logger.error({ err: error, documentId: id }, 'Error getting document internal');
         return null;
     } finally {
         client.release();
@@ -217,7 +219,7 @@ export const isDocumentOwner = async (
         );
         return queryResultHasRows(result);
     } catch (error) {
-        console.error(`Error checking document ownership:`, error);
+        logger.error({ err: error, documentId, userId }, 'Error checking document ownership');
         return false;
     } finally {
         client.release();
@@ -231,7 +233,7 @@ export const isDocumentOwner = async (
  */
 export const getDocumentCountByCategory = async (): Promise<DocumentCountByCategory[]> => {
     if (!pgPool) {
-        console.error('PostgreSQL pool is not initialized');
+        logger.error('PostgreSQL pool is not initialized');
         return [];
     }
     const client = await pgPool.connect();
@@ -260,7 +262,7 @@ export const getDocumentCountByCategory = async (): Promise<DocumentCountByCateg
 
         return [];
     } catch (error) {
-        console.error('Error getting document count by category:', error);
+        logger.error({ err: error }, 'Error getting document count by category');
         return [];
     } finally {
         client.release();
@@ -281,7 +283,7 @@ export const getUserDocuments = async (
     limit: number = 10
 ): Promise<{ documents: AnalyzedDocument[]; pagination: { page: number; limit: number; total: number; totalPages: number } }> => {
     if (!pgPool) {
-        console.error('PostgreSQL pool is not initialized');
+        logger.error('PostgreSQL pool is not initialized');
         return { documents: [], pagination: { page, limit, total: 0, totalPages: 0 } };
     }
 
@@ -362,7 +364,7 @@ export const getUserDocuments = async (
             pagination: { page, limit, total, totalPages }
         };
     } catch (error) {
-        console.error('Error getting user documents:', error);
+        logger.error({ err: error, userId }, 'Error getting user documents');
         return { documents: [], pagination: { page, limit, total: 0, totalPages: 0 } };
     } finally {
         client.release();
@@ -381,7 +383,7 @@ export const getAnalyzedDocuments = async (
     limit: number = 6
 ): Promise<AnalyzedDocument[]> => {
     if (!pgPool) {
-        console.error('PostgreSQL pool is not initialized');
+        logger.error('PostgreSQL pool is not initialized');
         return [];
     }
 
@@ -450,7 +452,7 @@ export const getAnalyzedDocuments = async (
 
         return [];
     } catch (error) {
-        console.error('Error getting analyzed documents:', error);
+        logger.error({ err: error }, 'Error getting analyzed documents');
         return [];
     } finally {
         client.release();
@@ -476,7 +478,7 @@ export const getAllAnalyzedDocumentsPaginated = async (
     order: 'asc' | 'desc' = 'desc'
 ): Promise<{ documents: AnalyzedDocument[]; pagination: { page: number; limit: number; total: number; totalPages: number } }> => {
     if (!pgPool) {
-        console.error('PostgreSQL pool is not initialized');
+        logger.error('PostgreSQL pool is not initialized');
         return { documents: [], pagination: { page, limit, total: 0, totalPages: 0 } };
     }
 
@@ -562,7 +564,7 @@ export const getAllAnalyzedDocumentsPaginated = async (
             pagination: { page, limit, total, totalPages }
         };
     } catch (error) {
-        console.error('Error getting paginated analyzed documents:', error);
+        logger.error({ err: error }, 'Error getting paginated analyzed documents');
         return { documents: [], pagination: { page, limit, total: 0, totalPages: 0 } };
     } finally {
         client.release();
@@ -579,7 +581,7 @@ export const getAllAnalyzedDocumentsPaginated = async (
  */
 export const getUnanalyzedDocuments = async (): Promise<Document[]> => {
     if (!pgPool) {
-        console.error('PostgreSQL pool is not initialized');
+        logger.error('PostgreSQL pool is not initialized');
         return [];
     }
 
@@ -597,11 +599,12 @@ export const getUnanalyzedDocuments = async (): Promise<Document[]> => {
         const countResult = await client.query(countQuery);
         if (countResult.rows.length > 0) {
             const counts = countResult.rows[0];
-            console.log('📊 Database statistics:');
-            console.log(`  - Total documents: ${counts.total_documents}`);
-            console.log(`  - Documents with summary: ${counts.documents_with_summary}`);
-            console.log(`  - Documents with extracted_data: ${counts.documents_with_extracted_data}`);
-            console.log(`  - Documents flagged as no_extracted_data: ${counts.documents_with_no_data_flag}`);
+            logger.info({
+                totalDocuments: counts.total_documents,
+                withSummary: counts.documents_with_summary,
+                withExtractedData: counts.documents_with_extracted_data,
+                noDataFlag: counts.documents_with_no_data_flag
+            }, 'Database statistics');
         }
 
         // Query explanation:
@@ -633,11 +636,7 @@ export const getUnanalyzedDocuments = async (): Promise<Document[]> => {
 
         return [];
     } catch (error) {
-        console.error('❌ Error getting unanalyzed documents:', error);
-        if (error instanceof Error) {
-            console.error('Error message:', error.message);
-            console.error('Error stack:', error.stack);
-        }
+        logger.error({ err: error }, 'Error getting unanalyzed documents');
         return [];
     } finally {
         client.release();
@@ -660,7 +659,7 @@ export const updateDocument = async (
     }
 ): Promise<boolean> => {
     if (!pgPool) {
-        console.error('PostgreSQL pool is not initialized');
+        logger.error('PostgreSQL pool is not initialized');
         return false;
     }
 
@@ -704,7 +703,7 @@ export const updateDocument = async (
         const result = await client.query(query, values);
         return result.rowCount !== null && result.rowCount > 0;
     } catch (error) {
-        console.error('Error updating document:', error);
+        logger.error({ err: error, documentId: id }, 'Error updating document');
         return false;
     } finally {
         client.release();
@@ -720,7 +719,7 @@ export const updateDocumentCategory = async (
     categoryId: number | null
 ): Promise<boolean> => {
     if (!pgPool) {
-        console.error('PostgreSQL pool is not initialized');
+        logger.error('PostgreSQL pool is not initialized');
         return false;
     }
 
@@ -736,7 +735,7 @@ export const updateDocumentCategory = async (
 
         return result.rowCount !== null && result.rowCount > 0;
     } catch (error) {
-        console.error(`Error updating category for document ${documentId}:`, error);
+        logger.error({ err: error, documentId, categoryId }, 'Error updating document category');
         return false;
     } finally {
         client.release();
@@ -752,7 +751,7 @@ export const updateDocumentNoExtractedData = async (
     noExtractedData: boolean
 ): Promise<boolean> => {
     if (!pgPool) {
-        console.error('PostgreSQL pool is not initialized');
+        logger.error('PostgreSQL pool is not initialized');
         return false;
     }
 
@@ -768,7 +767,7 @@ export const updateDocumentNoExtractedData = async (
 
         return result.rowCount !== null && result.rowCount > 0;
     } catch (error) {
-        console.error(`Error updating no_extracted_data for document ${documentId}:`, error);
+        logger.error({ err: error, documentId, noExtractedData }, 'Error updating no_extracted_data');
         return false;
     } finally {
         client.release();

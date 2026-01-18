@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { AuthService } from '../services/authService';
 import { UserService } from '../services/userService';
 import { SUPPORTED_LANGUAGES, isValidLanguage, type SupportedLanguage } from '../constants';
+import logger from '../utils/logger';
 
 /**
  * Auth Controller
@@ -65,7 +66,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         res.status(statusCode).json(result);
 
     } catch (error) {
-        console.error('Registration error:', error);
+        logger.error({ err: error }, 'Registration error');
         res.status(500).json({
             success: false,
             message: 'An error occurred during registration'
@@ -98,7 +99,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         res.status(statusCode).json(result);
 
     } catch (error) {
-        console.error('Login error:', error);
+        logger.error({ err: error }, 'Login error');
         res.status(500).json({
             success: false,
             message: 'An error occurred during login'
@@ -139,7 +140,7 @@ export const me = async (req: Request, res: Response): Promise<void> => {
         });
 
     } catch (error) {
-        console.error('Get current user error:', error);
+        logger.error({ err: error }, 'Get current user error');
         res.status(500).json({
             success: false,
             message: 'An error occurred while fetching user profile'
@@ -261,7 +262,7 @@ export const updateProfile = async (req: Request, res: Response): Promise<void> 
         });
 
     } catch (error) {
-        console.error('Update profile error:', error);
+        logger.error({ err: error }, 'Update profile error');
         res.status(500).json({
             success: false,
             message: 'An error occurred while updating profile'
@@ -346,7 +347,7 @@ export const updatePassword = async (req: Request, res: Response): Promise<void>
         });
 
     } catch (error) {
-        console.error('Update password error:', error);
+        logger.error({ err: error }, 'Update password error');
         res.status(500).json({
             success: false,
             message: 'An error occurred while updating password'
@@ -427,7 +428,7 @@ export const uploadAvatar = async (req: Request, res: Response): Promise<void> =
         });
 
     } catch (error) {
-        console.error('Upload avatar error:', error);
+        logger.error({ err: error }, 'Upload avatar error');
         res.status(500).json({
             success: false,
             message: 'An error occurred while uploading avatar'
@@ -473,7 +474,7 @@ export const deleteAvatar = async (req: Request, res: Response): Promise<void> =
         });
 
     } catch (error) {
-        console.error('Delete avatar error:', error);
+        logger.error({ err: error }, 'Delete avatar error');
         res.status(500).json({
             success: false,
             message: 'An error occurred while deleting avatar'
@@ -545,7 +546,7 @@ export const deleteAccount = async (req: Request, res: Response): Promise<void> 
         });
 
     } catch (error) {
-        console.error('Delete account error:', error);
+        logger.error({ err: error }, 'Delete account error');
         res.status(500).json({
             success: false,
             message: 'An error occurred while deleting account'

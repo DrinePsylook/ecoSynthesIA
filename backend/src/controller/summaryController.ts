@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import * as summaryService from '../services/summaryService';
+import logger from '../utils/logger';
 
 /**
  * Controller layer for summary operations
@@ -39,7 +40,7 @@ export const getSummaryForDocument = async (
             data: summary
         });
     } catch (error) {
-        console.error('Error in getSummaryForDocument:', error);
+        logger.error({ err: error }, 'Error in getSummaryForDocument');
         res.status(500).json({
             error: 'Internal server error',
             message: 'Failed to get summary for document'
@@ -95,7 +96,7 @@ export const createSummary = async (
             data: summary
         });
     } catch (error) {
-        console.error('Error in createSummary:', error);
+        logger.error({ err: error }, 'Error in createSummary');
         res.status(500).json({
             error: 'Internal server error',
             message: 'Failed to create summary'

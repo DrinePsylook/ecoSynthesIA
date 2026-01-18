@@ -1,5 +1,6 @@
 import { pgPool, queryResultHasRows } from '../../database/database';
 import { HotTopic } from '../models/trendModel';
+import logger from '../utils/logger';
 
 /**
  * Service layer for trend operations
@@ -16,7 +17,7 @@ export const getHotTopics = async (
     monthsBack: number = 3
 ): Promise<HotTopic[]> => {
     if (!pgPool) {
-        console.error('PostgreSQL pool is not initialized');
+        logger.error('PostgreSQL pool is not initialized');
         return [];
     }
 
@@ -64,7 +65,7 @@ export const getHotTopics = async (
 
         return [];
     } catch (error) {
-        console.error('Error getting hot topics:', error);
+        logger.error({ err: error }, 'Error getting hot topics');
         return [];
     } finally {
         client.release();

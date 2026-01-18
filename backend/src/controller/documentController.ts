@@ -6,6 +6,7 @@ import * as extractedDataService from '../services/extractedDataService';
 import * as categoryService from '../services/categoryService';
 import { processPendingDocuments as processPendingDocumentsService } from '../services/documentProcessingService';
 import { StorageService } from '../services/storageService';
+import logger from '../utils/logger';
 
 /**
  * Controller layer for document operations
@@ -90,7 +91,7 @@ export const createDocument = async (
         // Optionally trigger AI analysis
         if (analyze_with_ai === 'true') {
             // This will be processed by process-pending
-            console.log(`Document ${document.id} queued for AI analysis`);
+            logger.info({ documentId: document.id }, 'Document queued for AI analysis');
         }
 
         res.status(201).json({
@@ -100,7 +101,7 @@ export const createDocument = async (
         });
 
     } catch (error) {
-        console.error('Error in createDocument:', error);
+        logger.error({ err: error }, 'Error in createDocument');
         res.status(500).json({
             success: false,
             message: 'Failed to upload document'
@@ -175,7 +176,7 @@ export const deleteDocument = async (
             });
         }
     } catch (error) {
-        console.error('Error in deleteDocument:', error);
+        logger.error({ err: error }, 'Error in deleteDocument');
         res.status(500).json({
             success: false,
             message: 'Failed to delete document'
@@ -246,7 +247,7 @@ export const getCompleteDocumentData = async (
             }
         });
     } catch (error) {
-        console.error('Error in getCompleteDocumentData:', error);
+        logger.error({ err: error }, 'Error in getCompleteDocumentData');
         res.status(500).json({
             error: 'Internal server error',
             message: 'Failed to get complete document data'
@@ -314,8 +315,7 @@ export const processPendingDocuments = async (
     req: Request,
     res: Response
 ): Promise<void> => {
-    console.log('🚀 [CONTROLLER] processPendingDocuments called');
-    console.log('🚀 [CONTROLLER] Request received at:', new Date().toISOString());
+    logger.info('processPendingDocuments called');
     
     try {
         const { document_id } = req.body;
@@ -325,7 +325,7 @@ export const processPendingDocuments = async (
         if (document_id) {
             const docId = parseInt(document_id, 10);
             
-            console.log(`🔍 [CONTROLLER] Checking document ${docId} for user ${userId}`);
+            logger.debug({ documentId: docId, userId }, 'Checking document ownership');
             
             if (isNaN(docId) || docId <= 0) {
                 res.status(400).json({
@@ -337,7 +337,7 @@ export const processPendingDocuments = async (
 
             // Verify the user owns this document (regardless of public/private status)
             const isOwner = await documentService.isDocumentOwner(docId, userId);
-            console.log(`🔍 [CONTROLLER] isDocumentOwner result: ${isOwner}`);
+            logger.debug({ documentId: docId, isOwner }, 'Document ownership check result');
             
             if (!isOwner) {
                 res.status(404).json({
@@ -347,15 +347,12 @@ export const processPendingDocuments = async (
                 return;
             }
 
-            console.log(`🚀 [CONTROLLER] Processing single document: ${docId}`);
+            logger.info({ documentId: docId }, 'Processing single document');
         }
 
-        console.log('🚀 [CONTROLLER] Calling processPendingDocumentsService...');
+        logger.debug('Calling processPendingDocumentsService');
         const summary = await processPendingDocumentsService(document_id ? parseInt(document_id, 10) : undefined);
-        console.log('🚀 [CONTROLLER] Service returned, summary:', {
-            totalFound: summary.totalFound,
-            needsProcessing: summary.needsProcessing
-        });
+        logger.info({ totalFound: summary.totalFound, needsProcessing: summary.needsProcessing }, 'Document processing completed');
 
         res.status(200).json({
             success: true,
@@ -368,13 +365,9 @@ export const processPendingDocuments = async (
                 documents: summary.documents
             }
         });
-        console.log('🚀 [CONTROLLER] Response sent successfully');
+        logger.debug('Response sent successfully');
     } catch (error) {
-        console.error('❌ [CONTROLLER] Error in processPendingDocuments:', error);
-        if (error instanceof Error) {
-            console.error('❌ [CONTROLLER] Error message:', error.message);
-            console.error('❌ [CONTROLLER] Error stack:', error.stack);
-        }
+        logger.error({ err: error }, 'Error in processPendingDocuments');
         res.status(500).json({
             error: 'Internal server error',
             message: 'Failed to process pending documents'
@@ -416,7 +409,7 @@ export const getAnalyzedDocuments = async (
             count: documents.length
         });
     } catch (error) {
-        console.error('Error in getAnalyzedDocuments:', error);
+        logger.error({ err: error }, 'Error in getAnalyzedDocuments');
         res.status(500).json({
             error: 'Internal server error',
             message: 'Failed to get analyzed documents'
@@ -451,7 +444,7 @@ export const getAllAnalyzedDocuments = async (
             pagination: result.pagination
         });
     } catch (error) {
-        console.error('Error in getAllAnalyzedDocuments:', error);
+        logger.error({ err: error }, 'Error in getAllAnalyzedDocuments');
         res.status(500).json({
             error: 'Internal server error',
             message: 'Failed to get analyzed documents'
@@ -505,7 +498,7 @@ export const getDocument = async (
             }
         });
     } catch (error) {
-        console.error('Error in getDocument:', error);
+        logger.error({ err: error }, 'Error in getDocument');
         res.status(500).json({
             error: 'Internal server error'
         });
@@ -547,7 +540,7 @@ export const getMyDocuments = async (
             pagination: result.pagination
         });
     } catch (error) {
-        console.error('Error in getMyDocuments:', error);
+        logger.error({ err: error }, 'Error in getMyDocuments');
         res.status(500).json({
             error: 'Internal server error',
             message: 'Failed to get your documents'
@@ -635,7 +628,7 @@ export const updateDocument = async (
             });
         }
     } catch (error) {
-        console.error('Error in updateDocument:', error);
+        logger.error({ err: error }, 'Error in updateDocument');
         res.status(500).json({
             success: false,
             message: 'Failed to update document'

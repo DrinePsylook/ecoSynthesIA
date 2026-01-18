@@ -8,6 +8,7 @@ import { ProcessingResult, ProcessingSummary } from 'src/models/processingInterf
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { BUCKET_PATH } from '../constants';
+import logger from '../utils/logger';
 
 /**
  * Checks if a storage_path is a local bucket path or an external URL
@@ -82,22 +83,22 @@ export const processDocument = async (doc: {
             
             // Verify the file exists
             if (!await localFileExists(localFilePath)) {
-                console.error(`[Document ${doc.id}] Local file not found: ${localFilePath}`);
+                logger.error({ documentId: doc.id, path: localFilePath }, 'Local file not found');
                 result.error = 'Local file not found';
                 return result;
             }
-            console.log(`[Document ${doc.id}] Using local file: ${localFilePath}`);
+            logger.debug({ documentId: doc.id, path: localFilePath }, 'Using local file');
         } else {
             // Document is external, download it
             localFilePath = await downloadDocumentToBucket(doc.storage_path, doc.id, doc.title);
-            console.log(`[Document ${doc.id}] Downloaded to: ${localFilePath}`);
+            logger.debug({ documentId: doc.id, path: localFilePath }, 'Downloaded document');
         }
 
         // Get the relative path for the AI service
         const bucketFilePath = isLocalFile ? doc.storage_path : getBucketFilePath(localFilePath);
 
         const analysisResults = await aiService.callAIServiceForAnalysis(bucketFilePath, doc.id);
-        console.log(`[Document ${doc.id}] IA service responded successfully`);
+        logger.info({ documentId: doc.id }, 'IA service responded successfully');
 
         // Create summary if needed
         if (!hasSummary && analysisResults.summary) {
@@ -107,7 +108,7 @@ export const processDocument = async (doc: {
                 date_analysis: new Date(),
                 confidence_score: analysisResults.summary.confidence_score,
             });
-            console.log(`[Document ${doc.id}] Summary created successfully`);
+            logger.info({ documentId: doc.id }, 'Summary created successfully');
         }
 
         // Create extracted data if needed
@@ -138,12 +139,12 @@ export const processDocument = async (doc: {
             });
         
             await extractedDataService.createExtractedData(extractedDataEntries);
-            console.log(`[Document ${doc.id}] Extracted data created successfully`);
+            logger.info({ documentId: doc.id }, 'Extracted data created successfully');
         } else if (!hasExtractedData && (!analysisResults.extracted_data || analysisResults.extracted_data.length === 0)) {
             // AI analyzed the document but found no data to extract
             // Set the no_extracted_data flag to prevent re-processing
             await documentService.updateDocumentNoExtractedData(doc.id, true);
-            console.log(`[Document ${doc.id}] No extracted data found - flagged as no_extracted_data`);
+            logger.info({ documentId: doc.id }, 'No extracted data found - flagged as no_extracted_data');
         }
 
         // Create category if needed 
@@ -152,7 +153,7 @@ export const processDocument = async (doc: {
             const categoryId = category ? category.id : null;
             await documentService.updateDocumentCategory(doc.id, categoryId);
             if (categoryId) {
-                console.log(`[Document ${doc.id}] Category assigned: ${analysisResults.category.name}`);
+                logger.info({ documentId: doc.id, category: analysisResults.category.name }, 'Category assigned');
             }
         }
 
@@ -164,16 +165,16 @@ export const processDocument = async (doc: {
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
         result.error = errorMessage;
-        console.error(`[Document ${doc.id}] ❌ Error during processing:`, errorMessage);
+        logger.error({ documentId: doc.id, err: error }, 'Error during processing');
     } finally {
         // Only delete temporary files (downloaded from external URLs)
         // Don't delete local files uploaded by users!
         if (localFilePath && !isLocalFile) {
             try {
                 await deleteLocalFile(localFilePath);
-                console.log(`[Document ${doc.id}] Temporary file deleted`);
+                logger.debug({ documentId: doc.id }, 'Temporary file deleted');
             } catch (cleanupError) {
-                console.warn(`[Document ${doc.id}] Warning: Could not delete temporary file:`, cleanupError);
+                logger.warn({ documentId: doc.id, err: cleanupError }, 'Could not delete temporary file');
             }
         }
     }
@@ -186,40 +187,40 @@ export const processDocument = async (doc: {
  * @returns Summary of processing results
  */
 export const processPendingDocuments = async (documentId?: number): Promise<ProcessingSummary> => {
-    console.log('🔍 Finding documents that need processing...');
+    logger.info('Finding documents that need processing');
 
     let unanalyzedDocuments;
 
     if (documentId) {
         // Process a specific document (use internal function to bypass visibility rules)
-        console.log(`🎯 Processing specific document: ${documentId}`);
+        logger.info({ documentId }, 'Processing specific document');
         const doc = await documentService.getDocumentByIdInternal(documentId);
         unanalyzedDocuments = doc ? [doc] : [];
-        console.log(`📄 Document found: ${doc ? 'yes' : 'no'}`);
+        logger.debug({ documentId, found: !!doc }, 'Document lookup result');
     } else {
         // Process all unanalyzed documents
         unanalyzedDocuments = await documentService.getUnanalyzedDocuments();
     }
     
-    console.log(`📋 Found ${unanalyzedDocuments.length} document(s) to process`);
+    logger.info({ count: unanalyzedDocuments.length }, 'Documents found for processing');
 
     const results: ProcessingResult[] = [];
     let processed = 0;
     let failed = 0;
 
     for (const doc of unanalyzedDocuments) {
-        console.log(`\n📄 Processing document ${doc.id}...`);
+        logger.info({ documentId: doc.id }, 'Processing document');
         const result = await processDocument(doc);
         results.push(result);
     
         if (result.success) {
             processed++;
-            console.log(`✅ Document ${doc.id} processed successfully`);
+            logger.info({ documentId: doc.id }, 'Document processed successfully');
             // Wait 5 seconds between successful documents to let Ollama clear VRAM
             await new Promise(resolve => setTimeout(resolve, 5000));
         } else if (result.needsProcessing && !result.success) {
             failed++;
-            console.log(`❌ Document ${doc.id} failed`);
+            logger.warn({ documentId: doc.id, error: result.error }, 'Document processing failed');
             // Wait 10 seconds after failures to let Ollama recover
             await new Promise(resolve => setTimeout(resolve, 10000));
         }

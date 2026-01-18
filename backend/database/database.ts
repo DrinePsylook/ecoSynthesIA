@@ -1,4 +1,5 @@
 import { Pool, QueryResult } from 'pg';
+import logger from '../src/utils/logger';
 
 export let pgPool: Pool | null = null;
 
@@ -20,9 +21,9 @@ export const connectToDatabase = async () => {
         const client = await pgPool.connect();
         await client.query('SELECT 1');
         client.release();
-        console.log('Database connected successfully');
+        logger.info('Database connected successfully');
     } catch (error) {
-        console.error('Database connection failed', error);
+        logger.error({ err: error }, 'Database connection failed');
     }
 };
 

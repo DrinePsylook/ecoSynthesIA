@@ -1,6 +1,7 @@
 import { pgPool, queryResultHasRows } from "../../database/database";
 import { User, UserUpdatePayload } from "../models/userModel";
 import { StorageService } from "./storageService";
+import logger from "../utils/logger";
 
 export class UserService {
 
@@ -11,7 +12,7 @@ export class UserService {
      */
     static async createUser(user: User): Promise<User | null> {
         if (!pgPool) {
-            console.error('PostgreSQL pool is not initialized');
+            logger.error('PostgreSQL pool is not initialized');
             return null;
         }
 
@@ -29,7 +30,7 @@ export class UserService {
             return result.rows[0] || null;
         } catch (error) {
             await client.query('ROLLBACK');
-            console.error('Error creating user:', error);
+            logger.error({ err: error }, 'Error creating user');
             return null;
         } finally {
             client.release();
@@ -41,7 +42,7 @@ export class UserService {
      */
     static async deleteUser(id: number): Promise<boolean> {
         if (!pgPool) {
-            console.error('PostgreSQL pool is not initialized');
+            logger.error('PostgreSQL pool is not initialized');
             return false;
         }
 
@@ -56,7 +57,7 @@ export class UserService {
             return queryResultHasRows(result);
         } catch (error) {
             await client.query('ROLLBACK');
-            console.error('Error deleting user:', error);
+            logger.error({ err: error, userId: id }, 'Error deleting user');
             return false;
         } finally {
             client.release();
@@ -70,7 +71,7 @@ export class UserService {
      */
     static async findUserByEmail(email: string): Promise<User | null> {
         if (!pgPool) {
-            console.error('PostgreSQL pool is not initialized');
+            logger.error('PostgreSQL pool is not initialized');
             return null;
         }
 
@@ -87,7 +88,7 @@ export class UserService {
 
             return null;
         } catch (error) {
-            console.error('Error finding user by email:', error);
+            logger.error({ err: error }, 'Error finding user by email');
             return null;
         } finally {
             client.release();
@@ -96,7 +97,7 @@ export class UserService {
 
     static async findUserById(id: number): Promise<User | null> {
         if (!pgPool) {
-            console.error('PostgreSQL pool is not initialized');
+            logger.error('PostgreSQL pool is not initialized');
             return null;
         }
 
@@ -113,7 +114,7 @@ export class UserService {
 
             return null;
         } catch (error) {
-            console.error('Error finding user by ID:', error);
+            logger.error({ err: error, userId: id }, 'Error finding user by ID');
             return null;
         } finally {
             client.release();
@@ -127,7 +128,7 @@ export class UserService {
      */
     static async findUserByUsername(username: string): Promise<User | null> {
         if (!pgPool) {
-            console.error('PostgreSQL pool is not initialized');
+            logger.error('PostgreSQL pool is not initialized');
             return null;
         }
 
@@ -144,7 +145,7 @@ export class UserService {
 
             return null;
         } catch (error) {
-            console.error('Error finding user by username:', error);
+            logger.error({ err: error }, 'Error finding user by username');
             return null;
         } finally {
             client.release();
@@ -163,7 +164,7 @@ export class UserService {
         }
 
         if (!pgPool) {
-            console.error('PostgreSQL pool is not initialized');
+            logger.error('PostgreSQL pool is not initialized');
             return null;
         }
 
@@ -216,7 +217,7 @@ export class UserService {
      */
     static async updateUserPassword(id: number, hashedPassword: string): Promise<boolean> {
         if (!pgPool) {
-            console.error('PostgreSQL pool is not initialized');
+            logger.error('PostgreSQL pool is not initialized');
             return false;
         }
 
@@ -233,7 +234,7 @@ export class UserService {
 
             return true;
         } catch (error) {
-            console.error(`Error while updating password for user ${id}:`, error);
+            logger.error({ err: error, userId: id }, 'Error while updating password');
             return false;
         } finally {
             client.release();
@@ -266,7 +267,7 @@ export class UserService {
             // Update the user's avatar_path in the database
             return await this.updateUser(userId, { avatar_path: avatarPath });
         } catch (error) {
-            console.error(`Error uploading avatar for user ${userId}:`, error);
+            logger.error({ err: error, userId }, 'Error uploading avatar');
             return null;
         }
     }
@@ -313,7 +314,7 @@ export class UserService {
 
             // Clear the avatar_path in the database
             if (!pgPool) {
-                console.error('PostgreSQL pool is not initialized');
+                logger.error('PostgreSQL pool is not initialized');
                 return null;
             }
 
@@ -330,7 +331,7 @@ export class UserService {
                 client.release();
             }
         } catch (error) {
-            console.error(`Error removing avatar for user ${userId}:`, error);
+            logger.error({ err: error, userId }, 'Error removing avatar');
             return null;
         }
     }
@@ -358,7 +359,7 @@ export class UserService {
             // Then delete the user from the database
             return await this.deleteUser(userId);
         } catch (error) {
-            console.error(`Error deleting user ${userId} with files:`, error);
+            logger.error({ err: error, userId }, 'Error deleting user with files');
             return false;
         }
     }

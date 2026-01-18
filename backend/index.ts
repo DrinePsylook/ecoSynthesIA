@@ -1,14 +1,17 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import morgan from 'morgan';
+import pinoHttp from 'pino-http';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
 
+// Import centralized logger
+import logger from './src/utils/logger';
+
 // Load environment variables
 if (fs.existsSync(path.resolve(__dirname, '../.env'))) {
-  console.info('Loading .env file');
+  logger.info('Loading .env file');
   dotenv.config();
 }
 
@@ -29,7 +32,32 @@ const PORT = process.env.PORT || 3000;
 // Middleware configuration
 app.use(helmet()); // Security headers
 app.use(cors()); // Enable CORS
-app.use(morgan('combined')); // Logging
+
+// HTTP request/response logging with Pino
+// In dev: only log errors (4xx/5xx). In prod: log all requests minimally.
+const IS_DEV = process.env.NODE_ENV !== 'production';
+app.use(pinoHttp({
+  logger,
+  // Remove req/res objects from logs - just keep the message
+  serializers: {
+    req: () => undefined,
+    res: () => undefined,
+  },
+  customSuccessMessage: (req, res) => `${req.method} ${req.url} ${res.statusCode}`,
+  customErrorMessage: (req, res, err) => `${req.method} ${req.url} ${res.statusCode} - ${err.message}`,
+  // Don't log health checks
+  autoLogging: {
+    ignore: (req) => req.url === '/health',
+  },
+  // In dev: silence successful requests, only log 4xx/5xx
+  // In prod: log everything with appropriate levels
+  customLogLevel: (req, res, err) => {
+    if (res.statusCode >= 500 || err) return 'error';
+    if (res.statusCode >= 400) return 'warn';
+    if (IS_DEV) return 'silent'; // Don't log successful requests in dev
+    return 'info';
+  },
+}));
 app.use(express.json()); // Parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 
@@ -60,7 +88,7 @@ app.get('/health', (req, res) => {
 
 // Error handling middleware
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(err.stack);
+  logger.error({ err, path: req.path, method: req.method }, 'Unhandled error in request');
   res.status(500).json({ 
     error: 'Something went wrong!',
     message: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
@@ -94,33 +122,33 @@ app.use((req, res) => {
     
     // Start server
     app.listen(PORT, () => {
-      console.log(`🚀 Server is running on port ${PORT}`);
-      console.log(`📊 Health check available at http://localhost:${PORT}/health`);
+      logger.info({ port: PORT }, 'Server is running');
+      logger.info({ url: `http://localhost:${PORT}/health` }, 'Health check available');
     });
   } catch (error) {
-    console.error('Failed to start server:', error);
+    logger.fatal({ err: error }, 'Failed to start server');
     process.exit(1);
   }
 })();
 
 // Graceful shutdown
 process.on('SIGTERM', async () => {
-  console.log('SIGTERM signal received: closing HTTP server and DB pool');
+  logger.info('SIGTERM signal received: closing HTTP server and DB pool');
   
   if (pgPool) {
     await pgPool.end();
-    console.log('Database pool closed');
+    logger.info('Database pool closed');
   }
   
   process.exit(0);
 });
 
 process.on('SIGINT', async () => {
-  console.log('SIGINT signal received: closing HTTP server and DB pool');
+  logger.info('SIGINT signal received: closing HTTP server and DB pool');
   
   if (pgPool) {
     await pgPool.end();
-    console.log('Database pool closed');
+    logger.info('Database pool closed');
   }
   
   process.exit(0);

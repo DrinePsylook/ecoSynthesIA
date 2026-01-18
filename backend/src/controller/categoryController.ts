@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import * as categoryService from '../services/categoryService';
 import * as documentService from '../services/documentService';
+import logger from '../utils/logger';
 
 /**
  * Controller layer for category operations
@@ -24,7 +25,7 @@ export const getAllCategories = async (
             count: categories?.length || 0
         });
     } catch (error) {
-        console.error('Error in getAllCategories:', error);
+        logger.error({ err: error }, 'Error in getAllCategories');
         res.status(500).json({
             error: 'Internal server error',
             message: 'Failed to get all categories'
@@ -50,7 +51,7 @@ export const getDocumentCountByCategory = async (
             totalDocuments: counts.reduce((sum, item) => sum + item.document_count, 0)
         });
     } catch (error) {
-        console.error('Error in getDocumentCountByCategory:', error);
+        logger.error({ err: error }, 'Error in getDocumentCountByCategory');
         res.status(500).json({
             error: 'Internal server error',
             message: 'Failed to get document count by category'
@@ -92,7 +93,7 @@ export const getCategoryById = async (
             data: category
         });
     } catch (error) {
-        console.error('Error in getCategoryById:', error);
+        logger.error({ err: error }, 'Error in getCategoryById');
         res.status(500).json({
             error: 'Internal server error',
             message: 'Failed to get category by ID'
@@ -114,7 +115,7 @@ export const getTopCategories = async (req: Request, res: Response): Promise<voi
             count: categories.length
         });
     } catch (error) {
-        console.error('Error in getTopCategories:', error);
+        logger.error({ err: error }, 'Error in getTopCategories');
         res.status(500).json({ error: 'Failed to retrieve top categories' });
     }
 };
@@ -153,7 +154,7 @@ export const getCategoryDetails = async (
             data: category
         });
     } catch (error) {
-        console.error('Error in getCategoryDetails:', error);
+        logger.error({ err: error }, 'Error in getCategoryDetails');
         res.status(500).json({
             error: 'Internal server error',
             message: 'Failed to get category details'
@@ -212,7 +213,7 @@ export const getDocumentsByCategory = async (
             pagination: result.pagination
         });
     } catch (error) {
-        console.error('Error in getDocumentsByCategory:', error);
+        logger.error({ err: error }, 'Error in getDocumentsByCategory');
         res.status(500).json({
             error: 'Internal server error',
             message: 'Failed to get documents for category'
