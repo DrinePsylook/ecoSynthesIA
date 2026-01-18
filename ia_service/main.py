@@ -5,6 +5,7 @@ from src.models import AnalyzeDocumentRequest
 from src.orchestration.service import process_document_for_data_extraction, process_document_for_summary
 from src.retrieval.utils import get_absolute_file_path
 from src.ingest import ingest_document_with_metadata
+from src.monitoring import create_monitor
 
 app = FastAPI()
 
@@ -19,6 +20,7 @@ async def analyze_document(request: AnalyzeDocumentRequest):
     3. **Indexes the document in ChromaDB first**
     4. Runs both pipelines (data extraction and summary)
     5. Combines results in the format expected by the backend
+    6. Logs metrics to MLFlow for monitoring (C11)
     
     Args:
         request: Contains file_path (relative path) and document_id (DB ID)
@@ -30,21 +32,30 @@ async def analyze_document(request: AnalyzeDocumentRequest):
         # Convert relative path to absolute path
         absolute_file_path = get_absolute_file_path(request.file_path)
 
-        # Index the document in ChromaDB with metadata
-        print(f"📚 Indexing document {request.document_id} into ChromaDB...")
-        ingest_document_with_metadata(
-            file_path=absolute_file_path,
-            document_id=request.document_id
-        )
+        # Create MLFlow monitor for this analysis run
+        with create_monitor(request.document_id, request.file_path) as monitor:
+            
+            # Track ChromaDB indexing step
+            with monitor.track_step("chromadb_indexing"):
+                print(f"📚 Indexing document {request.document_id} into ChromaDB...")
+                ingest_document_with_metadata(
+                    file_path=absolute_file_path,
+                    document_id=request.document_id
+                )
 
-        # Extract data
-        extracted_data = process_document_for_data_extraction(absolute_file_path)
-        
-        # Generate summary with document_id filter
-        summary_result = process_document_for_summary(
-            absolute_file_path, 
-            document_id=request.document_id
-        )
+            # Extract data with monitoring
+            extracted_data = process_document_for_data_extraction(
+                absolute_file_path,
+                document_id=request.document_id,
+                monitor=monitor
+            )
+            
+            # Generate summary with document_id filter and monitoring
+            summary_result = process_document_for_summary(
+                absolute_file_path, 
+                document_id=request.document_id,
+                monitor=monitor
+            )
 
         # Combine results 
         return {
