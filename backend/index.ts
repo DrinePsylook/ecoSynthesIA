@@ -111,25 +111,29 @@ app.use((req, res) => {
   });
 });
 
-// Immediately invoked async function
-(async () => {
-  try {
-    // First, create database and run migrations (this will create the DB if needed)
-    await runMigrations(null); // Pass null since we don't have a pool yet
-    
-    // Then connect to the database
-    await connectToDatabase();
-    
-    // Start server
-    app.listen(PORT, () => {
-      logger.info({ port: PORT }, 'Server is running');
-      logger.info({ url: `http://localhost:${PORT}/health` }, 'Health check available');
-    });
-  } catch (error) {
-    logger.fatal({ err: error }, 'Failed to start server');
-    process.exit(1);
-  }
-})();
+// Only start server if not in test mode
+// In test mode, we export the app without starting the server
+if (process.env.NODE_ENV !== 'test' && !process.env.JEST_WORKER_ID) {
+  // Immediately invoked async function
+  (async () => {
+    try {
+      // First, create database and run migrations (this will create the DB if needed)
+      await runMigrations(null); // Pass null since we don't have a pool yet
+      
+      // Then connect to the database
+      await connectToDatabase();
+      
+      // Start server
+      app.listen(PORT, () => {
+        logger.info({ port: PORT }, 'Server is running');
+        logger.info({ url: `http://localhost:${PORT}/health` }, 'Health check available');
+      });
+    } catch (error) {
+      logger.fatal({ err: error }, 'Failed to start server');
+      process.exit(1);
+    }
+  })();
+}
 
 // Graceful shutdown
 process.on('SIGTERM', async () => {
