@@ -77,7 +77,7 @@
     "sortTitleDesc": "Título (Z-A)",
     "analyze": "Analizar",
     "analyzing": "Analizando...",
-    "analysisStarted": "¡Análisis iniciado! Puede tardar unos minutos.",
+    "analysisStarted": "¡Análisis iniciado! Esto puede tardar hasta 15 minutos.",
     "deleteConfirm": "¿Estás seguro de que quieres eliminar",
     "deleteSuccess": "Documento eliminado con éxito",
     "deleteFailed": "Error al eliminar el documento"
