@@ -78,6 +78,7 @@
     "analyze": "Analyze",
     "analyzing": "Analyzing...",
     "analysisStarted": "Analysis started! This may take up to 15 minutes.",
+    "analysisFinished": "Analysis complete. The document has been updated.",
     "deleteConfirm": "Are you sure you want to delete",
     "deleteSuccess": "Document deleted successfully",
     "deleteFailed": "Failed to delete document"

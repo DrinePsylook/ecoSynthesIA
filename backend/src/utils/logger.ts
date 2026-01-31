@@ -62,6 +62,7 @@ if (IS_PRODUCTION) {
         pino.multistream([
             { stream: prettyStream },           // Pretty console output
             { stream: appLogStream },           // Also write to file
+            { level: 'error', stream: errorLogStream },  // Errors to error.log
         ])
     );
 }

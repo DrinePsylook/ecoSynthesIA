@@ -14,7 +14,7 @@ import logger from '../utils/logger';
  */
 export const getHotTopics = async (
     limit: number = 5,
-    monthsBack: number = 3
+    monthsBack: number = 12
 ): Promise<HotTopic[]> => {
     if (!pgPool) {
         logger.error('PostgreSQL pool is not initialized');
@@ -41,12 +41,12 @@ export const getHotTopics = async (
 ), 2) as avg_value
             FROM extracted_data ed
             JOIN documents d ON ed.document_id = d.id
-            WHERE d.date_publication >= NOW() - INTERVAL '${monthsBack} months'
+            WHERE (d.date_publication >= NOW() - INTERVAL '${monthsBack} months' OR d.date_publication IS NULL)
                 AND d.is_public = true
                 AND ed.indicator_category != 'other'
                 AND ed.key IS NOT NULL
             GROUP BY ed.indicator_category, ed.key, ed.unit
-            HAVING COUNT(DISTINCT ed.document_id) >= 2
+            HAVING COUNT(DISTINCT ed.document_id) >= 1
             ORDER BY frequency DESC, ed.indicator_category
             LIMIT $1;
         `;

@@ -117,6 +117,9 @@ export default function MyDocumentsPage() {
     const handleAnalyzeDocument = async (docId: number) => {
         setAnalyzing(docId);
         const token = getToken();
+
+        // Show message immediately when user launches analysis (not when it finishes)
+        alert(t('documents.analysisStarted'));
         
         try {
             const response = await fetch(
@@ -151,7 +154,7 @@ export default function MyDocumentsPage() {
                     setPagination(data.pagination);
                 }
                 
-                alert(t('documents.analysisStarted'));
+                alert(t('documents.analysisFinished'));
             } else {
                 const result = await response.json();
                 alert(result.message || t('documents.deleteFailed'));
