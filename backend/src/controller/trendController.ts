@@ -18,7 +18,7 @@ export const getHotTopics = async (
     try {
         // Extract and valiate query parameters
         const limit = parseInt(req.query.limit as string, 10) || 5;
-        const monthsBack = parseInt(req.query.monthsBack as string, 10) || 3;
+        const monthsBack = parseInt(req.query.monthsBack as string, 10) || 12;
 
         // Validation
         if (limit < 1 || limit > 20) {

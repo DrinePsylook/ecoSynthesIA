@@ -79,6 +79,23 @@ export const createExtractedData = async (
                 });
                 return;
             }
+
+            if(entry.confidence_score < 0 || entry.confidence_score > 1) {
+                logger.error({
+                    documentId: entry.document_id,
+                    key: entry.key,
+                    invalidScore: entry.confidence_score
+                }, 'Invalid confidence score detected');
+
+                res.status(422).json({
+                    error: 'Unprocessable Entity',
+                    message: `Invalid confidence score: ${entry.confidence_score}. Must be between 0 and 1.`,
+                    field: 'confidence_score',
+                    received: entry.confidence_score
+                });
+                return;
+            }
+
         }
         
         const createdData = await extractedDataService.createExtractedData(dataEntries);

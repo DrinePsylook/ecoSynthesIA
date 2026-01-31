@@ -125,7 +125,7 @@ export const processDocument = async (doc: {
                     }
                     // If it's "unknown" or any non-numeric string, leave as null
                 }
-        
+
                 return {
                     document_id: doc.id,
                     key: data.key,
@@ -137,6 +137,23 @@ export const processDocument = async (doc: {
                     indicator_category: data.indicator_category || 'other'
                 };
             });
+
+            // Validate confidence scores before insertion (should be between 0 and 1)
+            for (const entry of extractedDataEntries) {
+                if (entry.confidence_score < 0 || entry.confidence_score > 1) {
+                    logger.error({
+                        documentId: doc.id,
+                        key: entry.key,
+                        invalidScore: entry.confidence_score,
+                        expectedRange: '0.0 - 1.0'
+                    }, 'Invalid confidence score detected - Unprocessable Entity (422)');
+                    
+                    throw new Error(
+                        `Unprocessable Entity: Invalid confidence score ${entry.confidence_score} for "${entry.key}". ` +
+                        `Score must be between 0 and 1.`
+                    );
+                }
+            }
         
             await extractedDataService.createExtractedData(extractedDataEntries);
             logger.info({ documentId: doc.id }, 'Extracted data created successfully');
