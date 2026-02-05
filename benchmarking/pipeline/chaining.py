@@ -1,5 +1,5 @@
 from langchain_ollama import ChatOllama
-from langchain.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate
 
 from .schemas import DataExtraction
 from utils.prompt_system import DATA_EXTRACTION_SYSTEM_PROMPT

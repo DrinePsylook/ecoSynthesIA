@@ -441,3 +441,7 @@
 {"Model":"deepseek-r1:latest","Doc_ID":"9","Key":"projections","Value":"unit","Unit":"context","Parsed_Successfully":true}
 {"Model":"deepseek-r1:latest","Doc_ID":"9","Key":"emissions","Value":"emissions","Unit":"not","Parsed_Successfully":true}
 {"Model":"deepseek-r1:latest","Doc_ID":"9","Key":"category","Value":"deforestation","Unit":"not provided","Parsed_Successfully":true}
+{"Model":"Mistral","Doc_ID":"1","Key":"temporal_data","Value":"next decades","Unit":"years","Parsed_Successfully":true}
+{"Model":"Mistral","Doc_ID":"1","Key":"projections","Value":"temperature, sea level, plastic production","Unit":"","Parsed_Successfully":true}
+{"Model":"Mistral","Doc_ID":"1","Key":"chart_type","Value":"choroplethmap","Unit":"","Parsed_Successfully":true}
+{"Model":"Mistral","Doc_ID":"1","Key":"page","Value":"4","Unit":"","Parsed_Successfully":true}
