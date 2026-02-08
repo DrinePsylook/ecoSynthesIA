@@ -3,11 +3,11 @@ dotenv
 fastapi~=0.104
 joblib~=1.5.2
 langchain-community~=0.4.1
-langchain-core~=1.0.3
+langchain-core~=1.2.8
 langchain-google-genai~=3.0.0
 langchain-ollama~=1.0.0
 langchain-openai~=1.0.1
-langgraph~=0.6
+langgraph~=1.0.7
 numpy~=2.2
 mlflow~=3.8.1
 ollama~=0.6.0
