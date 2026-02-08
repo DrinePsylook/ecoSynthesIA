@@ -41,7 +41,7 @@ export const upsertDocument = async (doc: DocumentToInsert): Promise<QueryResult
                 url_source, author, user_id, category_id, is_public
             )
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, TRUE)
-            -- Condition d'UPSERT utilisant la colonne UNIQUE de la Banque Mondiale
+            -- UPSERT condition using the UNIQUE column of the World Bank
             ON CONFLICT (external_doc_id) DO UPDATE SET
                 title = EXCLUDED.title,
                 date_publication = EXCLUDED.date_publication,
